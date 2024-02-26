@@ -9,3 +9,5 @@
 - [Пономарева Софья](https://github.com/ponomo2)
 - [Рахманов Сергей](https://github.com/s3r6anita)
 - [Шумайлова Александра](https://github.com/AlexandraShumailova)
+
+Репозиторий создан на основе шаблона https://github.com/vk-education/common
