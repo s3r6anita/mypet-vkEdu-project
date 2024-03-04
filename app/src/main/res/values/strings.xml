@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">My Pet</string>
+    <string name="back_button">Назад</string>
+    <string name="create_profile_screen_title">Создание профиля</string>
+    <string name="pet_nickname">Кличка</string>
+    <string name="pet_view">Вид</string>
+    <string name="clear">Очистить</string>
+    <string name="pet_breed">Порода</string>
+    <string name="pet_coat">Окрас</string>
+    <string name="pet_microchip">Номер микрочипа</string>
+    <string name="pet_birthday">Дата рождения</string>
+    <string name="date_format">Формат даты: ДД.ММ.ГГГГ</string>
+    <string name="show_calendar">Открыть календарь</string>
+    <string name="save_button_description">Сохранить</string>
+</resources>
