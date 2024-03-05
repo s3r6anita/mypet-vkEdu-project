@@ -1,6 +1,5 @@
 package com.f4.mypet.ui.screens.profile
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
@@ -46,7 +46,7 @@ import java.util.Date
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun CreateUpdateProfileScreen(context: Context) {
+fun CreateUpdateProfileScreen() {
     Scaffold(
         topBar = {
             MyPetTopBar(
@@ -56,6 +56,13 @@ fun CreateUpdateProfileScreen(context: Context) {
             )
         },
     ) { innerPadding ->
+        val localContext = LocalContext.current
+
+        val radioOptions = listOf("Мужской", "Женский")
+        val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
+
+        var openDateDialog by remember { mutableStateOf(false) }
+        var dateString by remember { mutableStateOf(dateFormat.format(Date())) }
 
         Column(
             modifier = Modifier
@@ -66,10 +73,8 @@ fun CreateUpdateProfileScreen(context: Context) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // пол
-            val radioOptions = listOf("Мужской", "Женский")
-            val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
 
+            // пол
             Text(
                 text = "Пол",
                 style = MaterialTheme.typography.bodyLarge,
@@ -110,10 +115,13 @@ fun CreateUpdateProfileScreen(context: Context) {
             // кличка
             OutlinedTextField(
                 value = "some nickname",
-                onValueChange = {  },
+                onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_nickname)) },
                 trailingIcon = {
-                    Icon(Icons.Default.Clear, contentDescription = stringResource(id = R.string.clear))
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = stringResource(id = R.string.clear)
+                    )
                 }
 
             )
@@ -121,10 +129,13 @@ fun CreateUpdateProfileScreen(context: Context) {
             // вид
             OutlinedTextField(
                 value = "some view",
-                onValueChange = {  },
+                onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_view)) },
                 trailingIcon = {
-                    Icon(Icons.Default.Clear, contentDescription = stringResource(id = R.string.clear))
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = stringResource(id = R.string.clear)
+                    )
                 },
                 modifier = Modifier.padding(top = 5.dp)
             )
@@ -132,10 +143,13 @@ fun CreateUpdateProfileScreen(context: Context) {
             // порода
             OutlinedTextField(
                 value = "some breed",
-                onValueChange = {  },
+                onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_breed)) },
                 trailingIcon = {
-                    Icon(Icons.Default.Clear, contentDescription = stringResource(id = R.string.clear))
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = stringResource(id = R.string.clear)
+                    )
                 },
                 modifier = Modifier.padding(top = 5.dp)
             )
@@ -143,10 +157,13 @@ fun CreateUpdateProfileScreen(context: Context) {
             // окрас
             OutlinedTextField(
                 value = "some coat",
-                onValueChange = {  },
+                onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_coat)) },
                 trailingIcon = {
-                    Icon(Icons.Default.Clear, contentDescription = stringResource(id = R.string.clear))
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = stringResource(id = R.string.clear)
+                    )
                 },
                 modifier = Modifier.padding(top = 5.dp)
             )
@@ -154,10 +171,13 @@ fun CreateUpdateProfileScreen(context: Context) {
             // номер микрочипа
             OutlinedTextField(
                 value = "some microchip",
-                onValueChange = {  },
+                onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_microchip)) },
                 trailingIcon = {
-                    Icon(Icons.Default.Clear, contentDescription = stringResource(id = R.string.clear))
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = stringResource(id = R.string.clear)
+                    )
                 },
                 modifier = Modifier.padding(top = 5.dp),
                 keyboardOptions = KeyboardOptions(
@@ -166,9 +186,6 @@ fun CreateUpdateProfileScreen(context: Context) {
             )
 
             // дата рождения
-            var openDialog by remember { mutableStateOf(false) }
-            var dateString by remember { mutableStateOf(dateFormat.format(Date())) }
-
             OutlinedTextField(
                 value = dateString,
                 onValueChange = {
@@ -180,25 +197,30 @@ fun CreateUpdateProfileScreen(context: Context) {
                 label = { Text(stringResource(id = R.string.pet_birthday)) },
                 supportingText = { Text(text = stringResource(id = R.string.date_format)) },
                 trailingIcon = {
-                    IconButton(onClick = { openDialog = true }) {
-                        Icon(Icons.Default.DateRange, contentDescription = stringResource(id = R.string.show_calendar))
+                    IconButton(onClick = { openDateDialog = true }) {
+                        Icon(
+                            Icons.Default.DateRange,
+                            contentDescription = stringResource(id = R.string.show_calendar)
+                        )
                     }
                 },
                 modifier = Modifier.padding(top = 5.dp)
             )
-            if (openDialog) {
+            if (openDateDialog) {
                 val datePickerState = rememberDatePickerState()
                 DatePickerDialog(
                     onDismissRequest = {
-                        openDialog = false
+                        openDateDialog = false
                     },
                     confirmButton = {
                         TextButton(
                             onClick = {
-                                openDialog = false
-                                dateString = dateFormat.format(Date(
-                                    datePickerState.selectedDateMillis ?: 0
-                                ))
+                                openDateDialog = false
+                                dateString = dateFormat.format(
+                                    Date(
+                                        datePickerState.selectedDateMillis ?: 0
+                                    )
+                                )
                             },
                         ) {
                             Text("ОК")
@@ -206,7 +228,7 @@ fun CreateUpdateProfileScreen(context: Context) {
                     },
                     dismissButton = {
                         TextButton(
-                            onClick = { openDialog = false }
+                            onClick = { openDateDialog = false }
                         ) {
                             Text("Отмена")
                         }
@@ -223,18 +245,17 @@ fun CreateUpdateProfileScreen(context: Context) {
                     try {
                         // TODO Проверки полей
                         Toast.makeText(
-                            context,
-                            "Питомец успешно добавлен",
+                            localContext,
+                            R.string.create_profile_successful_pet_creation,
                             Toast.LENGTH_SHORT
-                        ).show()
-
+                        )
+                            .show()
                         // TODO Навигация в список профилей
-                    }
-                    catch (e: IllegalArgumentException) {
-                        Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
-                    }
-                    catch (e: Exception) {
-                        Toast.makeText(context, "Ошибка", Toast.LENGTH_LONG).show()
+                    } catch (e: IllegalArgumentException) {
+                        Toast.makeText(localContext, R.string.incoorect_data, Toast.LENGTH_LONG)
+                            .show()
+                    } catch (e: Exception) {
+                        Toast.makeText(localContext, R.string.error, Toast.LENGTH_LONG).show()
                     }
                 }
             ) {

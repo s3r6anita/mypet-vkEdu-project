@@ -12,4 +12,7 @@
     <string name="date_format">Формат даты: ДД.ММ.ГГГГ</string>
     <string name="show_calendar">Открыть календарь</string>
     <string name="save_button_description">Сохранить</string>
+    <string name="create_profile_successful_pet_creation">Питомец успешно добавлен</string>
+    <string name="incoorect_data">Некорректные данные</string>
+    <string name="error">Ошибка\n</string>
 </resources>
