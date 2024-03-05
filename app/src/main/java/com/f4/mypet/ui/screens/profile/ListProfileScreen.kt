@@ -40,7 +40,7 @@ import com.f4.mypet.R
 import com.f4.mypet.ui.MyPetTopBar
 
 @Composable
-fun ListProfileScreen(context: Context){
+fun ListProfileScreen(){
 
     val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
 
