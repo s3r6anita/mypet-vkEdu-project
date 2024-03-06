@@ -1,8 +1,10 @@
 package com.f4.mypet.db.entities
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import java.util.Date
 
 @Entity
@@ -15,9 +17,24 @@ data class Pet(
     val color: String, // окрас
     val coat: String, // вид шерсти
     val microchipNumber: String, // 15 цифр
-    // добавим когда появятся остальные таблицы
-//    var procedures: MutableList<Procedure>,
-//    var therapies: MutableList<Therapy>,
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "pet_id") val id: Int = 0
+    @ColumnInfo(name = "id") val id: Int = 0
+)
+
+data class PetWithProcedures(
+    @Embedded val pet: Pet,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "pet"
+    )
+    val procedures: List<Procedure>
+)
+
+data class PetWithMedRecords(
+    @Embedded val pet: Pet,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "pet"
+    )
+    val medRecord: List<MedRecord>
 )
