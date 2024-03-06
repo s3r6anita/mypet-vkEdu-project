@@ -12,4 +12,8 @@
     <string name="date_format">Формат даты: ДД.ММ.ГГГГ</string>
     <string name="show_calendar">Открыть календарь</string>
     <string name="save_button_description">Сохранить</string>
+
+    <string name="my_pets_screen_title">Мои питомцы</string>
+    <string name="add_button_description">+ Добавить</string>
+    <string name="remember_my_choise">Запоминать выбор питомца на время сессии приложения</string>
 </resources>
