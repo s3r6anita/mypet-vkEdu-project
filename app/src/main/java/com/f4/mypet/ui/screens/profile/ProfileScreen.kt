@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
@@ -35,11 +36,11 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import com.f4.mypet.ui.MyPetTopBar
 
 @Composable
-fun ProfileScreen(context: Context) {
+fun ProfileScreen() {
 
     //TODO id = profileId
     var openAlertDialog by remember { mutableStateOf(false) }
-
+    val context = LocalContext.current
     if (openAlertDialog) {
         AlertDialog(
             title = {
