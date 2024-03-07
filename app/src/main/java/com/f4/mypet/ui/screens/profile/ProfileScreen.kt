@@ -40,7 +40,7 @@ fun ProfileScreen() {
 
     //TODO id = profileId
     var openAlertDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
+    //val context = LocalContext.current
     if (openAlertDialog) {
         AlertDialog(
             title = {
@@ -93,17 +93,8 @@ fun ProfileScreen() {
                     }
                     // кнопка поделиться
                     IconButton(onClick = {
-                        val message = "some data"
-                        //TODO message = formatPet(pet)
-                        val intent = Intent(Intent.ACTION_SEND).apply {
-                            putExtra(Intent.EXTRA_TEXT, message)
-                            type = "text/plain"
-                        }
-                        try{
-                            context.startActivity(Intent.createChooser(intent, "Отправить сведения о питомце"))
-                        } catch (e: Exception) {
-                            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show()
-                        }          }
+                       //TODO кнопка поделиться
+                    }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Share,
