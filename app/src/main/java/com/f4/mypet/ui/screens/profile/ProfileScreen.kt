@@ -138,36 +138,36 @@ fun ProfileScreen() {
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = "Информация о питомце",
+                text = stringResource(R.string.information_about_pet),
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(bottom = 20.dp),
             )
             TextComponent(
-                header = "Кличка",
+                header = stringResource(R.string.pet_nickname),
                 value = "some nickname"
             )
             TextComponent(
-                header = "Вид",
+                header = stringResource(R.string.pet_view),
                 value = "some type"
             )
             TextComponent(
-                header = "Порода",
+                header = stringResource(R.string.pet_breed),
                 value = "some breed"
             )
             TextComponent(
-                header = "Пол",
+                header = stringResource(R.string.pet_paul),
                 value = "some paul"
             )
             TextComponent(
-                header = "Дата рождения",
+                header = stringResource(R.string.pet_birthday),
                 value = "some birth date"
             )
             TextComponent(
-                header = "Окрас",
-                value = "some color"
+                header = stringResource(R.string.pet_coat),
+                value = "some coat"
             )
             TextComponent(
-                header = "Номер микрочипа",
+                header = stringResource(R.string.pet_microchip),
                 value = "some microchip number"
             )
             // TODO value для каждого TextComponent (example: value = pet.nickname)

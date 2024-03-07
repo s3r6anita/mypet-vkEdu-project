@@ -3,8 +3,10 @@
     <string name="back_button">Назад</string>
     <string name="create_profile_screen_title">Создание профиля</string>
     <string name="profile">Профиль</string>
+    <string name="information_about_pet">Информация о питомце</string>
     <string name="pet_nickname">Кличка</string>
     <string name="pet_view">Вид</string>
+    <string name="pet_paul">Пол</string>
     <string name="clear">Очистить</string>
     <string name="pet_breed">Порода</string>
     <string name="pet_coat">Окрас</string>
