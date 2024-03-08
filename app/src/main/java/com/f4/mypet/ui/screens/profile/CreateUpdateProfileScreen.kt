@@ -18,10 +18,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -254,9 +254,10 @@ fun CreateUpdateProfileScreen() {
 
                     } catch (e: IllegalArgumentException) {
                         Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
-                    } catch (e: Exception) {
-                        Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show()
                     }
+//                    catch (e: Exception) {
+//                        Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show()
+//                    }
                 }
             ) {
                 Text(text = stringResource(id = R.string.save_button_description))
