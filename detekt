@@ -10,7 +10,6 @@ if [ ! -f "$DETEKT_BIN" ]; then
   rm -f $ROOT_FOLDER/detekt-*
 #  curl -sSL https://github.com/detekt/detekt/releases/download/v${VERSION}/detekt --output $DETEKT_BIN
   curl -sSLO https://github.com/detekt/detekt/releases/download/v${VERSION}/detekt-cli-${VERSION}.zip --output ROOT_FOLDER
-  cd ROOT_FOLDER
   unzip detekt-cli-${VERSION}.zip
   chmod a+x ROOT_FOLDER/detekt-cli-${VERSION}/bin/detekt-cli
 fi
