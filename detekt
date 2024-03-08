@@ -9,13 +9,16 @@ mkdir -p $ROOT_FOLDER
 if [ ! -f "$DETEKT_BIN" ]; then
   echo "Please wait, first download..."
   rm -f $ROOT_FOLDER/detekt-*
-  curl -sSL https://github.com/detekt/detekt/releases/download/v${VERSION}/detekt --output $DETEKT_BIN
+#  curl -sSL https://github.com/detekt/detekt/releases/download/v${VERSION}/detekt --output $DETEKT_BIN
+  curl -sSLO https://github.com/detekt/detekt/releases/download/v${VERSION}/detekt-cli-${VERSION}.zip --output $DETEKT_BIN
+  cd $DETEKT_BIN
+  unzip detekt-cli-${VERSION}.zip
   chmod a+x $DETEKT_BIN
 fi
 
 if [ $CI ]; then
   export REVIEWDOG_GITHUB_API_TOKEN="${GITHUB_TOKEN}"
-  $DETEKT_BIN/bin/detekt --config .github/workflows/assets/detekt.yml --report xml:detekt_report.xml
+  $DETEKT_BIN/detekt-cli-${VERSION}/bin/detekt-cli --config .github/workflows/assets/detekt.yml --report xml:detekt_report.xml
 
   reviewdog -f=checkstyle \
       -name="detekt" \
