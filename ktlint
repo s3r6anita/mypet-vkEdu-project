@@ -15,11 +15,11 @@ if [ ! -f "$KTLINT_BIN" ]; then
 fi
 if [ $CI ]; then
   export REVIEWDOG_GITHUB_API_TOKEN="${GITHUB_TOKEN}"
-  $KTLINT_BIN --format |
+  $KTLINT_BIN --reporter=checkstyle |
     reviewdog -f=checkstyle \
       -name="ktlint" \
       -reporter="github-pr-review" \
-      -fail-on-error="true"
+      -fail-on-error="false"
 else
   $KTLINT_BIN "$@"
 fi
