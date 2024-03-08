@@ -3,7 +3,7 @@
 set -e
 
 ROOT_FOLDER=build/bin
-VERSION=1.16.0
+VERSION=1.14.0
 DETEKT_BIN=$ROOT_FOLDER/detekt-$VERSION
 mkdir -p $ROOT_FOLDER
 if [ ! -f "$DETEKT_BIN" ]; then
