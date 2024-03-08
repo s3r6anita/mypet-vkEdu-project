@@ -14,7 +14,7 @@ if [ ! -f "$KTLINT_BIN" ]; then
   echo "Installation completed"
 fi
 if [ $CI ]; then
-  export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
+  export REVIEWDOG_GITHUB_API_TOKEN="${GITHUB_TOKEN}"
   $KTLINT_BIN --reporter=checkstyle |
     reviewdog -f=checkstyle \
       -name="ktlint" \
