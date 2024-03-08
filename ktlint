@@ -3,7 +3,7 @@
 set -e
 
 ROOT_FOLDER=build/bin
-VERSION=1.2.1
+VERSION=0.38.1
 KTLINT_BIN=$ROOT_FOLDER/ktlint-$VERSION
 mkdir -p $ROOT_FOLDER
 if [ ! -f "$KTLINT_BIN" ]; then
