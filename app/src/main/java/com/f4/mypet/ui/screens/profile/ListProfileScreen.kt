@@ -1,6 +1,5 @@
 package com.f4.mypet.ui.screens.profile
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
