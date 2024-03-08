@@ -561,7 +561,6 @@ style:
     ignoreNamedArgument: true
     ignoreEnums: true
     ignoreRanges: true
-    ignoreExtensionFunctions: true
   MandatoryBracesIfStatements:
     active: false
   MandatoryBracesLoops:
