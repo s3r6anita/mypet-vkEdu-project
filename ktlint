@@ -12,13 +12,14 @@ if [ ! -f "$KTLINT_BIN" ]; then
   curl -sSL https://github.com/pinterest/ktlint/releases/download/$VERSION/ktlint --output $KTLINT_BIN
   chmod a+x $KTLINT_BIN
 fi
+
 if [ $CI ]; then
   export REVIEWDOG_GITHUB_API_TOKEN="${GITHUB_TOKEN}"
-  $KTLINT_BIN --reporter=checkstyle, output=ktlint_report.xml |
-    reviewdog -f=checkstyle \
-      -name="ktlint" \
-      -reporter="github-pr-review" \
-      -fail-on-error="false" <ktlint_report.xml
+  $KTLINT_BIN --reporter=checkstyle, output=ktlint_report.xml
+  reviewdog -f=checkstyle \
+    -name="ktlint" \
+    -reporter="github-pr-review" \
+    -fail-on-error="false" <ktlint_report.xml
 else
   $KTLINT_BIN --android "$@"
 fi
