@@ -47,6 +47,9 @@ import java.util.Date
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun CreateUpdateProfileScreen() {
+
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             MyPetTopBar(
@@ -56,13 +59,6 @@ fun CreateUpdateProfileScreen() {
             )
         },
     ) { innerPadding ->
-        val localContext = LocalContext.current
-
-        val radioOptions = listOf("Мужской", "Женский")
-        val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
-
-        var openDateDialog by remember { mutableStateOf(false) }
-        var dateString by remember { mutableStateOf(dateFormat.format(Date())) }
 
         Column(
             modifier = Modifier
@@ -73,10 +69,12 @@ fun CreateUpdateProfileScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
             // пол
+            val radioOptions = listOf(stringResource(id = R.string.male_sex), stringResource(id = R.string.female_sex))
+            val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
+
             Text(
-                text = "Пол",
+                text = stringResource(id = R.string.create_profile_sex),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 16.dp)
             )
@@ -123,7 +121,6 @@ fun CreateUpdateProfileScreen() {
                         contentDescription = stringResource(id = R.string.clear)
                     )
                 }
-
             )
 
             // вид
@@ -168,6 +165,62 @@ fun CreateUpdateProfileScreen() {
                 modifier = Modifier.padding(top = 5.dp)
             )
 
+            // дата рождения
+            var openDialog by remember { mutableStateOf(false) }
+            var dateString by remember { mutableStateOf(dateFormat.format(Date())) }
+
+            OutlinedTextField(
+                value = dateString,
+                onValueChange = {
+                    if (it.length <= 10) dateString = it
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
+                label = { Text(stringResource(id = R.string.pet_birthday)) },
+                supportingText = { Text(text = stringResource(id = R.string.date_format)) },
+                trailingIcon = {
+                    IconButton(onClick = { openDialog = true }) {
+                        Icon(
+                            Icons.Default.DateRange,
+                            contentDescription = stringResource(id = R.string.show_calendar)
+                        )
+                    }
+                },
+                modifier = Modifier.padding(top = 5.dp)
+            )
+            if (openDialog) {
+                val datePickerState = rememberDatePickerState()
+                DatePickerDialog(
+                    onDismissRequest = {
+                        openDialog = false
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                openDialog = false
+                                dateString = dateFormat.format(
+                                    Date(
+                                        datePickerState.selectedDateMillis ?: 0
+                                    )
+                                )
+                            },
+                        ) {
+                            Text("ОК")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { openDialog = false }
+                        ) {
+                            Text("Отмена")
+                        }
+                    }
+                ) {
+                    DatePicker(state = datePickerState)
+                }
+            }
+
             // номер микрочипа
             OutlinedTextField(
                 value = "some microchip",
@@ -185,59 +238,6 @@ fun CreateUpdateProfileScreen() {
                 )
             )
 
-            // дата рождения
-            OutlinedTextField(
-                value = dateString,
-                onValueChange = {
-                    if (it.length <= 10) dateString = it
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-                label = { Text(stringResource(id = R.string.pet_birthday)) },
-                supportingText = { Text(text = stringResource(id = R.string.date_format)) },
-                trailingIcon = {
-                    IconButton(onClick = { openDateDialog = true }) {
-                        Icon(
-                            Icons.Default.DateRange,
-                            contentDescription = stringResource(id = R.string.show_calendar)
-                        )
-                    }
-                },
-                modifier = Modifier.padding(top = 5.dp)
-            )
-            if (openDateDialog) {
-                val datePickerState = rememberDatePickerState()
-                DatePickerDialog(
-                    onDismissRequest = {
-                        openDateDialog = false
-                    },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                openDateDialog = false
-                                dateString = dateFormat.format(
-                                    Date(
-                                        datePickerState.selectedDateMillis ?: 0
-                                    )
-                                )
-                            },
-                        ) {
-                            Text("ОК")
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(
-                            onClick = { openDateDialog = false }
-                        ) {
-                            Text("Отмена")
-                        }
-                    }
-                ) {
-                    DatePicker(state = datePickerState)
-                }
-            }
-
             // сохранение
             Button(
                 modifier = Modifier.padding(16.dp),
@@ -245,17 +245,17 @@ fun CreateUpdateProfileScreen() {
                     try {
                         // TODO Проверки полей
                         Toast.makeText(
-                            localContext,
+                            context,
                             R.string.create_profile_successful_pet_creation,
                             Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        ).show()
+
                         // TODO Навигация в список профилей
+
                     } catch (e: IllegalArgumentException) {
-                        Toast.makeText(localContext, R.string.incoorect_data, Toast.LENGTH_LONG)
-                            .show()
+                        Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                     } catch (e: Exception) {
-                        Toast.makeText(localContext, R.string.error, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show()
                     }
                 }
             ) {

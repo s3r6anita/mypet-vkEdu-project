@@ -15,4 +15,7 @@
     <string name="create_profile_successful_pet_creation">Питомец успешно добавлен</string>
     <string name="incoorect_data">Некорректные данные</string>
     <string name="error">Ошибка\n</string>
+    <string name="male_sex">Мужской</string>
+    <string name="female_sex">Женский</string>
+    <string name="create_profile_sex">Пол</string>
 </resources>
