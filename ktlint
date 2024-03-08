@@ -14,7 +14,7 @@ if [ ! -f "$KTLINT_BIN" ]; then
 fi
 if [ $CI ]; then
   export REVIEWDOG_GITHUB_API_TOKEN="${GITHUB_TOKEN}"
-  $KTLINT_BIN --android --reporter=checkstyle |
+  $KTLINT_BIN --reporter=checkstyle |
     reviewdog -f=checkstyle \
       -name="ktlint" \
       -reporter="github-pr-review" \
