@@ -19,4 +19,8 @@
     <string name="my_pets_screen_title">Мои питомцы</string>
     <string name="add_button_description">+ Добавить</string>
     <string name="remember_my_choise">Запоминать выбор питомца на время сессии приложения</string>
+    <string name="male_sex">Мужской</string>
+    <string name="female_sex">Женский</string>
+    <string name="create_profile_sex">Пол</string>
+    <string name="create_profile_successful_pet_creation">Питомец успешно добавлен</string>
 </resources>
