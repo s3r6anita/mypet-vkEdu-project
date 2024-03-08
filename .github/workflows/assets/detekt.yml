@@ -557,10 +557,11 @@ style:
     ignoreLocalVariableDeclaration: true
     ignoreConstantDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true
-    ignoreAnnotation: false
+    ignoreAnnotation: true
     ignoreNamedArgument: true
-    ignoreEnums: false
-    ignoreRanges: false
+    ignoreEnums: true
+    ignoreRanges: true
+    ignoreExtensionFunctions: true
   MandatoryBracesIfStatements:
     active: false
   MandatoryBracesLoops:
