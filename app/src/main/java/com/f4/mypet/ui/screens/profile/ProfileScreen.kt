@@ -53,7 +53,7 @@ fun ProfileScreen() {
                     onClick = {
                         openAlertDialog = false
                         // TODO navController
-                        //TODO вставить вызов функции removePet(id) внутри scope.launch { delay(100), ...}
+                        // TODO вставить вызов функции removePet(id) внутри scope.launch { delay(100), ...}
                     }
                 ) {
                     Text("ОК")
@@ -89,7 +89,7 @@ fun ProfileScreen() {
                     }
                     // кнопка поделиться
                     IconButton(onClick = {
-                       //TODO кнопка поделиться
+                       // TODO кнопка поделиться
                     }
                     ) {
                         Icon(
@@ -166,7 +166,7 @@ fun ProfileScreen() {
                 header = stringResource(R.string.pet_microchip),
                 value = "some microchip number"
             )
-            // TODO value для каждого TextComponent (example: value = pet.nickname)
+            // TODO: value для каждого TextComponent (example: value = pet.nickname)
         }
     }
 }
@@ -185,6 +185,6 @@ fun TextComponent(header: String, value: String) {
     )
 }
 
-//TODO function formatPet(pet: Pet): String
+// TODO: function formatPet(pet: Pet): String
 
-//TODO function removePet(id: Int)
+// TODO: function removePet(id: Int)
