@@ -88,7 +88,9 @@ fun ProfileScreen() {
                         )
                     }
                     // кнопка поделиться
-                    IconButton(onClick = { /* TODO:кнопка поделиться */ }
+                    IconButton(onClick = {
+                        /* TODO:кнопка поделиться */
+                    }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Share,
@@ -112,7 +114,7 @@ fun ProfileScreen() {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                        // TODO navController in onClick
+                    // TODO navController in onClick
                 },
                 modifier = Modifier
             ) {
