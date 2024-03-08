@@ -221,21 +221,21 @@ fun CreateUpdateProfileScreen(context: Context) {
                 modifier = Modifier.padding(16.dp),
                 onClick = {
                     try {
-                        // TODO Проверки полей
+                        // TODO: Проверки полей
                         Toast.makeText(
                             context,
                             "Питомец успешно добавлен",
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        // TODO Навигация в список профилей
+                        // TODO: Навигация в список профилей
                     }
                     catch (e: IllegalArgumentException) {
                         Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                     }
-                    catch (e: Exception) {
-                        Toast.makeText(context, "Ошибка", Toast.LENGTH_LONG).show()
-                    }
+//                    catch (e: Exception) {
+//                        Toast.makeText(context, "Ошибка", Toast.LENGTH_LONG).show()
+//                    }
                 }
             ) {
                 Text(text = stringResource(id = R.string.save_button_description))

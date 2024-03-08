@@ -62,7 +62,7 @@ fun ListProfileScreen(){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            //Заголовок
+            // Заголовок
             Row(
                 modifier = Modifier
                     .height(90.dp)
@@ -102,7 +102,7 @@ fun ListProfileScreen(){
                 )
             }
 
-            //Список питомцев
+            // Список питомцев
             Row(
                 Modifier
                     .fillMaxWidth()

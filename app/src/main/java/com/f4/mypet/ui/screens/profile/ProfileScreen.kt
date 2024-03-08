@@ -36,6 +36,7 @@ fun ProfileScreen() {
     //TODO id = profileId
     var openAlertDialog by remember { mutableStateOf(false) }
     //val context = LocalContext.current
+
     if (openAlertDialog) {
         AlertDialog(
             title = {
@@ -52,7 +53,7 @@ fun ProfileScreen() {
                     onClick = {
                         openAlertDialog = false
                         // TODO navController
-                        //TODO вставить вызов функции removePet(id) внутри scope.launch { delay(100), ...}
+                        // TODO вставить вызов функции removePet(id) внутри scope.launch { delay(100), ...}
                     }
                 ) {
                     Text("ОК")
@@ -88,7 +89,7 @@ fun ProfileScreen() {
                     }
                     // кнопка поделиться
                     IconButton(onClick = {
-                       //TODO кнопка поделиться
+                        /* TODO:кнопка поделиться */
                     }
                     ) {
                         Icon(
@@ -98,7 +99,7 @@ fun ProfileScreen() {
                     }
                     // кнопка выхода
                     IconButton(onClick = {
-                        // TODO navController
+                        // TODO: navController
                     }
                     ) {
                         Icon(
@@ -113,7 +114,7 @@ fun ProfileScreen() {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                        // TODO navController in onClick
+                    // TODO navController in onClick
                 },
                 modifier = Modifier
             ) {
@@ -165,7 +166,7 @@ fun ProfileScreen() {
                 header = stringResource(R.string.pet_microchip),
                 value = "some microchip number"
             )
-            // TODO value для каждого TextComponent (example: value = pet.nickname)
+            // TODO: value для каждого TextComponent (example: value = pet.nickname)
         }
     }
 }
@@ -184,7 +185,6 @@ fun TextComponent(header: String, value: String) {
     )
 }
 
+// TODO: function formatPet(pet: Pet): String
 
-//TODO function formatPet(pet: Pet): String
-
-//TODO function removePet(id: Int)
+// TODO: function removePet(id: Int)
