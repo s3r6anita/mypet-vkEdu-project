@@ -15,7 +15,7 @@ fi
 if [ $CI ]; then
   export REVIEWDOG_GITHUB_API_TOKEN="${GITHUB_TOKEN}"
   $KTLINT_BIN --reporter=checkstyle, output=ktlint_report.xml |
-    reviewdog -f=checkstyle
+    reviewdog -f=checkstyle \
       -name="ktlint" \
       -reporter="github-pr-review" \
       -fail-on-error="false" <ktlint_report.xml
