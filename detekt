@@ -4,7 +4,7 @@ set -e
 
 ROOT_FOLDER=build/bin
 VERSION=1.23.5
-DETEKT_BIN=$detekt-cli-${VERSION}/bin/detekt-cli
+DETEKT_BIN=detekt-cli-${VERSION}/bin/detekt-cli
 mkdir -p $ROOT_FOLDER
 if [ ! -f "$DETEKT_BIN" ]; then
   echo "Please wait, first download..."
