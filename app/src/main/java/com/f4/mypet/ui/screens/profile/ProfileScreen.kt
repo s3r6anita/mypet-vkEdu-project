@@ -35,7 +35,6 @@ fun ProfileScreen() {
 
     //TODO id = profileId
     var openAlertDialog by remember { mutableStateOf(false) }
-    //val context = LocalContext.current
     if (openAlertDialog) {
         AlertDialog(
             title = {
