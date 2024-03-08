@@ -39,22 +39,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.MyPetTopBar
 import com.f4.mypet.ui.dateFormat
 import java.util.Date
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun CreateUpdateProfileScreen() {
+fun CreateUpdateProfileScreen(
+    navController: NavHostController,
+    create: Boolean,
+    profileId: String? = "0",
+) {
 
     val context = LocalContext.current
 
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(R.string.create_profile_screen_title),
-                canNavigateBack = true,
+                text = stringResource(if (create) Routes.CreateProfile.title else Routes.UpdateProfile.title),
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() },
                 actions = {}
             )
         },
@@ -70,7 +77,10 @@ fun CreateUpdateProfileScreen() {
             verticalArrangement = Arrangement.Center
         ) {
             // пол
-            val radioOptions = listOf(stringResource(id = R.string.male_sex), stringResource(id = R.string.female_sex))
+            val radioOptions = listOf(
+                stringResource(id = R.string.male_sex),
+                stringResource(id = R.string.female_sex)
+            )
             val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
 
             Text(
@@ -243,18 +253,24 @@ fun CreateUpdateProfileScreen() {
                 modifier = Modifier.padding(16.dp),
                 onClick = {
                     try {
-                        // TODO Проверки полей
+                        // TODO: Проверки полей
                         Toast.makeText(
                             context,
                             R.string.create_profile_successful_pet_creation,
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        // TODO Навигация в список профилей
+                        navController.navigate(Routes.ListProfile.route) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
 
                     } catch (e: IllegalArgumentException) {
                         Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                     }
+                    // TODO: заменить общий эксепшен на конкретные
 //                    catch (e: Exception) {
 //                        Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show()
 //                    }

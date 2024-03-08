@@ -27,15 +27,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.navigation.Routes
+import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.MyPetTopBar
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    navController: NavHostController,
+    profileId: String?
+) {
 
-    //TODO id = profileId
+    // TODO: добавить id = profileId
     var openAlertDialog by remember { mutableStateOf(false) }
-    //val context = LocalContext.current
+
     if (openAlertDialog) {
         AlertDialog(
             title = {
@@ -73,8 +79,9 @@ fun ProfileScreen() {
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(R.string.profile),
+                text = stringResource(Routes.Profile.title),
                 canNavigateBack = true,
+                navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка удалить
                     IconButton(onClick = {
@@ -88,7 +95,7 @@ fun ProfileScreen() {
                     }
                     // кнопка поделиться
                     IconButton(onClick = {
-                       //TODO кнопка поделиться
+                       //TODO: реализовать кнопку поделиться
                     }
                     ) {
                         Icon(
@@ -98,7 +105,14 @@ fun ProfileScreen() {
                     }
                     // кнопка выхода
                     IconButton(onClick = {
-                        // TODO navController
+                        openAlertDialog = false
+                        navController.navigate(START) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                        // TODO: непосредственно удаление профиля
                     }
                     ) {
                         Icon(
@@ -165,7 +179,7 @@ fun ProfileScreen() {
                 header = stringResource(R.string.pet_microchip),
                 value = "some microchip number"
             )
-            // TODO value для каждого TextComponent (example: value = pet.nickname)
+            // TODO: value для каждого TextComponent (example: value = pet.nickname)
         }
     }
 }
@@ -185,6 +199,6 @@ fun TextComponent(header: String, value: String) {
 }
 
 
-//TODO function formatPet(pet: Pet): String
+//TODO: function formatPet(pet: Pet): String
 
-//TODO function removePet(id: Int)
+//TODO: function removePet(id: Int)
