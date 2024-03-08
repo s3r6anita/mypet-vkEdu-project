@@ -3,7 +3,7 @@
 set -e
 
 ROOT_FOLDER=build/bin
-VERSION=1.15.0
+VERSION=1.23.5
 DETEKT_BIN=$ROOT_FOLDER/detekt-$VERSION
 mkdir -p $ROOT_FOLDER
 if [ ! -f "$DETEKT_BIN" ]; then
@@ -21,8 +21,6 @@ if [ $CI ]; then
       -name="detekt" \
       -reporter="github-pr-review" \
       -fail-on-error="true" <detekt_report.xml
-else
-  $DETEKT_BIN --config .github/workflows/assets/detekt.yml "$@"
 fi
 
 echo "Done!"
