@@ -185,7 +185,6 @@ fun TextComponent(header: String, value: String) {
     )
 }
 
-
 //TODO function formatPet(pet: Pet): String
 
 //TODO function removePet(id: Int)

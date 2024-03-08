@@ -1,7 +1,7 @@
 @ECHO OFF
 TITLE Check style with Detekt
 SET ROOT_FOLDER=build\bin
-SET VERSION=1.13.1
+SET VERSION=1.23.5
 SET DETEKT_BIN=%ROOT_FOLDER%\detekt-%VERSION%.jar
 if not exist %DETEKT_BIN% (
   ECHO Please wait, first download...
