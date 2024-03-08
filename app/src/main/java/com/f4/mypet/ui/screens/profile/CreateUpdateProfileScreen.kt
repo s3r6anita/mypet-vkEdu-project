@@ -233,9 +233,9 @@ fun CreateUpdateProfileScreen(context: Context) {
                     catch (e: IllegalArgumentException) {
                         Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                     }
-                    catch (e: Exception) {
-                        Toast.makeText(context, "Ошибка", Toast.LENGTH_LONG).show()
-                    }
+//                    catch (e: Exception) {
+//                        Toast.makeText(context, "Ошибка", Toast.LENGTH_LONG).show()
+//                    }
                 }
             ) {
                 Text(text = stringResource(id = R.string.save_button_description))
