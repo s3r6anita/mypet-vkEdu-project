@@ -89,7 +89,7 @@ fun ProfileScreen() {
                     }
                     // кнопка поделиться
                     IconButton(onClick = {
-                       // TODO кнопка поделиться
+                       // TODO: кнопка поделиться
                     }
                     ) {
                         Icon(

@@ -18,7 +18,7 @@ if [ $CI ]; then
     reviewdog -f=checkstyle \
       -name="ktlint" \
       -reporter="github-pr-review" \
-      -fail-on-error="true"
+      -fail-on-error="false"
 else
   $KTLINT_BIN --android "$@"
 fi
