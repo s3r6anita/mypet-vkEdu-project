@@ -11,7 +11,7 @@ if [ ! -f "$DETEKT_BIN" ]; then
   rm -f $ROOT_FOLDER/detekt-*
   curl -sSLO https://github.com/detekt/detekt/releases/download/v${VERSION}/detekt-cli-${VERSION}.zip
   unzip detekt-cli-${VERSION}.zip
-  chmod a+x
+  chmod a+x $DETEKT_BIN
 fi
 
 if [ $CI ]; then
