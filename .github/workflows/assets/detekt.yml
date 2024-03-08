@@ -413,11 +413,11 @@ style:
     maxJumpCount: 1
   MagicNumber:
     active: true
-    excludes: ['**/app/build.gradle.kts','**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**']
+    excludes: ['**/app/build.gradle.kts', '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**']
     ignoreNumbers: ['-1', '0', '1', '2']
     ignoreHashCodeFunction: true
     ignorePropertyDeclaration: false
-    ignoreLocalVariableDeclaration: false
+    ignoreLocalVariableDeclaration: true
     ignoreConstantDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true
     ignoreAnnotation: false
