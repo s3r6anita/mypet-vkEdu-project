@@ -20,19 +20,17 @@ fun SetupNavGraph(navController: NavHostController) {
         startDestination = START,
         enterTransition = { EnterTransition.None },
 /**
-    Отключение анимаций перехода между экранами
-        exitTransition = { ExitTransition.None },
-        popEnterTransition = { EnterTransition.None },
-        popExitTransition = { ExitTransition.None },
+*    Отключение анимаций перехода между экранами
+*       exitTransition = { ExitTransition.None },
+*       popEnterTransition = { EnterTransition.None },
+*       popExitTransition = { ExitTransition.None },
  */
     ) {
         NavGraph(navController)
     }
 }
 
-fun NavGraphBuilder.NavGraph(
-    navController: NavHostController
-) {
+fun NavGraphBuilder.NavGraph(navController: NavHostController) {
     navigation(
         route = START,
         startDestination = Routes.ListProfile.route
@@ -44,15 +42,17 @@ fun NavGraphBuilder.NavGraph(
 
 //        создание профиля
         composable(route = Routes.CreateProfile.route) {
-            CreateUpdateProfileScreen(navController,true)
+            CreateUpdateProfileScreen(navController, true)
         }
 
 //        профиль
         composable(
             route = Routes.Profile.route + "/{id}",
-            arguments = listOf(navArgument(name = "id") {
-                type = NavType.IntType
-            })
+            arguments = listOf(
+                navArgument(name = "id") {
+                    type = NavType.IntType
+                }
+            )
         ) { backStackEntry ->
             ProfileScreen(
                 navController,
@@ -63,9 +63,11 @@ fun NavGraphBuilder.NavGraph(
 //        обновление профиля
         composable(
             route = Routes.UpdateProfile.route + "/{id}",
-            arguments = listOf(navArgument(name = "id") {
-                type = NavType.IntType
-            })
+            arguments = listOf(
+                navArgument(name = "id") {
+                    type = NavType.IntType
+                }
+            )
         ) { backStackEntry ->
             CreateUpdateProfileScreen(
                 navController,

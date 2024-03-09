@@ -41,20 +41,20 @@ import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.MyPetTopBar
 
 @Composable
-fun ListProfileScreen(
-    navController: NavHostController
-) {
-
+fun ListProfileScreen(navController: NavHostController) {
     val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
 
     Scaffold(topBar = {
-        MyPetTopBar(text = stringResource(id = Routes.ListProfile.title),
+        MyPetTopBar(
+            text = stringResource(id = Routes.ListProfile.title),
             canNavigateBack = false,
             navigateUp = { },
             actions = {
                 // TODO: кнопка обратной связи
-            })
-    }) { innerPadding ->
+            }
+        )
+    }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -95,8 +95,7 @@ fun ListProfileScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                @Suppress("MagicNumber")
-                Column(
+                @Suppress("MagicNumber") Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
@@ -124,13 +123,18 @@ fun ListProfileScreen(
 
 
 @Composable
-fun PetItem(profileId: Int, canExit: Boolean, navController: NavHostController) {
+fun PetItem(
+    profileId: Int,
+    canExit: Boolean,
+    navController: NavHostController
+) {
     Card(modifier = Modifier
         .clickable { }
         .fillMaxWidth()
         .clickable {
             navController.navigate(Routes.Profile.route + "/" + profileId)
-        }) {
+        }
+    ) {
         Row(
             modifier = Modifier.padding(20.dp)
         ) {

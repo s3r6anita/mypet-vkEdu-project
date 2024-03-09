@@ -53,17 +53,14 @@ fun CreateUpdateProfileScreen(
     create: Boolean,
     profileId: Int? = -1,
 ) {
-
     val context = LocalContext.current
 
     Scaffold(
         topBar = {
-            MyPetTopBar(
-                text = stringResource(if (create) Routes.CreateProfile.title else Routes.UpdateProfile.title),
+            MyPetTopBar(text = stringResource(if (create) Routes.CreateProfile.title else Routes.UpdateProfile.title),
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
-                actions = {}
-            )
+                actions = {})
         },
     ) { innerPadding ->
 
@@ -78,8 +75,7 @@ fun CreateUpdateProfileScreen(
         ) {
             // пол
             val radioOptions = listOf(
-                stringResource(id = R.string.male_sex),
-                stringResource(id = R.string.female_sex)
+                stringResource(id = R.string.male_sex), stringResource(id = R.string.female_sex)
             )
             val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
 
@@ -107,8 +103,7 @@ fun CreateUpdateProfileScreen(
 
                             ) {
                             RadioButton(
-                                selected = (text == selectedOption),
-                                onClick = null
+                                selected = (text == selectedOption), onClick = null
                             )
                             Text(
                                 text = text,
@@ -121,8 +116,7 @@ fun CreateUpdateProfileScreen(
             }
 
             // кличка
-            OutlinedTextField(
-                value = "some nickname",
+            OutlinedTextField(value = "some nickname",
                 onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_nickname)) },
                 trailingIcon = {
@@ -130,12 +124,10 @@ fun CreateUpdateProfileScreen(
                         Icons.Default.Clear,
                         contentDescription = stringResource(id = R.string.clear)
                     )
-                }
-            )
+                })
 
             // вид
-            OutlinedTextField(
-                value = "some view",
+            OutlinedTextField(value = "some view",
                 onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_view)) },
                 trailingIcon = {
@@ -148,8 +140,7 @@ fun CreateUpdateProfileScreen(
             )
 
             // порода
-            OutlinedTextField(
-                value = "some breed",
+            OutlinedTextField(value = "some breed",
                 onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_breed)) },
                 trailingIcon = {
@@ -162,8 +153,7 @@ fun CreateUpdateProfileScreen(
             )
 
             // окрас
-            OutlinedTextField(
-                value = "some coat",
+            OutlinedTextField(value = "some coat",
                 onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_coat)) },
                 trailingIcon = {
@@ -179,8 +169,7 @@ fun CreateUpdateProfileScreen(
             var openDialog by remember { mutableStateOf(false) }
             var dateString by remember { mutableStateOf(dateFormat.format(Date())) }
 
-            OutlinedTextField(
-                value = dateString,
+            OutlinedTextField(value = dateString,
                 onValueChange = {
                     if (it.length <= 10) dateString = it
                 },
@@ -201,39 +190,32 @@ fun CreateUpdateProfileScreen(
             )
             if (openDialog) {
                 val datePickerState = rememberDatePickerState()
-                DatePickerDialog(
-                    onDismissRequest = {
-                        openDialog = false
-                    },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                openDialog = false
-                                dateString = dateFormat.format(
-                                    Date(
-                                        datePickerState.selectedDateMillis ?: 0
-                                    )
+                DatePickerDialog(onDismissRequest = {
+                    openDialog = false
+                }, confirmButton = {
+                    TextButton(
+                        onClick = {
+                            openDialog = false
+                            dateString = dateFormat.format(
+                                Date(
+                                    datePickerState.selectedDateMillis ?: 0
                                 )
-                            },
-                        ) {
-                            Text("ОК")
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(
-                            onClick = { openDialog = false }
-                        ) {
-                            Text("Отмена")
-                        }
+                            )
+                        },
+                    ) {
+                        Text("ОК")
                     }
-                ) {
+                }, dismissButton = {
+                    TextButton(onClick = { openDialog = false }) {
+                        Text("Отмена")
+                    }
+                }) {
                     DatePicker(state = datePickerState)
                 }
             }
 
             // номер микрочипа
-            OutlinedTextField(
-                value = "some microchip",
+            OutlinedTextField(value = "some microchip",
                 onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_microchip)) },
                 trailingIcon = {
@@ -249,38 +231,34 @@ fun CreateUpdateProfileScreen(
             )
 
             // сохранение
-            Button(
-                modifier = Modifier.padding(16.dp),
-                onClick = {
-                    try {
-                        // TODO: Проверки полей
-                        Toast.makeText(
-                            context,
-                            R.string.create_profile_successful_pet_creation,
-                            Toast.LENGTH_SHORT
-                        ).show()
+            Button(modifier = Modifier.padding(16.dp), onClick = {
+                try {
+                    // TODO: Проверки полей
+                    Toast.makeText(
+                        context,
+                        R.string.create_profile_successful_pet_creation,
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                        if (create) {
-                            navController.navigate(Routes.ListProfile.route) {
-                                popUpTo(Routes.ListProfile.route) {
-                                    inclusive = true
-                                }
-                                launchSingleTop = true
+                    if (create) {
+                        navController.navigate(Routes.ListProfile.route) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
                             }
+                            launchSingleTop = true
                         }
-                        else {
-                            navController.navigateUp()
-                        }
-
-                    } catch (e: IllegalArgumentException) {
-                        Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                    } else {
+                        navController.navigateUp()
                     }
-                    // TODO: заменить общий эксепшен на конкретные
+
+                } catch (e: IllegalArgumentException) {
+                    Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                }
+                // TODO: заменить общий эксепшен на конкретные
 //                    catch (e: Exception) {
 //                        Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show()
 //                    }
-                }
-            ) {
+            }) {
                 Text(text = stringResource(id = R.string.save_button_description))
             }
         }
