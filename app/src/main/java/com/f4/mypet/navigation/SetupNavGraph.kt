@@ -52,7 +52,6 @@ fun NavGraphBuilder.NavGraph(
             route = Routes.Profile.route + "/{id}",
             arguments = listOf(navArgument(name = "id") {
                 type = NavType.IntType
-                defaultValue = 10
             })
         ) { backStackEntry ->
             ProfileScreen(
