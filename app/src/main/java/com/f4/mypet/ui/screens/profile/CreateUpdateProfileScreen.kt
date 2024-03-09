@@ -51,7 +51,7 @@ import java.util.Date
 fun CreateUpdateProfileScreen(
     navController: NavHostController,
     create: Boolean,
-    profileId: String? = "0",
+    profileId: Int? = -1,
 ) {
 
     val context = LocalContext.current
@@ -260,11 +260,16 @@ fun CreateUpdateProfileScreen(
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        navController.navigate(Routes.ListProfile.route) {
-                            popUpTo(Routes.ListProfile.route) {
-                                inclusive = true
+                        if (create) {
+                            navController.navigate(Routes.ListProfile.route) {
+                                popUpTo(Routes.ListProfile.route) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
                             }
-                            launchSingleTop = true
+                        }
+                        else {
+                            navController.navigateUp()
                         }
 
                     } catch (e: IllegalArgumentException) {

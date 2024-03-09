@@ -18,11 +18,13 @@ fun SetupNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = START,
-//        Отключение анимаций перехода между экранами
         enterTransition = { EnterTransition.None },
-       // exitTransition = { ExitTransition.None },
-       // popEnterTransition = { EnterTransition.None },
-       // popExitTransition = { ExitTransition.None },
+/**
+    Отключение анимаций перехода между экранами
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None },
+ */
     ) {
         NavGraph(navController)
     }
@@ -47,32 +49,29 @@ fun NavGraphBuilder.NavGraph(
 
 //        профиль
         composable(
-            route = Routes.Profile.route + "/{profileId}",
-            arguments = listOf(navArgument(name = "profileId") {
-                type = NavType.StringType
-                defaultValue = "0"
-                nullable = true
+            route = Routes.Profile.route + "/{id}",
+            arguments = listOf(navArgument(name = "id") {
+                type = NavType.IntType
+                defaultValue = 10
             })
         ) { backStackEntry ->
             ProfileScreen(
                 navController,
-                backStackEntry.arguments?.getString("profileId")
+                backStackEntry.arguments?.getInt("id")
             )
         }
 
 //        обновление профиля
         composable(
-            route = Routes.UpdateProfile.route + "/{profileId}",
-            arguments = listOf(navArgument(name = "profileId") {
-                type = NavType.StringType
-                defaultValue = "0"
-                nullable = true
+            route = Routes.UpdateProfile.route + "/{id}",
+            arguments = listOf(navArgument(name = "id") {
+                type = NavType.IntType
             })
         ) { backStackEntry ->
             CreateUpdateProfileScreen(
                 navController,
                 false,
-                backStackEntry.arguments?.getString("profileId")
+                backStackEntry.arguments?.getInt("id")
             )
         }
     }

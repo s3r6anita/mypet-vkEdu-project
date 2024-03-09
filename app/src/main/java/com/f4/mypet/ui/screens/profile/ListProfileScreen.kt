@@ -47,18 +47,14 @@ fun ListProfileScreen(
 
     val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            MyPetTopBar(
-                text = stringResource(id = Routes.ListProfile.title),
-                canNavigateBack = false,
-                navigateUp = { },
-                actions = {
-                    // TODO: кнопка обратной связи
-                }
-            )
-        }
-    ) { innerPadding ->
+    Scaffold(topBar = {
+        MyPetTopBar(text = stringResource(id = Routes.ListProfile.title),
+            canNavigateBack = false,
+            navigateUp = { },
+            actions = {
+                // TODO: кнопка обратной связи
+            })
+    }) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -81,18 +77,16 @@ fun ListProfileScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Checkbox(
-                    checked = rememberUserChoice,
-                    onCheckedChange = null
+                    checked = rememberUserChoice, onCheckedChange = null
                 )
                 Text(
                     text = stringResource(R.string.remember_my_choise),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .padding(start = 16.dp)
+                    modifier = Modifier.padding(start = 16.dp)
                 )
             }
 
-            //Список питомцев
+//            список питомцев
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -106,7 +100,7 @@ fun ListProfileScreen(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    listOf<Int>(1, 2, 3).forEachIndexed { index, pet ->
+                    listOf(1, 2, 3).forEachIndexed { index, pet ->
                         PetItem(
                             profileId = index,
                             canExit = rememberUserChoice,
@@ -117,13 +111,10 @@ fun ListProfileScreen(
                 }
             }
 
-            // кнопка добавления нового питомца в список
-            Button(
-                modifier = Modifier.padding(20.dp),
-                onClick = {
-                    navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
-                }
-            ) {
+//            кнопка добавления нового питомца в список
+            Button(modifier = Modifier.padding(20.dp), onClick = {
+                navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
+            }) {
                 Text(text = stringResource(id = R.string.add_button_description))
             }
         }
@@ -138,15 +129,13 @@ fun PetItem(profileId: Int, canExit: Boolean, navController: NavHostController) 
         .fillMaxWidth()
         .clickable {
             navController.navigate(Routes.Profile.route + "/" + profileId)
-        }
-    ) {
+        }) {
         Row(
-            modifier = Modifier
-                .padding(20.dp)
+            modifier = Modifier.padding(20.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.pet_icon),
-                contentDescription = "photo",
+                contentDescription = stringResource(id = R.string.pet_photo_description),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))
@@ -155,8 +144,10 @@ fun PetItem(profileId: Int, canExit: Boolean, navController: NavHostController) 
             )
             Spacer(modifier = Modifier.width(20.dp))
             Text(
-                text = "Имя питомца",
-                color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold
+                text = "Питомец #$profileId",
+                color = Color.Black,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
             )
         }
     }
