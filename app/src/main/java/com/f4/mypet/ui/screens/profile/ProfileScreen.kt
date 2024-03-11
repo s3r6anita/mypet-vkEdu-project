@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.AlertDialog
@@ -27,98 +27,105 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.navigation.Routes
+import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.MyPetTopBar
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    navController: NavHostController, profileId: Int?
+) {
 
-    //TODO id = profileId
     var openAlertDialog by remember { mutableStateOf(false) }
-    //val context = LocalContext.current
 
     if (openAlertDialog) {
-        AlertDialog(
-            title = {
-                Text(text = "Удаление профиля")
-            },
-            text = {
-                Text(text = "Вы уверены, что хотите удалить профиль?")
-            },
-            onDismissRequest = {
+        AlertDialog(title = {
+            Text(text = stringResource(id = R.string.profile_screen_delete_pet_title))
+        }, text = {
+            Text(text = stringResource(id = R.string.profile_screen_delete_pet_text))
+        }, onDismissRequest = {
+            openAlertDialog = false
+        }, confirmButton = {
+            TextButton(onClick = {
                 openAlertDialog = false
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        openAlertDialog = false
-                        // TODO navController
-                        // TODO вставить вызов функции removePet(id) внутри scope.launch { delay(100), ...}
+                navController.navigate(START) {
+                    popUpTo(Routes.ListProfile.route) {
+                        inclusive = true
                     }
-                ) {
-                    Text("ОК")
+                    launchSingleTop = true
                 }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        openAlertDialog = false
-                    }
-                ) {
-                    Text("Отмена")
-                }
+                // TODO: вставить вызов функции removePet(id) внутри scope.launch { delay(100), ...}
+            }) {
+                Text("ОК")
             }
-        )
+        }, dismissButton = {
+            TextButton(onClick = {
+                openAlertDialog = false
+            }) {
+                Text("Отмена")
+            }
+        })
     }
 
     Scaffold(
         topBar = {
-            MyPetTopBar(
-                text = stringResource(R.string.profile),
+            MyPetTopBar(text = stringResource(Routes.Profile.title),
                 canNavigateBack = true,
+                navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка удалить
                     IconButton(onClick = {
                         openAlertDialog = true
-                    }
-                    ) {
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = "Удалить"
+                            contentDescription = stringResource(id = R.string.delete_button_desciption)
                         )
                     }
+
                     // кнопка поделиться
                     IconButton(onClick = {
-                        /* TODO:кнопка поделиться */
-                    }
-                    ) {
+                        // TODO: реализовать кнопку поделиться
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Share,
-                            contentDescription = "Поделиться"
+                            contentDescription = stringResource(id = R.string.share_button_description)
                         )
                     }
+
                     // кнопка выхода
                     IconButton(onClick = {
-                        // TODO: navController
+                        navController.navigate(START) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
                     }
                     ) {
                         Icon(
-                            Icons.Default.Clear,
-                            contentDescription = "Выход"
+                            imageVector = Icons.Filled.ExitToApp,
+                            contentDescription = stringResource(id = R.string.exit_button_desription)
                         )
                     }
-                }
-            )
+                })
         },
 
+//        редактирование профиля
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    // TODO navController in onClick
-                },
-                modifier = Modifier
+                    navController.navigate(Routes.UpdateProfile.route + "/" + profileId) {
+                        launchSingleTop = true
+                    }
+                }, modifier = Modifier
             ) {
-                Icon(Icons.Rounded.Edit, "Изменить профиль питомца")
+                Icon(
+                    Icons.Rounded.Edit,
+                    stringResource(id = R.string.update_profile_button_description)
+                )
             }
         },
 
@@ -134,37 +141,30 @@ fun ProfileScreen() {
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = stringResource(R.string.information_about_pet),
+                text = stringResource(R.string.information_about_pet) + " #$profileId",
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(bottom = 20.dp),
             )
             TextComponent(
-                header = stringResource(R.string.pet_nickname),
-                value = "some nickname"
+                header = stringResource(R.string.pet_nickname), value = "some nickname"
             )
             TextComponent(
-                header = stringResource(R.string.pet_view),
-                value = "some type"
+                header = stringResource(R.string.pet_view), value = "some type"
             )
             TextComponent(
-                header = stringResource(R.string.pet_breed),
-                value = "some breed"
+                header = stringResource(R.string.pet_breed), value = "some breed"
             )
             TextComponent(
-                header = stringResource(R.string.pet_paul),
-                value = "some paul"
+                header = stringResource(R.string.pet_paul), value = "some paul"
             )
             TextComponent(
-                header = stringResource(R.string.pet_birthday),
-                value = "some birth date"
+                header = stringResource(R.string.pet_birthday), value = "some birth date"
             )
             TextComponent(
-                header = stringResource(R.string.pet_coat),
-                value = "some coat"
+                header = stringResource(R.string.pet_coat), value = "some coat"
             )
             TextComponent(
-                header = stringResource(R.string.pet_microchip),
-                value = "some microchip number"
+                header = stringResource(R.string.pet_microchip), value = "some microchip number"
             )
             // TODO: value для каждого TextComponent (example: value = pet.nickname)
         }
@@ -184,6 +184,7 @@ fun TextComponent(header: String, value: String) {
         modifier = Modifier.padding(bottom = 12.dp)
     )
 }
+
 
 // TODO: function formatPet(pet: Pet): String
 

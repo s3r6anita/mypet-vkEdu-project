@@ -35,24 +35,25 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.MyPetTopBar
 
 @Composable
-fun ListProfileScreen(){
-
+fun ListProfileScreen(navController: NavHostController) {
     val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            MyPetTopBar(
-                text = "",
-                canNavigateBack = false,
-                actions = {
-                    //Здесь предполагалась кнопка обратной связи
-                }
-            )
-        }
+    Scaffold(topBar = {
+        MyPetTopBar(
+            text = stringResource(id = Routes.ListProfile.title),
+            canNavigateBack = false,
+            navigateUp = { },
+            actions = {
+                // TODO: кнопка обратной связи
+            }
+        )
+    }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -62,20 +63,6 @@ fun ListProfileScreen(){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Заголовок
-            Row(
-                modifier = Modifier
-                    .height(90.dp)
-                    .fillMaxWidth()
-                    .padding(vertical = 20.dp)
-                ,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(text = stringResource(R.string.my_pets_screen_title),
-                    color = Color.Black, fontSize = 30.sp, fontWeight = FontWeight.Bold,)
-            }
-
             // чек бокс "Запомнить мой выбор"
             Row(
                 Modifier
@@ -85,24 +72,21 @@ fun ListProfileScreen(){
                         value = rememberUserChoice,
                         onValueChange = { onStateChange(!rememberUserChoice) },
                         role = Role.Checkbox
-                    )
-                        ,
+                    ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
                 Checkbox(
-                    checked = rememberUserChoice,
-                    onCheckedChange = null
+                    checked = rememberUserChoice, onCheckedChange = null
                 )
                 Text(
                     text = stringResource(R.string.remember_my_choise),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .padding(start = 16.dp)
+                    modifier = Modifier.padding(start = 16.dp)
                 )
             }
 
-            // Список питомцев
+//            список питомцев
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -111,23 +95,26 @@ fun ListProfileScreen(){
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Column(
+                @Suppress("MagicNumber") Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    PetItem( )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    PetItem( )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    listOf(1, 2, 3).forEachIndexed { index, pet ->
+                        PetItem(
+                            profileId = index,
+                            canExit = rememberUserChoice,
+                            navController = navController
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
                 }
             }
 
-            // кнопка добавления нового питомца в список
-            Button(
-                modifier = Modifier.padding(20.dp),
-                onClick = { }
-            ) {
+//            кнопка добавления нового питомца в список
+            Button(modifier = Modifier.padding(20.dp), onClick = {
+                navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
+            }) {
                 Text(text = stringResource(id = R.string.add_button_description))
             }
         }
@@ -136,25 +123,36 @@ fun ListProfileScreen(){
 
 
 @Composable
-fun PetItem() {
-    Card (modifier = Modifier
+fun PetItem(
+    profileId: Int,
+    canExit: Boolean,
+    navController: NavHostController
+) {
+    Card(modifier = Modifier
         .clickable { }
         .fillMaxWidth()
-    ){
-        Row (modifier = Modifier
-            .padding(20.dp)
-        ){
-            Image(painter = painterResource(id = R.drawable.pet_icon),
-                contentDescription = "photo",
+        .clickable {
+            navController.navigate(Routes.Profile.route + "/" + profileId)
+        }
+    ) {
+        Row(
+            modifier = Modifier.padding(20.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.pet_icon),
+                contentDescription = stringResource(id = R.string.pet_photo_description),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))
                     .height(80.dp)
-                    .width(80.dp))
+                    .width(80.dp)
+            )
             Spacer(modifier = Modifier.width(20.dp))
             Text(
-                text = "Имя питомца",
-                color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold
+                text = "Питомец #$profileId",
+                color = Color.Black,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
             )
         }
     }

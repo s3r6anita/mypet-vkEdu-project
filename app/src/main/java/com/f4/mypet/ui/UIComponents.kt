@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -26,7 +27,7 @@ val timeFormat = SimpleDateFormat("HH:mm")
 fun MyPetTopBar(
     text: String,
     canNavigateBack: Boolean,
-//    navigateUp: () -> Unit,
+    navigateUp: () -> Unit,
     actions: @Composable() (RowScope.() -> Unit),
     modifier: Modifier = Modifier
 ) {
@@ -37,10 +38,12 @@ fun MyPetTopBar(
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
         navigationIcon = {
             if (canNavigateBack) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back_button),
-                )
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back_button),
+                    )
+                }
             }
         },
         actions = actions,
