@@ -1,9 +1,11 @@
 package com.f4.mypet.db.entities
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import java.util.Date
 
 @Entity(foreignKeys = [
@@ -16,8 +18,9 @@ data class Procedure(
     val isDone: Boolean, // выполнена ли
     val frequency: Int, // частота выполнения
     val dateDone: Date, // когда выполнена
+    val dateCreated: Date, // когда создана
     val notes: String, // заметки
-    val settings: Int, // настройки уведомлений
+    val reminder: Date, // время уведомлений
     val pet: Int, // питомец
     val inHistory: Boolean, // нужно ли добавить в медкарту
     @PrimaryKey(autoGenerate = true)
