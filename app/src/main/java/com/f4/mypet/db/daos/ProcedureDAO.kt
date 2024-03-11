@@ -8,7 +8,7 @@ import com.f4.mypet.db.entities.Procedure
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ProcedureDAO{
+interface ProcedureDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(procedure: Procedure)
 

@@ -15,6 +15,4 @@ interface PetDAO {
 
     @Query("SELECT * from pet")
     fun getPets(): Flow<List<Pet>>
-
-
 }
