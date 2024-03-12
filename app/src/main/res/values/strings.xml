@@ -36,4 +36,7 @@
     <string name="profile_screen_delete_pet_text">Вы уверены, что хотите удалить профиль?</string>
     <string name="profile_screen_delete_pet_title">Удаление профиля</string>
     <string name="pet_photo_description">Фото питомца</string>
+
+    <string name="create_procedure_screen_title">Создание процедуры</string>
+    <string name="delete_button">Удалить</string>
 </resources>
