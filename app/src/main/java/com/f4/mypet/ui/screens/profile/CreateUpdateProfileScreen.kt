@@ -46,9 +46,9 @@ import com.f4.mypet.R
 import com.f4.mypet.dateFormat
 import com.f4.mypet.db.entities.Pet
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.ui.ClearIcon
 import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
-import com.f4.mypet.ui.clearIcon
 import com.f4.mypet.validate
 import com.f4.mypet.validateBirthday
 import com.f4.mypet.validateMicrochipNumber
@@ -71,8 +71,8 @@ fun CreateUpdateProfileScreen(
             if (create) {
                 Pet("", "", "", true, Date(), "", "", "")
             } else {
-                Pet("", "", "", true, Date(), "", "", "")
                 // TODO: поменять на данные, получаемые из ViewModel
+                Pet("", "", "", true, Date(), "", "", "")
             }
         )
     }
@@ -153,7 +153,7 @@ fun CreateUpdateProfileScreen(
                 },
                 label = { Text(stringResource(id = R.string.pet_nickname)) },
                 trailingIcon = {
-                    clearIcon {
+                    ClearIcon {
                         nameIsCorrect = false
                         pet = pet.copy(name = "")
                     }
@@ -174,7 +174,7 @@ fun CreateUpdateProfileScreen(
                 },
                 label = { Text(stringResource(id = R.string.pet_view)) },
                 trailingIcon = {
-                    clearIcon {
+                    ClearIcon {
                         kindIsCorrect = false
                         pet = pet.copy(kind = "")
                     }
@@ -195,7 +195,7 @@ fun CreateUpdateProfileScreen(
                 },
                 label = { Text(stringResource(id = R.string.pet_breed)) },
                 trailingIcon = {
-                    clearIcon {
+                    ClearIcon {
                         breedIsCorrect = false
                         pet = pet.copy(breed = "")
                     }
@@ -216,7 +216,7 @@ fun CreateUpdateProfileScreen(
                 },
                 label = { Text(stringResource(id = R.string.pet_coat)) },
                 trailingIcon = {
-                    clearIcon {
+                    ClearIcon {
                         coatIsCorrect = false
                         pet = pet.copy(coat = "")
                     }
@@ -237,7 +237,7 @@ fun CreateUpdateProfileScreen(
                 },
                 label = { Text(stringResource(id = R.string.pet_color)) },
                 trailingIcon = {
-                    clearIcon {
+                    ClearIcon {
                         colorIsCorrect = false
                         pet = pet.copy(coat = "")
                     }
@@ -319,7 +319,7 @@ fun CreateUpdateProfileScreen(
                 },
                 label = { Text(stringResource(id = R.string.pet_microchip)) },
                 trailingIcon = {
-                    clearIcon {
+                    ClearIcon {
                         microchipNumberIsCorrect = false
                         pet = pet.copy(microchipNumber = "")
                     }

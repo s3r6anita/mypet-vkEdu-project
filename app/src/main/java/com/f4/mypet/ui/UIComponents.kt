@@ -82,7 +82,7 @@ fun CustomSnackBar() {
 }
 
 @Composable
-fun clearIcon(clear: () -> Unit) {
+fun ClearIcon(clear: () -> Unit) {
     IconButton(onClick = clear) {
         Icon(
             Icons.Default.Clear,
