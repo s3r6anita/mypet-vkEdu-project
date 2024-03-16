@@ -1,14 +1,15 @@
 package com.f4.mypet.ui.screens.profile
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
@@ -39,6 +40,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.f4.mypet.PastOrPresentSelectableDates
 import com.f4.mypet.R
 import com.f4.mypet.dateFormat
 import com.f4.mypet.db.entities.Pet
@@ -47,7 +49,7 @@ import com.f4.mypet.ui.ClearIcon
 import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
 import com.f4.mypet.validate
-import com.f4.mypet.validateBirthday
+import com.f4.mypet.validateDate
 import com.f4.mypet.validateMicrochipNumber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -88,9 +90,7 @@ fun CreateUpdateProfileScreen(
             SnackbarHost(
                 hostState = snackbarHostState
             ) {
-                CustomSnackBar {
-                    Text(text = stringResource(id = if (create) R.string.create_profile_successful_pet_creation else R.string.create_profile_successful_pet_update)  )
-                 }
+                CustomSnackBar(it.visuals.message)
             }
         }
     ) { innerPadding ->
@@ -99,7 +99,8 @@ fun CreateUpdateProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -148,6 +149,7 @@ fun CreateUpdateProfileScreen(
             var nameIsCorrect by remember { mutableStateOf(false) }
             OutlinedTextField(
                 value = pet.name,
+                singleLine = true,
                 onValueChange = {
                     nameIsCorrect = validate(it)
                     pet = pet.copy(name = it)
@@ -169,6 +171,7 @@ fun CreateUpdateProfileScreen(
             var kindIsCorrect by remember { mutableStateOf(false) }
             OutlinedTextField(
                 value = pet.kind,
+                singleLine = true,
                 onValueChange = {
                     kindIsCorrect = validate(it)
                     pet = pet.copy(kind = it)
@@ -190,6 +193,7 @@ fun CreateUpdateProfileScreen(
             var breedIsCorrect by remember { mutableStateOf(false) }
             OutlinedTextField(
                 value = pet.breed,
+                singleLine = true,
                 onValueChange = {
                     breedIsCorrect = validate(it)
                     pet = pet.copy(breed = it)
@@ -211,6 +215,7 @@ fun CreateUpdateProfileScreen(
             var coatIsCorrect by remember { mutableStateOf(false) }
             OutlinedTextField(
                 value = pet.coat,
+                singleLine = true,
                 onValueChange = {
                     coatIsCorrect = validate(it)
                     pet = pet.copy(coat = it)
@@ -232,6 +237,7 @@ fun CreateUpdateProfileScreen(
             var colorIsCorrect by remember { mutableStateOf(false) }
             OutlinedTextField(
                 value = pet.color,
+                singleLine = true,
                 onValueChange = {
                     colorIsCorrect = validate(it)
                     pet = pet.copy(color = it)
@@ -252,21 +258,15 @@ fun CreateUpdateProfileScreen(
 
             // дата рождения
             var openDialog by remember { mutableStateOf(false) }
-            var dateString by remember { mutableStateOf(dateFormat.format(pet.birthday)) }
-            var dateIsCorrect by remember { mutableStateOf(false) }
-            val datePickerState = rememberDatePickerState()
+            val datePickerState = rememberDatePickerState(selectableDates = PastOrPresentSelectableDates)
+            var dateIsCorrect by remember { mutableStateOf(true) }
 
             OutlinedTextField(
-                value = dateString,
-                onValueChange = {
-                    dateString = it
-                    dateIsCorrect = validateBirthday(dateString)
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
+                value = dateFormat.format(pet.birthday),
+                onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_birthday)) },
                 supportingText = { Text(text = stringResource(id = R.string.date_format)) },
+                readOnly = true,
                 trailingIcon = {
                     IconButton(onClick = { openDialog = true }) {
                         Icon(
@@ -278,7 +278,6 @@ fun CreateUpdateProfileScreen(
                 isError = !dateIsCorrect,
                 modifier = Modifier.padding(top = 5.dp)
             )
-
             if (openDialog) {
                 DatePickerDialog(
                     onDismissRequest = {
@@ -288,13 +287,17 @@ fun CreateUpdateProfileScreen(
                         TextButton(
                             onClick = {
                                 openDialog = false
-                                dateString =
-                                    dateFormat.format(Date(datePickerState.selectedDateMillis ?: 0))
-                                if (validateBirthday(dateString))
-                                    pet = pet.copy(
-                                        birthday = Date(datePickerState.selectedDateMillis ?: 0)
-                                    )
-                                dateIsCorrect = true
+                                pet = pet.copy(
+                                    birthday = Date(datePickerState.selectedDateMillis ?: 0)
+                                )
+                                try {
+                                    dateIsCorrect = validateDate(dateFormat.format(pet.birthday))
+                                }
+                                catch (e: IllegalArgumentException) {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(e.message!!)
+                                    }
+                                }
                             },
                         ) {
                             Text(stringResource(id = R.string.confirm_button_description))
@@ -314,6 +317,7 @@ fun CreateUpdateProfileScreen(
             var microchipNumberIsCorrect by remember { mutableStateOf(false) }
             OutlinedTextField(
                 value = pet.microchipNumber,
+                singleLine = true,
                 onValueChange = {
                     microchipNumberIsCorrect = validateMicrochipNumber(it)
                     pet = pet.copy(microchipNumber = it)
@@ -342,36 +346,27 @@ fun CreateUpdateProfileScreen(
             // сохранение
             Button(
                 modifier = Modifier.padding(16.dp),
-//                enabled = nameIsCorrect && kindIsCorrect && breedIsCorrect && coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
+                enabled = nameIsCorrect && kindIsCorrect && breedIsCorrect && coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
                 onClick = {
-                    try {
-                        //TODO: добавление в питомца в БД
+                    //TODO: добавление в питомца в БД
 
-                        scope.launch {
-                            val job = launch {
-                                snackbarHostState.showSnackbar(message = "Lorem Ipsum")
-                            }
-                            delay(10000)
-                            job.cancel()
+                    scope.launch {
+                        val job = launch {
+                            snackbarHostState.showSnackbar(if (create) "Питомец успешно добавлен" else "Питомец успешно обновлен")
                         }
+                        delay(3000)
+                        job.cancel()
+                    }
 
-                        if (create) {
-                            navController.navigate(Routes.ListProfile.route) {
-                                popUpTo(Routes.ListProfile.route) {
-                                    inclusive = true
-                                }
-                                launchSingleTop = true
+                    if (create) {
+                        navController.navigate(Routes.ListProfile.route) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
                             }
-                        } else {
-                            navController.navigateUp()
+                            launchSingleTop = true
                         }
-                    }
-                    catch (e: IllegalArgumentException) {
-
-                    }
-                    // TODO: заменить общий эксепшен на конкретные
-                    catch (e: Exception) {
-                        Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                    } else {
+                        navController.navigateUp()
                     }
                 }
             ) {

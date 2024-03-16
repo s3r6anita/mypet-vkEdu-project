@@ -34,12 +34,12 @@
 
     <string name="create_profile_sex">Пол</string>
     <string name="create_profile_successful_pet_creation">Питомец успешно добавлен</string>
+    <string name="create_profile_successful_pet_update">Питомец успешно обновлен</string>
+    <string name="create_profile_supp">Используйте буквы</string>
+    <string name="create_profile_supp_chip">Номер должен состоять из 15 цифр</string>
 
     <string name="list_profile_screen_title">Мои питомцы</string>
 
     <string name="profile_screen_delete_pet_text">Вы уверены, что хотите удалить профиль?</string>
     <string name="profile_screen_delete_pet_title">Удаление профиля</string>
-    <string name="create_profile_supp">Используйте буквы</string>
-    <string name="create_profile_supp_chip">Номер должен состоять из 15 цифр</string>
-    <string name="create_profile_successful_pet_update">Питомец успешно обновлен</string>
 </resources>

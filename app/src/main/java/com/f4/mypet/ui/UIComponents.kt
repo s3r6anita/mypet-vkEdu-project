@@ -58,7 +58,7 @@ fun MyPetTopBar(
 }
 
 @Composable
-fun CustomSnackBar(text: @Composable () -> Unit) {
+fun CustomSnackBar(text: String) {
     Snackbar(
         modifier = Modifier
             .height(90.dp)
@@ -76,7 +76,7 @@ fun CustomSnackBar(text: @Composable () -> Unit) {
                 contentDescription = stringResource(id = R.string.clear)
             )
             Spacer(modifier = Modifier.size(10.dp))
-            text()
+            Text(text = text)
         }
     }
 }

@@ -68,7 +68,7 @@ fun ListProfileScreen(
             SnackbarHost(
                 hostState = snackbarHostState
             ){
-                CustomSnackBar { Text(text = stringResource(id = R.string.create_profile_successful_pet_creation)) }
+                CustomSnackBar(it.visuals.message)
             }
         }
     ) { innerPadding ->

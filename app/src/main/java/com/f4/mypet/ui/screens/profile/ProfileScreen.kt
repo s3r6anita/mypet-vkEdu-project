@@ -121,7 +121,7 @@ fun ProfileScreen(
             SnackbarHost(
                 hostState = snackbarHostState
             ){
-                CustomSnackBar { Text(text = stringResource(id = R.string.create_profile_successful_pet_update)) }
+                CustomSnackBar(it.visuals.message)
             }
         },
 
