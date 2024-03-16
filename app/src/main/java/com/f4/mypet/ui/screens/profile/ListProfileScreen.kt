@@ -42,11 +42,14 @@ import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancelChildren
 
 @Composable
 fun ListProfileScreen(
     navController: NavHostController,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    scope: CoroutineScope,
 ) {
     val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
 
@@ -118,7 +121,8 @@ fun ListProfileScreen(
                         PetItem(
                             profileId = index,
                             canExit = rememberUserChoice,
-                            navController = navController
+                            navController = navController,
+                            closeSnackbar = { scope.coroutineContext.cancelChildren() }
                         )
                         Spacer(modifier = Modifier.height(20.dp))
                     }
@@ -126,10 +130,13 @@ fun ListProfileScreen(
             }
 
 //            кнопка добавления нового питомца в список
-            Button(modifier = Modifier.padding(20.dp),
+            Button(
+                modifier = Modifier.padding(20.dp),
                 onClick = {
-                navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
-            }) {
+                    scope.coroutineContext.cancelChildren()
+                    navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
+                }
+            ) {
                 Text(text = stringResource(id = R.string.add_button_description))
             }
         }
@@ -141,12 +148,13 @@ fun ListProfileScreen(
 fun PetItem(
     profileId: Int,
     canExit: Boolean,
-    navController: NavHostController
+    navController: NavHostController,
+    closeSnackbar: () -> Unit
 ) {
     Card(modifier = Modifier
-        .clickable { }
         .fillMaxWidth()
         .clickable {
+            closeSnackbar()
             navController.navigate(Routes.Profile.route + "/" + profileId)
         }
     ) {

@@ -47,7 +47,7 @@ fun NavGraphBuilder.NavGraph(
     ) {
 //        список профилей
         composable(route = Routes.ListProfile.route) {
-            ListProfileScreen(navController, snackbarHostState)
+            ListProfileScreen(navController, snackbarHostState, scope)
         }
 
 //        создание профиля

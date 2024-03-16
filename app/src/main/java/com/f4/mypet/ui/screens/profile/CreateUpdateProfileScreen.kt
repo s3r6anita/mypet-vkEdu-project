@@ -351,7 +351,7 @@ fun CreateUpdateProfileScreen(
                             val job = launch {
                                 snackbarHostState.showSnackbar(message = "Lorem Ipsum")
                             }
-                            delay(2000)
+                            delay(10000)
                             job.cancel()
                         }
 
