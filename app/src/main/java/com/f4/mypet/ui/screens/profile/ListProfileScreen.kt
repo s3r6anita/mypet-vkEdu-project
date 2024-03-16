@@ -80,7 +80,7 @@ fun ListProfileScreen(navController: NavHostController) {
                     checked = rememberUserChoice, onCheckedChange = null
                 )
                 Text(
-                    text = stringResource(R.string.remember_my_choise),
+                    text = stringResource(R.string.remember_my_choice),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(start = 16.dp)
                 )

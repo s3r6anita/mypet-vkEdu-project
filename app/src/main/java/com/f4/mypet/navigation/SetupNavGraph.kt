@@ -14,7 +14,9 @@ import com.f4.mypet.ui.screens.profile.ListProfileScreen
 import com.f4.mypet.ui.screens.profile.ProfileScreen
 
 @Composable
-fun SetupNavGraph(navController: NavHostController) {
+fun SetupNavGraph(
+    navController: NavHostController
+) {
     NavHost(
         navController = navController,
         startDestination = START,
@@ -30,7 +32,9 @@ fun SetupNavGraph(navController: NavHostController) {
     }
 }
 
-fun NavGraphBuilder.NavGraph(navController: NavHostController) {
+fun NavGraphBuilder.NavGraph(
+    navController: NavHostController
+) {
     navigation(
         route = START,
         startDestination = Routes.ListProfile.route

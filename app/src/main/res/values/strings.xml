@@ -7,11 +7,13 @@
     <string name="information_about_pet">Информация о питомце</string>
     <string name="pet_nickname">Кличка</string>
     <string name="pet_view">Вид</string>
-    <string name="pet_paul">Пол</string>
+    <string name="pet_sex">Пол</string>
+    <string name="pet_color">Окрас</string>
     <string name="pet_breed">Порода</string>
-    <string name="pet_coat">Окрас</string>
+    <string name="pet_coat">Шерсть</string>
     <string name="pet_microchip">Номер микрочипа</string>
     <string name="pet_birthday">Дата рождения</string>
+    <string name="pet_photo_description">Фото питомца</string>
     <string name="male_sex">Мужской</string>
     <string name="female_sex">Женский</string>
     <string name="date_format">Формат даты: ДД.ММ.ГГГГ</string>
@@ -21,12 +23,14 @@
     <string name="back_button">Назад</string>
     <string name="save_button_description">Сохранить</string>
     <string name="add_button_description">Добавить</string>
-    <string name="exit_button_desription">Выход</string>
+    <string name="exit_button_description">Выход</string>
     <string name="update_profile_button_description">Изменить профиль питомца</string>
     <string name="share_button_description">Поделиться</string>
-    <string name="delete_button_desciption">Удалить</string>
+    <string name="delete_button_description">Удалить</string>
+    <string name="confirm_button_description">Ок</string>
+    <string name="cancel_button_description">Отмена</string>
 
-    <string name="remember_my_choise">Запоминать выбор питомца на время сессии приложения</string>
+    <string name="remember_my_choice">Запоминать выбор питомца на время сессии приложения</string>
 
     <string name="create_profile_sex">Пол</string>
     <string name="create_profile_successful_pet_creation">Питомец успешно добавлен</string>
@@ -35,5 +39,6 @@
 
     <string name="profile_screen_delete_pet_text">Вы уверены, что хотите удалить профиль?</string>
     <string name="profile_screen_delete_pet_title">Удаление профиля</string>
-    <string name="pet_photo_description">Фото питомца</string>
+    <string name="create_profile_supp">Используйте буквы</string>
+    <string name="create_profile_supp_chip">Номер должен состоять из 15 цифр</string>
 </resources>

@@ -81,7 +81,7 @@ fun ProfileScreen(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(id = R.string.delete_button_desciption)
+                            contentDescription = stringResource(id = R.string.delete_button_description)
                         )
                     }
 
@@ -107,7 +107,7 @@ fun ProfileScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.ExitToApp,
-                            contentDescription = stringResource(id = R.string.exit_button_desription)
+                            contentDescription = stringResource(id = R.string.exit_button_description)
                         )
                     }
                 })
@@ -155,7 +155,7 @@ fun ProfileScreen(
                 header = stringResource(R.string.pet_breed), value = "some breed"
             )
             TextComponent(
-                header = stringResource(R.string.pet_paul), value = "some paul"
+                header = stringResource(R.string.pet_sex), value = "some paul"
             )
             TextComponent(
                 header = stringResource(R.string.pet_birthday), value = "some birth date"
