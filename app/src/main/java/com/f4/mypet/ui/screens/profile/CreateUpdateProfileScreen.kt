@@ -6,11 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
@@ -32,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +49,8 @@ import com.f4.mypet.ui.MyPetTopBar
 import com.f4.mypet.validate
 import com.f4.mypet.validateBirthday
 import com.f4.mypet.validateMicrochipNumber
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -60,11 +59,11 @@ import java.util.Date
 fun CreateUpdateProfileScreen(
     navController: NavHostController,
     create: Boolean,
-    profileId: Int? = -1,
+    snackbarHostState: SnackbarHostState,
+    scope: CoroutineScope,
+    profileId: Int? = -1
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     var pet by remember {
         mutableStateOf(
@@ -82,13 +81,16 @@ fun CreateUpdateProfileScreen(
             MyPetTopBar(text = stringResource(if (create) Routes.CreateProfile.title else Routes.UpdateProfile.title),
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
-                actions = {})
+                actions = { }
+            )
         },
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState
             ) {
-                CustomSnackBar( )
+                CustomSnackBar {
+                    Text(text = stringResource(id = if (create) R.string.create_profile_successful_pet_creation else R.string.create_profile_successful_pet_update)  )
+                 }
             }
         }
     ) { innerPadding ->
@@ -97,8 +99,7 @@ fun CreateUpdateProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -346,11 +347,15 @@ fun CreateUpdateProfileScreen(
                     try {
                         //TODO: добавление в питомца в БД
 
-                        if (create) {
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Custom Snackbar")
+                        scope.launch {
+                            val job = launch {
+                                snackbarHostState.showSnackbar(message = "Lorem Ipsum")
                             }
+                            delay(2000)
+                            job.cancel()
+                        }
 
+                        if (create) {
                             navController.navigate(Routes.ListProfile.route) {
                                 popUpTo(Routes.ListProfile.route) {
                                     inclusive = true
@@ -362,7 +367,7 @@ fun CreateUpdateProfileScreen(
                         }
                     }
                     catch (e: IllegalArgumentException) {
-                        Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+
                     }
                     // TODO: заменить общий эксепшен на конкретные
                     catch (e: Exception) {

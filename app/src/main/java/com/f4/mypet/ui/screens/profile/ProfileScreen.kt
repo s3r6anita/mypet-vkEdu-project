@@ -16,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,11 +33,14 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
+import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
 
 @Composable
 fun ProfileScreen(
-    navController: NavHostController, profileId: Int?
+    navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
+    profileId: Int?
 ) {
 
     var openAlertDialog by remember { mutableStateOf(false) }
@@ -111,6 +116,13 @@ fun ProfileScreen(
                         )
                     }
                 })
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
+            ){
+                CustomSnackBar { Text(text = stringResource(id = R.string.create_profile_successful_pet_update)) }
+            }
         },
 
 //        редактирование профиля

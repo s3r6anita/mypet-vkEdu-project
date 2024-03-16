@@ -20,6 +20,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -38,22 +40,34 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
 
 @Composable
-fun ListProfileScreen(navController: NavHostController) {
+fun ListProfileScreen(
+    navController: NavHostController,
+    snackbarHostState: SnackbarHostState
+) {
     val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
 
-    Scaffold(topBar = {
-        MyPetTopBar(
-            text = stringResource(id = Routes.ListProfile.title),
-            canNavigateBack = false,
-            navigateUp = { },
-            actions = {
-                // TODO: кнопка обратной связи
+    Scaffold(
+        topBar = {
+            MyPetTopBar(
+                text = stringResource(id = Routes.ListProfile.title),
+                canNavigateBack = false,
+                navigateUp = { },
+                actions = {
+                    // TODO: кнопка обратной связи
+                }
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
+            ){
+                CustomSnackBar { Text(text = stringResource(id = R.string.create_profile_successful_pet_creation)) }
             }
-        )
-    }
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -112,7 +126,8 @@ fun ListProfileScreen(navController: NavHostController) {
             }
 
 //            кнопка добавления нового питомца в список
-            Button(modifier = Modifier.padding(20.dp), onClick = {
+            Button(modifier = Modifier.padding(20.dp),
+                onClick = {
                 navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
             }) {
                 Text(text = stringResource(id = R.string.add_button_description))

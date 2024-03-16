@@ -41,4 +41,5 @@
     <string name="profile_screen_delete_pet_title">Удаление профиля</string>
     <string name="create_profile_supp">Используйте буквы</string>
     <string name="create_profile_supp_chip">Номер должен состоять из 15 цифр</string>
+    <string name="create_profile_successful_pet_update">Питомец успешно обновлен</string>
 </resources>

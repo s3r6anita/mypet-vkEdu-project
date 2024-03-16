@@ -17,6 +17,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -24,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
 
@@ -57,14 +57,14 @@ fun MyPetTopBar(
     )
 }
 
-@Preview(showBackground = true)
 @Composable
-fun CustomSnackBar() {
+fun CustomSnackBar(text: @Composable () -> Unit) {
     Snackbar(
         modifier = Modifier
             .height(90.dp)
-            .width(262.dp)
-            .padding(bottom = 30.dp)
+            .width(260.dp)
+            .padding(bottom = 30.dp),
+        shape = ShapeDefaults.Medium
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -76,7 +76,7 @@ fun CustomSnackBar() {
                 contentDescription = stringResource(id = R.string.clear)
             )
             Spacer(modifier = Modifier.size(10.dp))
-            Text(text = stringResource(id = R.string.create_profile_successful_pet_creation))
+            text()
         }
     }
 }
