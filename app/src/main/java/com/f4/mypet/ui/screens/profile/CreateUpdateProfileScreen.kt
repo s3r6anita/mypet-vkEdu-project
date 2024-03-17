@@ -48,6 +48,7 @@ import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.ClearIcon
 import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
+import com.f4.mypet.ui.SHOWSNACKDURATION
 import com.f4.mypet.validate
 import com.f4.mypet.validateDate
 import com.f4.mypet.validateMicrochipNumber
@@ -58,6 +59,7 @@ import java.util.Date
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
+@Suppress("CyclomaticComplexMethod")
 fun CreateUpdateProfileScreen(
     navController: NavHostController,
     create: Boolean,
@@ -258,7 +260,8 @@ fun CreateUpdateProfileScreen(
 
             // дата рождения
             var openDialog by remember { mutableStateOf(false) }
-            val datePickerState = rememberDatePickerState(selectableDates = PastOrPresentSelectableDates)
+            val datePickerState =
+                rememberDatePickerState(selectableDates = PastOrPresentSelectableDates)
             var dateIsCorrect by remember { mutableStateOf(true) }
 
             OutlinedTextField(
@@ -292,8 +295,7 @@ fun CreateUpdateProfileScreen(
                                 )
                                 try {
                                     dateIsCorrect = validateDate(dateFormat.format(pet.birthday))
-                                }
-                                catch (e: IllegalArgumentException) {
+                                } catch (e: IllegalArgumentException) {
                                     scope.launch {
                                         snackbarHostState.showSnackbar(e.message!!)
                                     }
@@ -346,15 +348,21 @@ fun CreateUpdateProfileScreen(
             // сохранение
             Button(
                 modifier = Modifier.padding(16.dp),
-                enabled = nameIsCorrect && kindIsCorrect && breedIsCorrect && coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
+                enabled = nameIsCorrect && kindIsCorrect && breedIsCorrect &&
+                        coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
                 onClick = {
                     //TODO: добавление в питомца в БД
 
                     scope.launch {
                         val job = launch {
-                            snackbarHostState.showSnackbar(if (create) "Питомец успешно добавлен" else "Питомец успешно обновлен")
+                            snackbarHostState.showSnackbar(
+                                if (create)
+                                    context.resources.getString(R.string.create_profile_successful_pet_creation)
+                                else
+                                    context.resources.getString(R.string.create_profile_successful_pet_update)
+                            )
                         }
-                        delay(3000)
+                        delay(SHOWSNACKDURATION)
                         job.cancel()
                     }
 
