@@ -1,7 +1,6 @@
 package com.f4.mypet
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import java.time.LocalDate
@@ -29,7 +28,6 @@ fun validateTime(timeString: String) {
     if ( !(timeString.matches(regex)) ) {
         throw IllegalArgumentException("Неверно указано время")
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,8 +36,8 @@ object PastOrPresentSelectableDates: SelectableDates {
         return utcTimeMillis <= System.currentTimeMillis()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun isSelectableYear(year: Int): Boolean {
+        Log.d("mytag", "${LocalDate.now().year}")
         return year <= LocalDate.now().year
     }
 }
