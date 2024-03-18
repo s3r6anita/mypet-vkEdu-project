@@ -35,8 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.f4.mypet.ui.MyPetTopBar
 import com.f4.mypet.R
+import com.f4.mypet.ui.MyPetTopBar
 
 
 @Composable
@@ -130,14 +130,23 @@ fun ProcedureScreen() {
                     modifier = Modifier.weight(1f)
                 )
                 if (true /*заглушка... TODO procedure.isDone */) {
-                    Icon(Icons.Rounded.Done, contentDescription = stringResource(R.string.procedure_screen_procedure_is_done))
+                    Icon(
+                        imageVector = Icons.Rounded.Done,
+                        contentDescription = stringResource(R.string.procedure_screen_procedure_is_done)
+                    )
                 }
                 else {
                     if (true /*заглушка... TODO procedure.dateDone < Date()*/){
-                        Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.procedure_screen_procedure_is_not_done))
+                        Icon(
+                            imageVector = Icons.Rounded.Close,
+                            contentDescription = stringResource(R.string.procedure_screen_procedure_is_not_done)
+                        )
                     }
                     else {
-                        Icon(Icons.Rounded.Info, contentDescription = stringResource(R.string.procedure_screen_procedure_will_be_done))
+                        Icon(
+                            imageVector = Icons.Rounded.Info,
+                            contentDescription = stringResource(R.string.procedure_screen_procedure_will_be_done)
+                        )
                     }
                 }
             }
