@@ -37,6 +37,17 @@
     <string name="profile_screen_delete_pet_title">Удаление профиля</string>
     <string name="pet_photo_description">Фото питомца</string>
 
-    <string name="create_procedure_screen_title">Создание процедуры</string>
-    <string name="delete_button">Удалить</string>
+    <string name="procedure_screen_title">Создание процедуры</string>
+    <string name="procedure_screen_delete">Удаление процедуры</string>
+    <string name="procedure_screen_question_delete_procedure">"Вы уверены, что хотите удалить процедуру?"</string>
+    <string name="procedure_screen_cancel">"Отмена"</string>
+    <string name="procedure_screen_ok">"ОК"</string>
+    <string name="procedure_screen_edit_procedure">"Редактировать процедуру"</string>
+    <string name="procedure_screen_procedure_is_done">"Процедура выполнена"</string>
+    <string name="procedure_screen_procedure_is_not_done">"Процедура не выполнена"</string>
+    <string name="procedure_screen_procedure_will_be_done">"Процедура будет выполнена"</string>
+    <string name="procedure_screen_reminder">"Напоминание"</string>
+    <string name="procedure_screen_turned_off">"выключено"</string>
+    <string name="procedure_screen_notice">"Заметки"</string>
+    <string name="procedure_screen_delete_button">Удалить</string>
 </resources>
