@@ -15,9 +15,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
@@ -45,10 +49,9 @@ import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.MyPetTopBar
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
-import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.ui.theme.LightBlueBackground
+import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.ui.theme.White
-import androidx.compose.material3.CardDefaults
 
 @Composable
 fun ListProfileScreen(navController: NavHostController) {
@@ -136,7 +139,7 @@ fun ListProfileScreen(navController: NavHostController) {
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.icon_add_24),
+                    imageVector = Icons.Default.Add,
                     contentDescription = stringResource(id = R.string.add_button_icon_description)
                 )
                 Text(
@@ -197,10 +200,12 @@ fun PetItem(
                     modifier = Modifier.padding(start = 20.dp)
                 )
             }
-            Icon(painter = painterResource(id = R.drawable.arrow_right_24),
-                contentDescription = stringResource(id = R.string.arrow_right_description),
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = stringResource(id = R.string.delete_button_desciption),
                 modifier = Modifier.height(80.dp),
-                tint = LightGrayTint)
+                tint = LightGrayTint
+            )
         }
     }
 }
