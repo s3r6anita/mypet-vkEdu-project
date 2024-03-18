@@ -27,6 +27,8 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -46,27 +48,42 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.ui.theme.White
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancelChildren
 
 @Composable
-fun ListProfileScreen(navController: NavHostController) {
+fun ListProfileScreen(
+    navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
+    scope: CoroutineScope,
+) {
     val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
 
-    Scaffold(topBar = {
-        MyPetTopBar(
-            text = stringResource(id = Routes.ListProfile.title),
-            canNavigateBack = false,
-            navigateUp = { },
-            actions = {
-                // TODO: кнопка обратной связи
+    Scaffold(
+        topBar = {
+            MyPetTopBar(
+                text = stringResource(id = Routes.ListProfile.title),
+                canNavigateBack = false,
+                navigateUp = { },
+                actions = {
+                    // TODO: кнопка обратной связи
+                }
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
+            ){
+                CustomSnackBar(it.visuals.message)
             }
-        )
-    }
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -108,12 +125,13 @@ fun ListProfileScreen(navController: NavHostController) {
                         )
                     )
                     Text(
-                        text = stringResource(R.string.remember_my_choise),
+                        text = stringResource(R.string.remember_my_choice),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
 
-                // Список питомцев
+
+//            список питомцев
                 @Suppress("MagicNumber") Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -123,7 +141,8 @@ fun ListProfileScreen(navController: NavHostController) {
                         PetItem(
                             profileId = index,
                             canExit = rememberUserChoice,
-                            navController = navController
+                            navController = navController,
+                            closeSnackbar = { scope.coroutineContext.cancelChildren() }
                         )
                         Spacer(modifier = Modifier.height(20.dp))
                     }
@@ -134,6 +153,7 @@ fun ListProfileScreen(navController: NavHostController) {
             Button(
                 modifier = Modifier.padding(20.dp),
                 onClick = {
+                    scope.coroutineContext.cancelChildren()
                     navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
@@ -153,12 +173,12 @@ fun ListProfileScreen(navController: NavHostController) {
     }
 }
 
-
 @Composable
-fun PetItem(
+fun PetItem (
     profileId: Int,
     canExit: Boolean,
-    navController: NavHostController
+    navController: NavHostController,
+    closeSnackbar: () -> Unit
 ) {
     Card(
         elevation = CardDefaults.cardElevation(
@@ -168,9 +188,9 @@ fun PetItem(
             containerColor = MaterialTheme.colorScheme.onSecondary,
         ),
         modifier = Modifier
-            .clickable { }
             .fillMaxWidth()
             .clickable {
+                closeSnackbar()
                 navController.navigate(Routes.Profile.route + "/" + profileId)
             }
     ) {
@@ -180,7 +200,7 @@ fun PetItem(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(){
+            Row() {
                 Image(
                     painter = painterResource(id = R.drawable.pet_icon),
                     contentDescription = stringResource(id = R.string.pet_photo_description),
@@ -188,8 +208,7 @@ fun PetItem(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .height(80.dp)
-                        .width(80.dp)
-                    ,
+                        .width(80.dp),
                     colorFilter = ColorFilter.tint(LightBlueBackground)
                 )
                 Text(
@@ -202,7 +221,7 @@ fun PetItem(
             }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = stringResource(id = R.string.delete_button_desciption),
+                contentDescription = stringResource(id = R.string.delete_button_description),
                 modifier = Modifier.height(80.dp),
                 tint = LightGrayTint
             )

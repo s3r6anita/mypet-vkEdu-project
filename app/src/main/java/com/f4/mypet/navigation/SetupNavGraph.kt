@@ -1,6 +1,7 @@
 package com.f4.mypet.navigation
 
 import androidx.compose.animation.EnterTransition
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -12,9 +13,14 @@ import androidx.navigation.navigation
 import com.f4.mypet.ui.screens.profile.CreateUpdateProfileScreen
 import com.f4.mypet.ui.screens.profile.ListProfileScreen
 import com.f4.mypet.ui.screens.profile.ProfileScreen
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun SetupNavGraph(navController: NavHostController) {
+fun SetupNavGraph(
+    navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
+    scope: CoroutineScope,
+) {
     NavHost(
         navController = navController,
         startDestination = START,
@@ -26,23 +32,27 @@ fun SetupNavGraph(navController: NavHostController) {
 *       popExitTransition = { ExitTransition.None },
  */
     ) {
-        NavGraph(navController)
+        NavGraph(navController, snackbarHostState, scope)
     }
 }
 
-fun NavGraphBuilder.NavGraph(navController: NavHostController) {
+fun NavGraphBuilder.NavGraph(
+    navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
+    scope: CoroutineScope
+) {
     navigation(
         route = START,
         startDestination = Routes.ListProfile.route
     ) {
 //        список профилей
         composable(route = Routes.ListProfile.route) {
-            ListProfileScreen(navController)
+            ListProfileScreen(navController, snackbarHostState, scope)
         }
 
 //        создание профиля
         composable(route = Routes.CreateProfile.route) {
-            CreateUpdateProfileScreen(navController, true)
+            CreateUpdateProfileScreen(navController, true, snackbarHostState, scope)
         }
 
 //        профиль
@@ -56,6 +66,7 @@ fun NavGraphBuilder.NavGraph(navController: NavHostController) {
         ) { backStackEntry ->
             ProfileScreen(
                 navController,
+                snackbarHostState,
                 backStackEntry.arguments?.getInt("id")
             )
         }
@@ -72,6 +83,8 @@ fun NavGraphBuilder.NavGraph(navController: NavHostController) {
             CreateUpdateProfileScreen(
                 navController,
                 false,
+                snackbarHostState,
+                scope,
                 backStackEntry.arguments?.getInt("id")
             )
         }

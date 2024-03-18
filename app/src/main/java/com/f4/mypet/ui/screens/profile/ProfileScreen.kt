@@ -16,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,11 +33,14 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
+import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
 
 @Composable
 fun ProfileScreen(
-    navController: NavHostController, profileId: Int?
+    navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
+    profileId: Int?
 ) {
 
     var openAlertDialog by remember { mutableStateOf(false) }
@@ -81,7 +86,7 @@ fun ProfileScreen(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(id = R.string.delete_button_desciption)
+                            contentDescription = stringResource(id = R.string.delete_button_description)
                         )
                     }
 
@@ -107,10 +112,17 @@ fun ProfileScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.ExitToApp,
-                            contentDescription = stringResource(id = R.string.exit_button_desription)
+                            contentDescription = stringResource(id = R.string.exit_button_description)
                         )
                     }
                 })
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
+            ){
+                CustomSnackBar(it.visuals.message)
+            }
         },
 
 //        редактирование профиля
@@ -155,7 +167,7 @@ fun ProfileScreen(
                 header = stringResource(R.string.pet_breed), value = "some breed"
             )
             TextComponent(
-                header = stringResource(R.string.pet_paul), value = "some paul"
+                header = stringResource(R.string.pet_sex), value = "some paul"
             )
             TextComponent(
                 header = stringResource(R.string.pet_birthday), value = "some birth date"
