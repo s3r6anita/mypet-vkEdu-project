@@ -49,5 +49,10 @@
     <string name="procedure_screen_reminder">"Напоминание"</string>
     <string name="procedure_screen_turned_off">"выключено"</string>
     <string name="procedure_screen_notice">"Заметки"</string>
+    <string name="procedure_screen_tmp_name">"some procedure name"</string>
+    <string name="procedure_screen_tmp_time">"00:00"</string>
+    <string name="procedure_screen_tmp_date">"01.01.2024"</string>
+    <string name="procedure_screen_tmp_time_for_proc">"за 5 минут до процедуры"</string>
+    <string name="procedure_screen_tmp_notice">"..."</string>
     <string name="procedure_screen_delete_button">Удалить</string>
 </resources>

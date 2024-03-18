@@ -125,8 +125,7 @@ fun ProcedureScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "some procedure name",
-                    //Просто заглушка, в ресурсы не выношу
+                    text = stringResource(R.string.procedure_screen_tmp_name),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.weight(1f)
                 )
@@ -145,12 +144,12 @@ fun ProcedureScreen() {
 
             // дата и время выполенения
             Text(
-                text = "00:00",
+                text = stringResource(R.string.procedure_screen_tmp_time),
                 //TODO timeFormat.format(procedure.timeDone)
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "01.01.2024",
+                text = stringResource(R.string.procedure_screen_tmp_date),
                 //TODO text = dateFormat.format(procedure.dateDone)
                 style = MaterialTheme.typography.titleMedium
             )
@@ -163,7 +162,7 @@ fun ProcedureScreen() {
             )
             if (true /*заглушка... TODO procedure.settings.isReminderEnabled*/) {
                 Text(
-                    text = "за 5 минут до процедуры",
+                    text = stringResource(R.string.procedure_screen_tmp_time_for_proc),
                     //TODO ${procedure.settings.beforeReminderTime}
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 12.dp)
@@ -178,7 +177,7 @@ fun ProcedureScreen() {
             }
 
             OutlinedTextField(
-                value = "...",
+                value = stringResource(R.string.procedure_screen_tmp_notice),
                 //TODO procedure.notes
                 onValueChange = { /*TODO procedure.notes*/ },
                 readOnly = true,
