@@ -137,7 +137,7 @@ fun ListProfileScreen(navController: NavHostController) {
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_add_24),
-                    contentDescription = "add icon"
+                    contentDescription = stringResource(id = R.string.add_button_icon_description)
                 )
                 Text(
                     text = stringResource(id = R.string.add_button_description),
@@ -162,7 +162,7 @@ fun PetItem(
             defaultElevation = 6.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = White,
+            containerColor = MaterialTheme.colorScheme.onSecondary,
         ),
         modifier = Modifier
             .clickable { }
@@ -198,10 +198,9 @@ fun PetItem(
                 )
             }
             Icon(painter = painterResource(id = R.drawable.arrow_right_24),
-                contentDescription = "",
+                contentDescription = stringResource(id = R.string.arrow_right_description),
                 modifier = Modifier.height(80.dp),
                 tint = LightGrayTint)
-
         }
     }
 }
