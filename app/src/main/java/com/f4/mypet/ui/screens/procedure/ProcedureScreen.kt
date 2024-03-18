@@ -48,10 +48,10 @@ fun ProcedureScreen() {
     if (openAlertDialog) {
         AlertDialog(
             title = {
-                Text(text = stringResource(R.string.procedure_screen_delete))
+                Text(text = "Удаление процедуры")
             },
             text = {
-                Text(text = stringResource(R.string.procedure_screen_question_delete_procedure))
+                Text(text = "Вы уверены, что хотите удалить процедуру?")
             },
             onDismissRequest = {
                 openAlertDialog = false
@@ -62,7 +62,7 @@ fun ProcedureScreen() {
                         //TODO navController
                     }
                 ) {
-                    Text(stringResource(R.string.procedure_screen_ok))
+                    Text("ОК")
                 }
             },
             dismissButton = {
@@ -71,7 +71,7 @@ fun ProcedureScreen() {
                         openAlertDialog = false
                     }
                 ) {
-                    Text(stringResource(R.string.procedure_screen_cancel))
+                    Text("Отмена")
                 }
             }
         )
@@ -80,7 +80,7 @@ fun ProcedureScreen() {
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(R.string.procedure_screen_title),
+                text = stringResource(R.string.create_procedure_screen_title),
                 canNavigateBack = true,
                 navigateUp = { //TODO navigateUp
                      },
@@ -91,7 +91,7 @@ fun ProcedureScreen() {
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Delete,
-                            contentDescription = stringResource(R.string.procedure_screen_delete_button)
+                            contentDescription = stringResource(R.string.delete_button)
                         )
                     }
                 }
@@ -102,8 +102,9 @@ fun ProcedureScreen() {
                 onClick = {
                     //TODO navController...
                 },
+                modifier = Modifier
             ) {
-                Icon(Icons.Rounded.Edit, stringResource(R.string.procedure_screen_edit_procedure))
+                Icon(Icons.Rounded.Edit, "Редактировать процедуру")
             }
         },
         floatingActionButtonPosition = FabPosition.End
@@ -126,19 +127,18 @@ fun ProcedureScreen() {
             ) {
                 Text(
                     text = "some procedure name",
-                    //Просто заглушка, в ресурсы не выношу
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.weight(1f)
                 )
                 if (true /*заглушка... TODO procedure.isDone */) {
-                    Icon(Icons.Rounded.Done, contentDescription = stringResource(R.string.procedure_screen_procedure_is_done))
+                    Icon(Icons.Rounded.Done, contentDescription = "Процедура выполнена")
                 }
                 else {
                     if (true /*заглушка... TODO procedure.dateDone < Date()*/){
-                        Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.procedure_screen_procedure_is_not_done))
+                        Icon(Icons.Rounded.Close, contentDescription = "Процедура не выполнена")
                     }
                     else {
-                        Icon(Icons.Rounded.Info, contentDescription = stringResource(R.string.procedure_screen_procedure_will_be_done))
+                        Icon(Icons.Rounded.Info, contentDescription = "Процедура будет выполнена")
                     }
                 }
             }
@@ -156,7 +156,7 @@ fun ProcedureScreen() {
             )
 
             Text(
-                text = stringResource(R.string.procedure_screen_reminder),
+                text = "Напоминание",
                 style = MaterialTheme.typography.labelMedium,
                 fontSize = 20.sp,
                 modifier = Modifier.padding(top = 20.dp, bottom = 8.dp)
@@ -171,7 +171,7 @@ fun ProcedureScreen() {
             }
             else {
                 Text(
-                    text = stringResource(R.string.procedure_screen_turned_off) ,
+                    text = "выключено" ,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
@@ -182,7 +182,7 @@ fun ProcedureScreen() {
                 //TODO procedure.notes
                 onValueChange = { /*TODO procedure.notes*/ },
                 readOnly = true,
-                label = { Text(stringResource(R.string.procedure_screen_notice)) },
+                label = { Text("Заметки") },
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
