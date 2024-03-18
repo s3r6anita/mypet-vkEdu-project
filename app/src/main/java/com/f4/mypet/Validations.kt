@@ -17,7 +17,7 @@ fun validateMicrochipNumber(chipNumber: String): Boolean = chipNumber.matches(ch
 fun validateDate(dateString: String): Boolean = dateString.matches(dateRegex)
 
 fun validateBirthday(dateString: String): Boolean {
-    if (dateFormat.parse(dateString)!! > Date()) {
+    if ((dateFormat.parse(dateString) ?: throw IllegalArgumentException("Ошибка парсинга введенной даты")) > Date()) {
         throw IllegalArgumentException("Дата больше сегодняшней")
     }
     return validateDate(dateString)
