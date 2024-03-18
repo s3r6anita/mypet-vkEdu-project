@@ -37,6 +37,9 @@
     <string name="profile_screen_delete_pet_title">Удаление профиля</string>
     <string name="pet_photo_description">Фото питомца</string>
 
+    <string name="add_button_icon_description">Icon +</string>
+    <string name="arrow_right_description">Стрелка вправо</string>
+
     <string name="procedure_screen_title">Создание процедуры</string>
     <string name="procedure_screen_delete">Удаление процедуры</string>
     <string name="procedure_screen_question_delete_procedure">"Вы уверены, что хотите удалить процедуру?"</string>
