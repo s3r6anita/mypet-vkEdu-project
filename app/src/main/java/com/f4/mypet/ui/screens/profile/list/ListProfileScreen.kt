@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile.list
+package com.f4.mypet.ui.screens.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -15,9 +15,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -30,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -42,6 +50,11 @@ import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
+import com.f4.mypet.ui.theme.BlueCheckbox
+import com.f4.mypet.ui.theme.GreenButton
+import com.f4.mypet.ui.theme.LightBlueBackground
+import com.f4.mypet.ui.theme.LightGrayTint
+import com.f4.mypet.ui.theme.White
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancelChildren
 
@@ -78,40 +91,47 @@ fun ListProfileScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // чек бокс "Запомнить мой выбор"
-            Row(
+//          Чекбокс + список питомцев
+            Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 10.dp, start = 25.dp, end = 25.dp)
-                    .toggleable(
-                        value = rememberUserChoice,
-                        onValueChange = { onStateChange(!rememberUserChoice) },
-                        role = Role.Checkbox
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                    .height(650.dp)
+                ,
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Checkbox(
-                    checked = rememberUserChoice, onCheckedChange = null
-                )
-                Text(
-                    text = stringResource(R.string.remember_my_choice),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-            }
+//              чек бокс "Запомнить мой выбор"
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 30.dp)
+                        .toggleable(
+                            value = rememberUserChoice,
+                            onValueChange = { onStateChange(!rememberUserChoice) },
+                            role = Role.Checkbox
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Checkbox(
+                        checked = rememberUserChoice, onCheckedChange = null,
+                        modifier = Modifier.padding(15.dp),
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = BlueCheckbox,
+                            uncheckedColor = LightGrayTint,
+                            checkmarkColor = White
+                        )
+                    )
+                    Text(
+                        text = stringResource(R.string.remember_my_choice),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+
 
 //            список питомцев
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(400.dp)
-                    .padding(vertical = 10.dp, horizontal = 25.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
                 @Suppress("MagicNumber") Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -135,47 +155,75 @@ fun ListProfileScreen(
                 onClick = {
                     scope.coroutineContext.cancelChildren()
                     navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
-                }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
             ) {
-                Text(text = stringResource(id = R.string.add_button_description))
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(id = R.string.add_button_icon_description)
+                )
+                Text(
+                    text = stringResource(id = R.string.add_button_description),
+                    Modifier.padding(start = 10.dp),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
 }
 
-
 @Composable
-fun PetItem(
+fun PetItem (
     profileId: Int,
     canExit: Boolean,
     navController: NavHostController,
     closeSnackbar: () -> Unit
 ) {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .clickable {
-            closeSnackbar()
-            navController.navigate(Routes.Profile.route + "/" + profileId)
-        }
+    Card(
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.onSecondary,
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                closeSnackbar()
+                navController.navigate(Routes.Profile.route + "/" + profileId)
+            }
     ) {
         Row(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.pet_icon),
-                contentDescription = stringResource(id = R.string.pet_photo_description),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .height(80.dp)
-                    .width(80.dp)
-            )
-            Spacer(modifier = Modifier.width(20.dp))
-            Text(
-                text = "Питомец #$profileId",
-                color = Color.Black,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+            Row() {
+                Image(
+                    painter = painterResource(id = R.drawable.pet_icon),
+                    contentDescription = stringResource(id = R.string.pet_photo_description),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .height(80.dp)
+                        .width(80.dp),
+                    colorFilter = ColorFilter.tint(LightBlueBackground)
+                )
+                Text(
+                    text = "Питомец #$profileId",
+                    color = Color.Black,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 20.dp)
+                )
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = stringResource(id = R.string.delete_button_description),
+                modifier = Modifier.height(80.dp),
+                tint = LightGrayTint
             )
         }
     }

@@ -50,7 +50,7 @@ import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
 import com.f4.mypet.ui.SHOWSNACKDURATION
 import com.f4.mypet.validate
-import com.f4.mypet.validateDate
+import com.f4.mypet.validateBirthday
 import com.f4.mypet.validateMicrochipNumber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -59,10 +59,10 @@ import java.util.Date
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-@Suppress("CyclomaticComplexMethod")
+@Suppress("CyclomaticComplexMethod", "LongMethod")
 fun CreateUpdateProfileScreen(
     navController: NavHostController,
-    create: Boolean,
+    isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
     profileId: Int? = -1
@@ -71,7 +71,7 @@ fun CreateUpdateProfileScreen(
 
     var pet by remember {
         mutableStateOf(
-            if (create) {
+            if (isCreateScreen) {
                 Pet("", "", "", true, Date(), "", "", "")
             } else {
                 // TODO: поменять на данные, получаемые из ViewModel
@@ -82,7 +82,13 @@ fun CreateUpdateProfileScreen(
 
     Scaffold(
         topBar = {
-            MyPetTopBar(text = stringResource(if (create) Routes.CreateProfile.title else Routes.UpdateProfile.title),
+            MyPetTopBar(
+                text = stringResource(
+                    if (isCreateScreen)
+                        Routes.CreateProfile.title
+                    else
+                        Routes.UpdateProfile.title
+                ),
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 actions = { }
@@ -294,10 +300,14 @@ fun CreateUpdateProfileScreen(
                                     birthday = Date(datePickerState.selectedDateMillis ?: 0)
                                 )
                                 try {
-                                    dateIsCorrect = validateDate(dateFormat.format(pet.birthday))
+                                    dateIsCorrect =
+                                        validateBirthday(dateFormat.format(pet.birthday))
                                 } catch (e: IllegalArgumentException) {
                                     scope.launch {
-                                        snackbarHostState.showSnackbar(e.message!!)
+                                        snackbarHostState.showSnackbar(
+                                            e.message
+                                                ?: context.resources.getString(R.string.incorrect_date)
+                                        )
                                     }
                                 }
                             },
@@ -356,7 +366,7 @@ fun CreateUpdateProfileScreen(
                     scope.launch {
                         val job = launch {
                             snackbarHostState.showSnackbar(
-                                if (create)
+                                if (isCreateScreen)
                                     context.resources.getString(R.string.create_profile_successful_pet_creation)
                                 else
                                     context.resources.getString(R.string.create_profile_successful_pet_update)
@@ -366,7 +376,7 @@ fun CreateUpdateProfileScreen(
                         job.cancel()
                     }
 
-                    if (create) {
+                    if (isCreateScreen) {
                         navController.navigate(Routes.ListProfile.route) {
                             popUpTo(Routes.ListProfile.route) {
                                 inclusive = true
