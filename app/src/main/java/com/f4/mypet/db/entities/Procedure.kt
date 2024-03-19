@@ -1,18 +1,24 @@
 package com.f4.mypet.db.entities
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import androidx.room.Relation
 import java.util.Date
 
-@Entity(foreignKeys = [
-    ForeignKey(
-        entity = Pet::class,
-        parentColumns = ["id"],
-        childColumns = ["pet"])])
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = Pet::class,
+            parentColumns = ["id"],
+            childColumns = ["pet"]
+        ),
+        ForeignKey(
+            entity = ProcedureTitle::class,
+            parentColumns = ["id"],
+            childColumns = ["title"]
+        )]
+)
 data class Procedure(
     val title: Int, // название
     val isDone: Boolean, // выполнена ли

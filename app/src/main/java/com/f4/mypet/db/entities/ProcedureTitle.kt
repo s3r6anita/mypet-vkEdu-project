@@ -9,7 +9,7 @@ import androidx.room.Relation
 @Entity
 data class ProcedureTitle(
     val name: String,
-    val type: String,
+    val type: Int,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0
 )

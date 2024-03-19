@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile
+package com.f4.mypet.ui.screens.profile.list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
