@@ -65,4 +65,7 @@
     <string name="procedure_screen_tmp_time_for_proc">"за 5 минут до процедуры"</string>
     <string name="procedure_screen_tmp_notice">"..."</string>
     <string name="procedure_screen_delete_button">Удалить</string>
+
+
+    <string name="creation_procedure_screen_title">Создание процедуры</string>
 </resources>
