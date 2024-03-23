@@ -35,12 +35,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.ui.MyPetTopBar
 
 
 @Composable
-fun ProcedureScreen() {
+fun ProcedureScreen(
+    navController: NavHostController,
+    procedureId: Int?
+) {
 
     //TODO val procedure = pets[..]
     var openAlertDialog by remember { mutableStateOf(false) }
@@ -80,7 +84,7 @@ fun ProcedureScreen() {
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(R.string.procedure_screen_title),
+                text = stringResource(R.string.procedure_screen_creation),
                 canNavigateBack = true,
                 navigateUp = { //TODO navigateUp
                      },

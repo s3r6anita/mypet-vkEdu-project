@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.f4.mypet.ui.screens.procedure.ProcedureScreen
 import com.f4.mypet.ui.screens.profile.CreateUpdateProfileScreen
 import com.f4.mypet.ui.screens.profile.ListProfileScreen
 import com.f4.mypet.ui.screens.profile.ProfileScreen
@@ -87,6 +88,54 @@ fun NavGraphBuilder.NavGraph(
                 scope,
                 backStackEntry.arguments?.getInt("id")
             )
+        }
+
+
+//        список процедур
+        composable(route = Routes.ListProfile.route) {
+            ListProfileScreen(navController, snackbarHostState, scope)
+        }
+
+//        создание процедуры
+        composable(route = Routes.CreateProcedure.route + "/{profileId}",
+            arguments = listOf(
+                navArgument(name = "profileId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            //CreateProcedureScreen(navController, context, backStackEntry.arguments?.getString("profileId"))
+        }
+
+//        процедура
+        composable(route = Routes.Procedure.route + "/{profileId}" + "/{procedureId}",
+            arguments = listOf(
+                navArgument(name = "profileId") {
+                    type = NavType.IntType
+                },
+                navArgument(name = "procedureId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            ProcedureScreen(
+                navController,
+                backStackEntry.arguments?.getInt("id")
+            )
+        }
+
+//        изменение процедуры
+        composable(route = Routes.UpdateProcedure.route + "/{profileId}" + "/{procedureId}",
+            arguments = listOf(
+                navArgument(name = "profileId") {
+                    type = NavType.IntType
+                },
+                navArgument(name = "procedureId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            //UpdateProcedureScreen(navController, context, backStackEntry.arguments?.getString("profileId"), backStackEntry.arguments?.getString("procedureId"))
         }
     }
 }

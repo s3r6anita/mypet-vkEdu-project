@@ -139,7 +139,7 @@ fun ListProfileScreen(
                 ) {
                     listOf(1, 2, 3).forEachIndexed { index, pet ->
                         PetItem(
-                            profileId = index,
+                            profileId = index, // TODO: заменить на {pet.id}
                             canExit = rememberUserChoice,
                             navController = navController,
                             closeSnackbar = { scope.coroutineContext.cancelChildren() }
@@ -160,7 +160,7 @@ fun ListProfileScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.add_button_icon_description)
+                    contentDescription = stringResource(id = R.string.list_profile_screen_add_button_icon_description)
                 )
                 Text(
                     text = stringResource(id = R.string.add_button_description),
@@ -191,6 +191,15 @@ fun PetItem (
             .fillMaxWidth()
             .clickable {
                 closeSnackbar()
+                navController.navigate(Routes.ListProcedure.route + "/" + profileId) {
+                    if (canExit) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
                 navController.navigate(Routes.Profile.route + "/" + profileId)
             }
     ) {
