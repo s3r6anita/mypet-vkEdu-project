@@ -11,8 +11,8 @@
     <string name="pet_microchip">Номер микрочипа</string>
     <string name="pet_birthday">Дата рождения</string>
     <string name="pet_photo_description">Фото питомца</string>
-    <string name="male_sex">Мужской</string>
-    <string name="female_sex">Женский</string>
+    <string name="male_sex">Самец</string>
+    <string name="female_sex">Самка</string>
     <string name="date_format">Формат даты: ДД.ММ.ГГГГ</string>
 
     <string name="clear">Очистить</string>
