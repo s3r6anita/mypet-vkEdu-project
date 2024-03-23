@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.f4.mypet.db.daos.MedRecordDAO
 import com.f4.mypet.db.daos.PetDAO
 import com.f4.mypet.db.daos.PrTitleDAO
@@ -25,6 +26,7 @@ import com.f4.mypet.db.entities.ProcedureType
     version = 1,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class PetDatabase : RoomDatabase() {
     abstract fun petDAO(): PetDAO
     abstract fun procedureDAO(): ProcedureDAO

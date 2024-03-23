@@ -1,6 +1,5 @@
 package com.f4.mypet.db.daos
 
-import android.icu.text.CaseMap.Title
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -14,5 +13,5 @@ interface PrTitleDAO {
     suspend fun insert(title: ProcedureTitle)
 
     @Query("SELECT * from procedureTitle where type = :titleType")
-    fun getTitlesWithType(titleType: Int): Flow<List<Title>>
+    fun getTitlesWithType(titleType: Int): Flow<List<ProcedureTitle>>
 }
