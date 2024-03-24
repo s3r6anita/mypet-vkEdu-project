@@ -45,11 +45,13 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
+import com.f4.mypet.ui.screens.profile.list.ListProfileViewModel
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
@@ -64,6 +66,10 @@ fun ListProfileScreen(
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
 ) {
+
+    val viewModel: ListProfileViewModel = viewModel()
+    viewModel.getPetsProfiles()
+
     val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
 
     Scaffold(
@@ -73,6 +79,7 @@ fun ListProfileScreen(
                 canNavigateBack = false,
                 navigateUp = { },
                 actions = {
+
                     // TODO: кнопка обратной связи
                 }
             )

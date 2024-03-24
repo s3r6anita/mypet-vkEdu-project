@@ -42,8 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.f4.mypet.PastOrPresentSelectableDates
 import com.f4.mypet.R
+import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.dateFormat
-import com.f4.mypet.db.entities.Pet
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.ClearIcon
 import com.f4.mypet.ui.CustomSnackBar

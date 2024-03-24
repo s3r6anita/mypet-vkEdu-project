@@ -1,4 +1,4 @@
-package com.f4.mypet.db
+package com.f4.mypet.data.db
 
 import androidx.room.TypeConverter
 import java.text.DateFormat

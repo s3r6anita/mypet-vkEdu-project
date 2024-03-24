@@ -1,7 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp") version "1.9.21-1.0.15"
+    id("com.google.devtools.ksp")// version "1.9.21-1.0.15"
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -74,4 +75,11 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
     implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Dagger
+    implementation("com.google.dagger:hilt-android:2.48")
+    ksp("com.google.dagger:dagger-compiler:2.48") // Dagger compiler
+    ksp("com.google.dagger:hilt-compiler:2.48")   // Hilt compiler
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0-beta01")
+
 }
