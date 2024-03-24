@@ -10,24 +10,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.dateFormat
+import com.f4.mypet.navigation.BottomBarRoutes
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.navigation.START
 import com.f4.mypet.timeFormat
+import com.f4.mypet.ui.MyPetBottomBar
 import com.f4.mypet.ui.MyPetTopBar
 import java.util.Date
 
@@ -47,26 +51,36 @@ fun ListProcedureScreen(
                 canNavigateBack = canNavigateBack ?: true,
                 navigateUp = { navController.navigateUp() },
                 actions = {
-                    Icon(
-                        painter = painterResource(R.drawable.pet_icon),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clickable { navController.navigate(Routes.Profile.route + "/" + profileId) }
-                            .padding(horizontal = 10.dp, vertical = 0.dp)
-                    )
+                    // кнопка выхода
+                    IconButton(onClick = {
+                        navController.navigate(START) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = stringResource(id = R.string.exit_button_description)
+                        )
+                    }
                 }
             )
         },
-//        bottomBar = {
-//            MyPetBottomBar(
-//                navController = navController,
-//                profileId,
-//                listOf(
-//                    BottomBarRoutes.ListProcedure,
-//                    BottomBarRoutes.ListTherapy
-//                )
-//            )
-//        },
+        bottomBar = {
+            MyPetBottomBar(
+                navController = navController,
+                profileId = profileId ?: 0,
+                canNavigateBack = canNavigateBack ?: true,
+                items = listOf(
+                    BottomBarRoutes.ListProcedures,
+                    BottomBarRoutes.MedCard,
+                    BottomBarRoutes.Profile
+                )
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {

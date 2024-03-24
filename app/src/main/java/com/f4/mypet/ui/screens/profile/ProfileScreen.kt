@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.AlertDialog
@@ -31,16 +31,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.navigation.BottomBarRoutes
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.CustomSnackBar
+import com.f4.mypet.ui.MyPetBottomBar
 import com.f4.mypet.ui.MyPetTopBar
 
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    profileId: Int?
+    profileId: Int?,
+    canNavigateBack: Boolean?
 ) {
 
     var openAlertDialog by remember { mutableStateOf(false) }
@@ -81,8 +84,8 @@ fun ProfileScreen(
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(Routes.Profile.title),
-                canNavigateBack = navController.previousBackStackEntry != null,
+                text = stringResource(BottomBarRoutes.Profile.title),
+                canNavigateBack = canNavigateBack ?: true,
                 navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка удалить
@@ -116,11 +119,24 @@ fun ProfileScreen(
                     }
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.ExitToApp,
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                             contentDescription = stringResource(id = R.string.exit_button_description)
                         )
                     }
-                })
+                }
+            )
+        },
+        bottomBar = {
+            MyPetBottomBar(
+                navController = navController,
+                profileId = profileId ?: 0,
+                canNavigateBack = canNavigateBack ?: true,
+                items = listOf(
+                    BottomBarRoutes.ListProcedures,
+                    BottomBarRoutes.MedCard,
+                    BottomBarRoutes.Profile
+                )
+            )
         },
         snackbarHost = {
             SnackbarHost(

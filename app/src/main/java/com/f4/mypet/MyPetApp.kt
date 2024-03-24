@@ -16,6 +16,8 @@ val dateFormat = SimpleDateFormat("dd.MM.yyyy")
 @SuppressLint("SimpleDateFormat")
 val timeFormat = SimpleDateFormat("HH:mm")
 
+const val SHOWSNACKDURATION = 3000L
+
 @Composable
 fun MyPetApp() {
     MyPetTheme {

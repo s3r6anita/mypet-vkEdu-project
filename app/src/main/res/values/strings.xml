@@ -76,4 +76,5 @@
     <string name="create_procedure_screen_title">Создание процедуры</string>
 
     <string name="update_procedure_screen_title">Редактирование процедуры</string>
+    <string name="medcard_screen_title">Медкарта</string>
 </resources>

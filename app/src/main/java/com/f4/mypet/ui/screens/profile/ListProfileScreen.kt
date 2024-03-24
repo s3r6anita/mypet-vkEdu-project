@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.navigation.BottomBarRoutes
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
@@ -187,7 +188,7 @@ fun PetItem(
             .fillMaxWidth()
             .clickable {
                 closeSnackbar()
-                navController.navigate(Routes.ListProcedure.route + "/" + profileId + "/" + canNavigateBack) {
+                navController.navigate(BottomBarRoutes.ListProcedures.route + "/" + profileId + "/" + canNavigateBack) {
                     launchSingleTop = true
                     if (!canNavigateBack) {
                         popUpTo(navController.graph.startDestinationId) {
