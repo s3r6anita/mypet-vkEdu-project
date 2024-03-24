@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
@@ -154,9 +155,9 @@ fun ListProfileScreen(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    listOf(1, 2, 3).forEachIndexed { index, pet ->
+                    pets.forEach { pet ->
                         PetItem(
-                            profileId = index,
+                            pet = pet,
                             canExit = rememberUserChoice,
                             navController = navController,
                             closeSnackbar = { scope.coroutineContext.cancelChildren() }
@@ -191,8 +192,8 @@ fun ListProfileScreen(
 }
 
 @Composable
-fun PetItem (
-    profileId: Int,
+fun PetItem(
+    pet: Pet,
     canExit: Boolean,
     navController: NavHostController,
     closeSnackbar: () -> Unit
@@ -208,7 +209,7 @@ fun PetItem (
             .fillMaxWidth()
             .clickable {
                 closeSnackbar()
-                navController.navigate(Routes.Profile.route + "/" + profileId)
+                navController.navigate(Routes.Profile.route + "/" + pet.id)
             }
     ) {
         Row(
@@ -229,7 +230,7 @@ fun PetItem (
                     colorFilter = ColorFilter.tint(LightBlueBackground)
                 )
                 Text(
-                    text = "Питомец #$profileId",
+                    text = pet.name,
                     color = Color.Black,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
