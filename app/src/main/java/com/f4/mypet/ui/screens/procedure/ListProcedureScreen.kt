@@ -40,7 +40,7 @@ fun ListProcedureScreen(
 //    val pet = pets[profileId]
 //    val procedures = pet.procedures
 
-    Scaffold (
+    Scaffold(
         topBar = {
             MyPetTopBar(
                 text = "Питомец #$profileId", // TODO: заменить на {pet.name}, т.е. кличку
@@ -70,13 +70,16 @@ fun ListProcedureScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Routes.CreateProcedure.route  + "/" + profileId) {
+                    navController.navigate(Routes.CreateProcedure.route + "/" + profileId) {
                         launchSingleTop = true
                     }
                 },
                 modifier = Modifier
             ) {
-                Icon(Icons.Rounded.Add, stringResource(id = R.string.list_procedure_screen_add_procedure_icon_description))
+                Icon(
+                    Icons.Rounded.Add,
+                    stringResource(id = R.string.list_procedure_screen_add_procedure)
+                )
             }
         },
         floatingActionButtonPosition = FabPosition.End

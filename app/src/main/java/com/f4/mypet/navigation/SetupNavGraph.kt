@@ -151,7 +151,12 @@ fun NavGraphBuilder.NavGraph(
                 }
             )
         ) { backStackEntry ->
-            //UpdateProcedureScreen(navController, context, backStackEntry.arguments?.getString("profileId"), backStackEntry.arguments?.getString("procedureId"))
+//            UpdateProcedureScreen(
+//                navController,
+//                context,
+//                backStackEntry.arguments?.getString("profileId"),
+//                backStackEntry.arguments?.getString("procedureId")
+//            )
         }
     }
 }

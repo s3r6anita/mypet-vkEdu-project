@@ -71,7 +71,7 @@
     <string name="procedure_screen_delete_button">Удалить</string>
 
     <string name="list_procedure_screen_title">Процедуры</string>
-    <string name="list_procedure_screen_add_procedure_icon_description">Добавить процедуру</string>
+    <string name="list_procedure_screen_add_procedure">Добавить процедуру</string>
 
     <string name="create_procedure_screen_title">Создание процедуры</string>
 

@@ -86,7 +86,8 @@ fun ProcedureScreen(
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = "Процедура #$procedureId", //TODO: поменять на text = stringResource(R.string.procedure_screen_title),
+                //TODO: поменять на text = stringResource(R.string.procedure_screen_title),
+                text = "Процедура #$procedureId",
                 canNavigateBack = true,
                 navigateUp = { navController.navigateUp() },
                 actions = {
@@ -94,8 +95,8 @@ fun ProcedureScreen(
                         openAlertDialog = true
                     }) {
                         Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = stringResource(R.string.procedure_screen_delete_button)
+                            Icons.Filled.Delete,
+                            stringResource(R.string.procedure_screen_delete_button)
                         )
                     }
                 }
@@ -104,7 +105,7 @@ fun ProcedureScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Routes.UpdateProcedure.route +  "/" + profileId + "/" + procedureId) {
+                    navController.navigate(Routes.UpdateProcedure.route + "/" + profileId + "/" + procedureId) {
                         launchSingleTop = true
                     }
                 },
