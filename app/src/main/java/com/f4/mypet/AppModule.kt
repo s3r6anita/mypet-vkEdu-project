@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.f4.mypet.data.db.DBRepository
 import com.f4.mypet.data.db.PetDatabase
+import com.f4.mypet.data.db.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +19,7 @@ object AppModule {
     @Provides
     fun getRepository(
         myDB: PetDatabase
-    ): DBRepository {
+    ): Repository {
         return DBRepository(
             myDB.petDAO(),
             myDB.medRecordDAO(),
@@ -59,7 +60,6 @@ object AppModule {
             PetDatabase::class.java,
             "pet_database"
         )
-            .allowMainThreadQueries()
             .createFromAsset("databases/initial_db.db")
             .fallbackToDestructiveMigration()
             .build()

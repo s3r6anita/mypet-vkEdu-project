@@ -31,6 +31,9 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,7 +48,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
@@ -59,6 +62,7 @@ import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.ui.theme.White
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListProfileScreen(
@@ -66,9 +70,15 @@ fun ListProfileScreen(
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
 ) {
+    val viewModel = hiltViewModel<ListProfileViewModel>()
+    LaunchedEffect(Unit) {
+        scope.launch {
+            viewModel.getPetsProfiles()
+        }
+    }
 
-    val viewModel: ListProfileViewModel = viewModel()
-    viewModel.getPetsProfiles()
+    val pets by viewModel.petUiState.collectAsState()
+    // пока только так, а потом добавлю еще заглушку, если отсуствуют профили
 
     val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
 
