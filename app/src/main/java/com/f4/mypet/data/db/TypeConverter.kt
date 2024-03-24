@@ -1,19 +1,20 @@
 package com.f4.mypet.data.db
 
 import androidx.room.TypeConverter
-import java.text.DateFormat
-import java.util.Date
-import java.util.Locale
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class Converters {
+    private val formatter = DateTimeFormatter.ofPattern("dd'.'MM'.'yyyy HH':'mm")
+
     @TypeConverter
-    fun StringToDate(dateStr: String?): Date? {
-        return dateStr.let { DateFormat.getDateInstance(DateFormat.LONG, Locale.GERMANY).parse(it) }
+    fun StringToDate(dateStr: String?): LocalDateTime? {
+        return dateStr.let { LocalDateTime.parse(dateStr, formatter) }
     }
 
     @TypeConverter
-    fun DateToString(date: Date?): String? {
-        return date?.let { DateFormat.getDateInstance(DateFormat.LONG, Locale.ENGLISH).format(it) };
+    fun DateToString(date: LocalDateTime?): String? {
+        return date?.let { date.format(formatter) };
     }
 }

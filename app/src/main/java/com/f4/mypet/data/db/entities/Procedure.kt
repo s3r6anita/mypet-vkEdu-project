@@ -4,7 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.util.Date
+import java.time.LocalDateTime
+import javax.annotation.Nullable
 
 @Entity(
     foreignKeys = [
@@ -21,14 +22,16 @@ import java.util.Date
 )
 data class Procedure(
     val title: Int, // название
-    val isDone: Boolean, // выполнена ли
+    val isDone: Int, // выполнена ли: 0 - нет, 1 - да
     val frequency: Int, // частота выполнения
-    val dateDone: Date, // когда выполнена
-    val dateCreated: Date, // когда создана
+    @Nullable
+    val dateDone: LocalDateTime?, // когда выполнена
+    val dateCreated: LocalDateTime, // когда создана
     val notes: String, // заметки
-    val reminder: Date, // время уведомлений
+    @Nullable
+    val reminder: LocalDateTime?, // время уведомлений
     val pet: Int, // питомец
-    val inHistory: Boolean, // нужно ли добавить в медкарту
+    val inHistory: Int, // нужно ли добавить в медкарту: 0 - нет, 1 - да
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0
 )

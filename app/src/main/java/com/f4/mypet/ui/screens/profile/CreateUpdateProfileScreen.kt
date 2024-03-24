@@ -50,12 +50,14 @@ import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
 import com.f4.mypet.ui.SHOWSNACKDURATION
 import com.f4.mypet.validate
-import com.f4.mypet.validateBirthday
 import com.f4.mypet.validateMicrochipNumber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Date
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,10 +74,20 @@ fun CreateUpdateProfileScreen(
     var pet by remember {
         mutableStateOf(
             if (isCreateScreen) {
-                Pet("", "", "", true, Date(), "", "", "")
+                Pet(
+                    "", "", "", "Самец", LocalDateTime.of(
+                        LocalDate.now(),
+                        LocalTime.now()
+                    ), "", "", ""
+                )
             } else {
                 // TODO: поменять на данные, получаемые из ViewModel
-                Pet("", "", "", true, Date(), "", "", "")
+                Pet(
+                    "", "", "", "Самец", LocalDateTime.of(
+                        LocalDate.now(),
+                        LocalTime.now()
+                    ), "", "", ""
+                )
             }
         )
     }
@@ -113,10 +125,10 @@ fun CreateUpdateProfileScreen(
             verticalArrangement = Arrangement.Center
         ) {
             // пол
-            val radioOptions = mapOf(
-                stringResource(id = R.string.male_sex) to true,
-                stringResource(id = R.string.female_sex) to false
-            )
+            val radioOptions = listOf("Самец", "Самка")
+            val selectedOption by remember {
+                mutableStateOf(radioOptions[0])
+            }
 
             Text(
                 text = stringResource(id = R.string.create_profile_sex),
@@ -128,24 +140,24 @@ fun CreateUpdateProfileScreen(
                     .selectableGroup()
                     .padding(vertical = 8.dp)
             ) {
-                radioOptions.forEach { elem ->
+                radioOptions.forEach { text ->
                     Column(
                     ) {
                         Row(
                             modifier = Modifier
                                 .selectable(
-                                    selected = (elem.value == pet.sex),
-                                    onClick = { pet = pet.copy(sex = elem.value) },
+                                    selected = (text == selectedOption),
+                                    onClick = { pet = pet.copy(sex = text) },
                                     role = Role.RadioButton
                                 )
                                 .padding(horizontal = 16.dp),
                         ) {
                             RadioButton(
-                                selected = (elem.value == pet.sex),
+                                selected = (text == pet.sex),
                                 onClick = null
                             )
                             Text(
-                                text = elem.key,
+                                text = text,
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.padding(start = 16.dp)
                             )
@@ -295,21 +307,21 @@ fun CreateUpdateProfileScreen(
                     confirmButton = {
                         TextButton(
                             onClick = {
-                                openDialog = false
-                                pet = pet.copy(
-                                    birthday = Date(datePickerState.selectedDateMillis ?: 0)
-                                )
-                                try {
-                                    dateIsCorrect =
-                                        validateBirthday(dateFormat.format(pet.birthday))
-                                } catch (e: IllegalArgumentException) {
-                                    scope.launch {
-                                        snackbarHostState.showSnackbar(
-                                            e.message
-                                                ?: context.resources.getString(R.string.incorrect_date)
-                                        )
-                                    }
-                                }
+//                                openDialog = false
+//                                pet = pet.copy(
+//                                    birthday = Date(datePickerState.selectedDateMillis ?: 0)
+//                                )
+//                                try {
+//                                    dateIsCorrect =
+//                                        validateBirthday(dateFormat.format(pet.birthday))
+//                                } catch (e: IllegalArgumentException) {
+//                                    scope.launch {
+//                                        snackbarHostState.showSnackbar(
+//                                            e.message
+//                                                ?: context.resources.getString(R.string.incorrect_date)
+//                                        )
+//                                    }
+//                                }
                             },
                         ) {
                             Text(stringResource(id = R.string.confirm_button_description))
