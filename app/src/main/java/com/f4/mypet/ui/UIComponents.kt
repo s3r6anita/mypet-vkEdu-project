@@ -36,6 +36,19 @@ import com.f4.mypet.R
 import com.f4.mypet.navigation.BottomBarRoutes
 import com.f4.mypet.navigation.Routes
 
+//data class BottomNavigationItem(
+//    val title: Int,
+//    val selectedIcon: ImageVector,
+//    val unselectedIcon: ImageVector,
+//    val hasNews: Boolean,
+//    val badgeCount: Int? = null
+//)
+//val items = listOf(
+//    BottomNavigationItem(
+//        selectedIcon = Icons.Filled.
+//    )
+//)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyPetTopBar(
@@ -88,7 +101,7 @@ fun MyPetBottomBar(
                     )
                 },
                 label = { Text(text = stringResource(item.title)) },
-                selected = (currentScreen == item.route),
+                selected = (currentScreen == "${item.route}/{profileId}/{canNavigateBack}"),
                 onClick = {
                     navController.navigate(item.route + "/" + profileId + "/" + canNavigateBack) {
                         popUpTo(Routes.ListProfile.route) {

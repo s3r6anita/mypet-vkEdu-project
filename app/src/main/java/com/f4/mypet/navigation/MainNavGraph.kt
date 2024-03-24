@@ -31,9 +31,9 @@ fun NavGraphBuilder.MainNavGraph(
         }
 //        профиль
         composable(
-            route = BottomBarRoutes.Profile.route + "/{id}" + "/{canNavigateBack}",
+            route = BottomBarRoutes.Profile.route + "/{profileId}" + "/{canNavigateBack}",
             arguments = listOf(
-                navArgument(name = "id") {
+                navArgument(name = "profileId") {
                     type = NavType.IntType
                 },
                 navArgument(name = "canNavigateBack") {
@@ -44,7 +44,7 @@ fun NavGraphBuilder.MainNavGraph(
             ProfileScreen(
                 navController,
                 snackbarHostState,
-                backStackEntry.arguments?.getInt("id"),
+                backStackEntry.arguments?.getInt("profileId"),
                 backStackEntry.arguments?.getBoolean("canNavigateBack")
             )
         }
@@ -56,9 +56,9 @@ fun NavGraphBuilder.MainNavGraph(
 
 //        обновление профиля
         composable(
-            route = Routes.UpdateProfile.route + "/{id}",
+            route = Routes.UpdateProfile.route + "/{profileId}",
             arguments = listOf(
-                navArgument(name = "id") {
+                navArgument(name = "profileId") {
                     type = NavType.IntType
                 }
             )
@@ -68,7 +68,7 @@ fun NavGraphBuilder.MainNavGraph(
                 false,
                 snackbarHostState,
                 scope,
-                backStackEntry.arguments?.getInt("id")
+                backStackEntry.arguments?.getInt("profileId")
             )
         }
 
