@@ -155,7 +155,8 @@ fun ProfileScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
                         Text(
-                            text = stringResource(R.string.pet) + "#$profileId", // TODO: потом заменить на кличку (pet.nickname)
+                            // TODO: потом заменить строку из ресурсов на кличку (pet.nickname)
+                            text = stringResource(R.string.pet) + "#$profileId",
                             style = MaterialTheme.typography.headlineSmall,
                             modifier = Modifier.padding(bottom = 20.dp),
                         )
