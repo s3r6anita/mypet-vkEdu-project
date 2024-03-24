@@ -64,8 +64,6 @@ fun ListProfileScreen(
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
 ) {
-    val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             MyPetTopBar(
@@ -80,7 +78,7 @@ fun ListProfileScreen(
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState
-            ){
+            ) {
                 CustomSnackBar(it.visuals.message)
             }
         }
@@ -93,16 +91,15 @@ fun ListProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-//          Чекбокс + список питомцев
             Column(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .height(650.dp)
-                ,
+                    .height(650.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 //              чек бокс "Запомнить мой выбор"
+                val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -130,7 +127,6 @@ fun ListProfileScreen(
                     )
                 }
 
-
 //            список питомцев
                 @Suppress("MagicNumber") Column(
                     modifier = Modifier
@@ -140,7 +136,7 @@ fun ListProfileScreen(
                     listOf(1, 2, 3).forEachIndexed { index, pet ->
                         PetItem(
                             profileId = index, // TODO: заменить на {pet.id}
-                            canExit = rememberUserChoice,
+                            canNavigateBack = !rememberUserChoice,
                             navController = navController,
                             closeSnackbar = { scope.coroutineContext.cancelChildren() }
                         )
@@ -174,9 +170,9 @@ fun ListProfileScreen(
 }
 
 @Composable
-fun PetItem (
+fun PetItem(
     profileId: Int,
-    canExit: Boolean,
+    canNavigateBack: Boolean,
     navController: NavHostController,
     closeSnackbar: () -> Unit
 ) {
@@ -191,22 +187,21 @@ fun PetItem (
             .fillMaxWidth()
             .clickable {
                 closeSnackbar()
-                navController.navigate(Routes.ListProcedure.route + "/" + profileId) {
-                    if (canExit) {
+                navController.navigate(Routes.ListProcedure.route + "/" + profileId + "/" + canNavigateBack) {
+                    launchSingleTop = true
+                    if (!canNavigateBack) {
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true
                         }
-                        launchSingleTop = true
                         restoreState = true
                     }
                 }
-                navController.navigate(Routes.Profile.route + "/" + profileId)
             }
     ) {
         Row(
             modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row() {

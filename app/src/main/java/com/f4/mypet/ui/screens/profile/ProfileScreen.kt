@@ -46,38 +46,43 @@ fun ProfileScreen(
     var openAlertDialog by remember { mutableStateOf(false) }
 
     if (openAlertDialog) {
-        AlertDialog(title = {
-            Text(text = stringResource(id = R.string.profile_screen_delete_pet_title))
-        }, text = {
-            Text(text = stringResource(id = R.string.profile_screen_delete_pet_text))
-        }, onDismissRequest = {
-            openAlertDialog = false
-        }, confirmButton = {
-            TextButton(onClick = {
+        AlertDialog(
+            title = {
+                Text(text = stringResource(id = R.string.profile_screen_delete_pet_title))
+            },
+            text = {
+                Text(text = stringResource(id = R.string.profile_screen_delete_pet_text))
+            },
+            onDismissRequest = {
                 openAlertDialog = false
-                navController.navigate(START) {
-                    popUpTo(Routes.ListProfile.route) {
-                        inclusive = true
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    openAlertDialog = false
+                    navController.navigate(START) {
+                        popUpTo(Routes.ListProfile.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
                     }
-                    launchSingleTop = true
+                    // TODO: вставить вызов функции removePet(id) внутри scope.launch { delay(100), ...}
+                }) {
+                    Text(stringResource(id = R.string.profile_screen_delete_dialog_confirm))
                 }
-                // TODO: вставить вызов функции removePet(id) внутри scope.launch { delay(100), ...}
-            }) {
-                Text("ОК")
+            },
+            dismissButton = {
+                TextButton(onClick = { openAlertDialog = false }) {
+                    Text(stringResource(id = R.string.profile_screen_delete_dialog_delete))
+                }
             }
-        }, dismissButton = {
-            TextButton(onClick = {
-                openAlertDialog = false
-            }) {
-                Text("Отмена")
-            }
-        })
+        )
     }
 
     Scaffold(
         topBar = {
-            MyPetTopBar(text = stringResource(Routes.Profile.title),
-                canNavigateBack = true,
+            MyPetTopBar(
+                text = stringResource(Routes.Profile.title),
+                canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка удалить
@@ -120,7 +125,7 @@ fun ProfileScreen(
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState
-            ){
+            ) {
                 CustomSnackBar(it.visuals.message)
             }
         },

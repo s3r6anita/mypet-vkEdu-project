@@ -32,24 +32,27 @@ import com.f4.mypet.ui.MyPetTopBar
 import java.util.Date
 
 @Composable
-fun ListProcedureScreen(navController: NavHostController, profileId: String?) {
-
-//    val pet = pets[id]
+fun ListProcedureScreen(
+    navController: NavHostController,
+    profileId: Int?,
+    canNavigateBack: Boolean?
+) {
+//    val pet = pets[profileId]
 //    val procedures = pet.procedures
 
     Scaffold (
         topBar = {
             MyPetTopBar(
-                text = "Кличка", // TODO: заменить на {pet.name}
-                canNavigateBack = false,
+                text = "Питомец #$profileId", // TODO: заменить на {pet.name}, т.е. кличку
+                canNavigateBack = canNavigateBack ?: true,
                 navigateUp = { navController.navigateUp() },
                 actions = {
                     Icon(
-                        painter = painterResource(R.drawable.pet_icon), // TODO: заменить на аватарку
+                        painter = painterResource(R.drawable.pet_icon),
                         contentDescription = null,
                         modifier = Modifier
                             .clickable { navController.navigate(Routes.Profile.route + "/" + profileId) }
-                            .padding(10.dp, 0.dp)
+                            .padding(horizontal = 10.dp, vertical = 0.dp)
                     )
                 }
             )
@@ -82,8 +85,8 @@ fun ListProcedureScreen(navController: NavHostController, profileId: String?) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+//                .height(800.dp)
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
         ) {
 //            список процедур
             @Suppress("MagicNumber") Column(
@@ -91,10 +94,9 @@ fun ListProcedureScreen(navController: NavHostController, profileId: String?) {
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
-                listOf(1, 2, 3).forEachIndexed { index, procedure ->
+                listOf(1, 2, 3).forEach { index ->
                     ProcedureItem(
-                        procedureId = index, // TODO: заменить на {procedures.id}
-                        index = index,
+                        procedureId = index, // TODO: заменить на {procedure.id}
                         profileId = profileId,
                         navController = navController
                     )
@@ -108,15 +110,15 @@ fun ListProcedureScreen(navController: NavHostController, profileId: String?) {
 @Composable
 fun ProcedureItem(
     procedureId: Int,
-    index: Int,
-    profileId: String?,
+    profileId: Int?,
     navController: NavHostController
 ) {
     ListItem( // TODO: поменять на данные, полученные из ВМ
-        headlineContent = { Text(text = "Название") },
+        headlineContent = {
+            Text(text = "Название")
+        },
         supportingContent = {
-            Text(text = dateFormat.format(Date()))
-            Text(text = timeFormat.format(Date()))
+            Text(text = "${timeFormat.format(Date())}\n${dateFormat.format(Date())}")
         },
         trailingContent = {
             if (true) {

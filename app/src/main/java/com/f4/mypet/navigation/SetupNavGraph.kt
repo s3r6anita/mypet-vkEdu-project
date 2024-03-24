@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.f4.mypet.ui.screens.procedure.ListProcedureScreen
 import com.f4.mypet.ui.screens.procedure.ProcedureScreen
 import com.f4.mypet.ui.screens.profile.CreateUpdateProfileScreen
 import com.f4.mypet.ui.screens.profile.ListProfileScreen
@@ -92,8 +93,22 @@ fun NavGraphBuilder.NavGraph(
 
 
 //        список процедур
-        composable(route = Routes.ListProfile.route) {
-            ListProfileScreen(navController, snackbarHostState, scope)
+        composable(
+            route = Routes.ListProcedure.route + "/{profileId}" + "/{canNavigateBack}",
+            arguments = listOf(
+                navArgument(name = "profileId") {
+                    type = NavType.IntType
+                },
+                navArgument(name = "canNavigateBack") {
+                    type = NavType.BoolType
+                }
+            )
+        ) { backStackEntry ->
+            ListProcedureScreen(
+                navController = navController,
+                profileId = backStackEntry.arguments?.getInt("profileId"),
+                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack")
+            )
         }
 
 //        создание процедуры
@@ -120,7 +135,8 @@ fun NavGraphBuilder.NavGraph(
         ) { backStackEntry ->
             ProcedureScreen(
                 navController,
-                backStackEntry.arguments?.getInt("id")
+                backStackEntry.arguments?.getInt("profileId"),
+                backStackEntry.arguments?.getInt("procedureId")
             )
         }
 
