@@ -161,7 +161,7 @@ fun ProfileScreen(
                             modifier = Modifier.padding(bottom = 20.dp),
                         )
                         TextComponent(
-                            header = stringResource(R.string.pet_nickname), value = "some nickname"
+                            header = stringResource(R.string.pet_name), value = "some nickname"
                         )
                         TextComponent(
                             header = stringResource(R.string.pet_view), value = "some type"
@@ -177,6 +177,9 @@ fun ProfileScreen(
                         )
                         TextComponent(
                             header = stringResource(R.string.pet_coat), value = "some coat"
+                        )
+                        TextComponent(
+                            header = stringResource(R.string.pet_color), value = "some color"
                         )
                         TextComponent(
                             header = stringResource(R.string.pet_microchip), value = "some microchip number"
@@ -230,8 +233,7 @@ fun TextComponent(header: String, value: String) {
     Row (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 12.dp)
-        ,
+            .padding(bottom = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ){
