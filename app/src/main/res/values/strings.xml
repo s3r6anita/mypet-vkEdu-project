@@ -4,6 +4,7 @@
     <string name="information_about_pet">Информация о питомце</string>
     <string name="pet">Питомец</string>
     <string name="pet_name">Кличка</string>
+    <string name="pet_nickname">Кличка</string>
     <string name="pet_view">Вид</string>
     <string name="pet_sex">Пол</string>
     <string name="pet_color">Окрас</string>
