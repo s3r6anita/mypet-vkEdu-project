@@ -48,14 +48,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.f4.mypet.ui.MyPetTopBar
 import com.f4.mypet.R
 import com.f4.mypet.dateFormat
 import com.f4.mypet.db.entities.Procedure
 import com.f4.mypet.timeFormat
+import com.f4.mypet.ui.MyPetTopBar
 import java.util.Date
 
 const val CORRECT_DATE_DIGIT_NUMBER = 10
+
+@Suppress("CyclomaticComplexMethod", "LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateProcedureScreen() {
@@ -64,16 +66,17 @@ fun CreateProcedureScreen() {
 
     var mutableProc by remember {
         mutableStateOf(
+            @Suppress("MagicNumber")
             Procedure(
-                    1, // название
-                    true, // выполнена ли
-                    1, // частота выполнения
-                    Date(122, 0, 1, 12, 0), // когда выполнена
-                    Date(122, 0, 1, 12, 0), // когда создана
-                    "Заметки", // заметки
-                    Date(122, 0, 1, 12, 0), // время уведомлений
-                    1, // питомец
-                    true, // нужно ли добавить в медкарту
+                1, // название
+                true, // выполнена ли
+                1, // частота выполнения
+                Date(122, 0, 1, 12, 0), // когда выполнена
+                Date(122, 0, 1, 12, 0), // когда создана
+                "Заметки", // заметки
+                Date(122, 0, 1, 12, 0), // время уведомлений
+                1, // питомец
+                true, // нужно ли добавить в медкарту
             )
         )
     }
@@ -102,9 +105,8 @@ fun CreateProcedureScreen() {
                 .fillMaxWidth()
 
             // Тип процедуры - выпадающее меню с выбором
-
-            //TODO выпадающий список, пока заглушка
-            val typeOptions = listOf("Гигиеническая", "Медицинская", "Пользовательская")
+            val typeOptions =
+                listOf("Гигиеническая", "Медицинская", "Пользовательская") // TODO: получение из VM
             var typeExpanded by remember { mutableStateOf(false) }
             var selectedType by remember { mutableStateOf(typeOptions[0]) }
 
@@ -123,7 +125,7 @@ fun CreateProcedureScreen() {
                     readOnly = true,
                     value = selectedType,
                     onValueChange = { },
-                    label = { Text("Тип процедуры") },
+                    label = { Text(stringResource(id = R.string.creation_procedure_screen_procedure_type)) },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
                             expanded = typeExpanded
@@ -149,7 +151,7 @@ fun CreateProcedureScreen() {
             }
 
             // Название процедуры - выпадающее меню с выбором
-            val nameOptions = when (selectedType) {
+            val nameOptions = when (selectedType) { // TODO: получать из VM
                 "Гигиеническая" -> listOf(
                     "Стрижка шерсти",
                     "Стрижка когтей",
@@ -185,7 +187,7 @@ fun CreateProcedureScreen() {
                         readOnly = true,
                         value = selectedName,
                         onValueChange = { },
-                        label = { Text("Название") },
+                        label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
                                 expanded = nameExpanded
@@ -216,7 +218,7 @@ fun CreateProcedureScreen() {
                     onValueChange = {
                         selectedName = it
                     },
-                    label = { Text("Название") },
+                    label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
                     modifier = Modifier
                         .padding(bottom = 10.dp, start = 30.dp, end = 30.dp)
                         .fillMaxWidth()
@@ -224,10 +226,9 @@ fun CreateProcedureScreen() {
             }
 
             // периодичность - выпадающее меню с выбором
-            val frequencyOptions =
-                listOf("никогда", "указать в часах", "указать в днях", "указать в неделях")
+
             var frequencyExpanded by remember { mutableStateOf(false) }
-            var selectedFrequency by remember { mutableStateOf(frequencyOptions[0]) }
+            var selectedFrequency by remember { mutableStateOf(FrequencyOptions.Never) }
             var frequencyString by remember { mutableStateOf("") }
 
             ExposedDropdownMenuBox(
@@ -238,16 +239,16 @@ fun CreateProcedureScreen() {
                 modifier = Modifier.padding(bottom = 5.dp)
             ) {
                 TextField(
-                    modifier = Modifier
-                        .menuAnchor()
-                        .padding(bottom = 10.dp),
+                    value = selectedFrequency.period,
                     readOnly = true,
-                    label = { Text("Периодичность") },
-                    value = selectedFrequency,
+                    label = { Text(stringResource(R.string.creation_procedure_screen_frequence)) },
                     onValueChange = { },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = frequencyExpanded)
-                    }
+                    },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .padding(bottom = 10.dp),
                 )
                 ExposedDropdownMenu(
                     expanded = frequencyExpanded,
@@ -255,9 +256,9 @@ fun CreateProcedureScreen() {
                         frequencyExpanded = false
                     }
                 ) {
-                    frequencyOptions.forEach { selectionOption ->
+                    FrequencyOptions.entries.forEach() { selectionOption ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption) },
+                            text = { Text(selectionOption.period) },
                             onClick = {
                                 selectedFrequency = selectionOption
                                 frequencyExpanded = false
@@ -266,18 +267,21 @@ fun CreateProcedureScreen() {
                     }
                 }
             }
-            if (selectedFrequency != "никогда") {
+            if (selectedFrequency != FrequencyOptions.Never) {
                 OutlinedTextField(
                     value = frequencyString,
                     onValueChange = { frequencyString = it },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
-                    label = { Text(text = "Период")},
+                    label = { Text(text = stringResource(R.string.creation_procedure_screen_period)) },
                     singleLine = true,
                     trailingIcon = {
                         IconButton(onClick = { frequencyString = "" }) {
-                            Icon(Icons.Default.Clear, contentDescription = "Очистить")
+                            Icon(
+                                Icons.Default.Clear,
+                                contentDescription = stringResource(id = R.string.clear)
+                            )
                         }
                     },
                     modifier = modifier.padding(bottom = 10.dp)
@@ -294,15 +298,15 @@ fun CreateProcedureScreen() {
                 value = timeString,
                 onValueChange = { },
                 readOnly = true,
-                label = { Text("Время выполнения") },
-                supportingText = { Text(text = "Формат времени: ЧЧ.ММ") },
+                label = { Text(stringResource(id = R.string.creation_procedure_screen_duration)) },
+                supportingText = { Text(text = stringResource(id = R.string.creation_procedure_screen_time_format)) },
                 trailingIcon = {
                     IconButton(
                         onClick = { openTimeDialog = true }
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_access_time),
-                            contentDescription = "Открыть часы"
+                            contentDescription = stringResource(id = R.string.creation_procedure_screen_open_clock)
                         )
                     }
                 },
@@ -311,7 +315,7 @@ fun CreateProcedureScreen() {
             if (openTimeDialog) {
                 AlertDialog(
                     title = {
-                        Text(text = "Выберите время")
+                        Text(text = stringResource(id = R.string.creation_procedure_screen_pick_time))
                     },
                     text = { TimePicker(state = state) },
                     onDismissRequest = { openTimeDialog = false },
@@ -320,20 +324,20 @@ fun CreateProcedureScreen() {
                             timeString = "${state.hour}:${state.minute}"
                             openTimeDialog = false
                         }) {
-                            Text("ОК")
+                            Text(stringResource(id = R.string.procedure_screen_ok))
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { openTimeDialog = false }) {
-                            Text("Отмена")
+                            Text(stringResource(id = R.string.procedure_screen_cancel))
                         }
                     }
                 )
             }
 
             // дата выполнения
-            var openDateDialog by remember { mutableStateOf(false) }
             //TODO разобраться с форматом времени (уже по известным данным из БД)
+            var openDateDialog by remember { mutableStateOf(false) }
             var dateString by remember { mutableStateOf(dateFormat.format(mutableProc.dateDone)) }
 
             OutlinedTextField(
@@ -345,11 +349,14 @@ fun CreateProcedureScreen() {
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
-                label = { Text("Дата выполнения") },
-                supportingText = { Text(text = "Формат даты: ДД.ММ.ГГГГ") },
+                label = { Text(stringResource(id = R.string.creation_procedure_screen_date_of_completion)) },
+                supportingText = { Text(text = stringResource(id = R.string.date_format)) },
                 trailingIcon = {
                     IconButton(onClick = { openDateDialog = true }) {
-                        Icon(Icons.Default.DateRange, contentDescription = "Открыть календарь")
+                        Icon(
+                            Icons.Default.DateRange,
+                            contentDescription = stringResource(id = R.string.creation_procedure_screen_open_calendar)
+                        )
                     }
                 },
                 modifier = modifier
@@ -364,17 +371,18 @@ fun CreateProcedureScreen() {
                         TextButton(
                             onClick = {
                                 openDateDialog = false
-                                dateString = dateFormat.format(datePickerState.selectedDateMillis ?: 0)
+                                dateString =
+                                    dateFormat.format(datePickerState.selectedDateMillis ?: 0)
                             },
                         ) {
-                            Text("ОК")
+                            Text(stringResource(id = R.string.confirm_button_description))
                         }
                     },
                     dismissButton = {
                         TextButton(
                             onClick = { openDateDialog = false }
                         ) {
-                            Text("Отмена")
+                            Text(stringResource(id = R.string.cancel_button_description))
                         }
                     }
                 ) {
@@ -415,14 +423,14 @@ fun CreateProcedureScreen() {
                 OutlinedTextField(
                     value = timeNotificationString,
                     onValueChange = { timeNotificationString = it },
-                    label = { Text("За сколько минут напомнить") },
+                    label = { Text(stringResource(id = R.string.creation_procedure_screen_time_before_notification)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
                     trailingIcon = {
                         IconButton(onClick = { timeNotificationString = "" }) {
-                            Icon(Icons.Default.Clear, contentDescription = "Очистить")
+                            Icon(Icons.Default.Clear, contentDescription = null)
                         }
                     }
                 )
@@ -432,10 +440,13 @@ fun CreateProcedureScreen() {
             OutlinedTextField(
                 value = mutableProc.notes,
                 onValueChange = { mutableProc = mutableProc.copy(notes = it) },
-                label = { Text("Заметки") },
+                label = { Text(stringResource(id = R.string.creation_procedure_screen_notes)) },
                 trailingIcon = {
                     IconButton(onClick = { mutableProc = mutableProc.copy(notes = "") }) {
-                        Icon(Icons.Default.Clear, contentDescription = "Очистить")
+                        Icon(
+                            Icons.Default.Clear,
+                            contentDescription = stringResource(id = R.string.clear)
+                        )
                     }
                 },
                 modifier = modifier
@@ -456,16 +467,11 @@ fun CreateProcedureScreen() {
 
                         //TODO добавление в список процедур
 
-                        Toast.makeText(
-                            context,
-                            "Процедура успешно добавлена",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        // TODO: SnackBar
+
                         //TODO nav...
                     } catch (e: IllegalArgumentException) {
                         Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
-                    } catch (e: Exception) {
-                        Toast.makeText(context, "Ошибка", Toast.LENGTH_LONG).show()
                     }
                 }
             ) {
