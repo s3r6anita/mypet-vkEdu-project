@@ -38,8 +38,8 @@ import java.util.Date
 @Composable
 fun ListProcedureScreen(
     navController: NavHostController,
-    profileId: Int?,
-    canNavigateBack: Boolean?
+    profileId: Int,
+    canNavigateBack: Boolean
 ) {
 //    val pet = pets[profileId]
 //    val procedures = pet.procedures

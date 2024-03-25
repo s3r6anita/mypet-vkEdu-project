@@ -43,8 +43,8 @@ import com.f4.mypet.ui.components.MyPetTopBar
 fun ProfileScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    profileId: Int?,
-    canNavigateBack: Boolean?
+    profileId: Int,
+    canNavigateBack: Boolean
 ) {
 
     var openAlertDialog by remember { mutableStateOf(false) }
@@ -130,7 +130,7 @@ fun ProfileScreen(
         bottomBar = {
             MyPetBottomBar(
                 navController = navController,
-                profileId = profileId ?: 0,
+                profileId = profileId,
                 canNavigateBack = canNavigateBack ?: true,
                 items = BottomBarData.items
             )

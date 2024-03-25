@@ -44,8 +44,8 @@ import com.f4.mypet.ui.components.MyPetTopBar
 @Composable
 fun ProcedureScreen(
     navController: NavHostController,
-    profileId: Int?,
-    procedureId: Int?
+    profileId: Int,
+    procedureId: Int
 ) {
     var openAlertDialog by remember { mutableStateOf(false) }
 

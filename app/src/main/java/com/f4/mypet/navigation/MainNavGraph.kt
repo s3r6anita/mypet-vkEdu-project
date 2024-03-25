@@ -25,11 +25,11 @@ fun NavGraphBuilder.mainNavGraph(
         startDestination = Routes.ListProfile.route
     ) {
 
-//        список профилей
+        /** список профилей */
         composable(route = Routes.ListProfile.route) {
             ListProfileScreen(navController, snackbarHostState, scope)
         }
-//        профиль
+        /** профиль */
         composable(
             route = BottomBarRoutes.Profile.route + "/{profileId}" + "/{canNavigateBack}",
             arguments = listOf(
@@ -44,17 +44,17 @@ fun NavGraphBuilder.mainNavGraph(
             ProfileScreen(
                 navController,
                 snackbarHostState,
-                backStackEntry.arguments?.getInt("profileId"),
-                backStackEntry.arguments?.getBoolean("canNavigateBack")
+                backStackEntry.arguments?.getInt("profileId") ?: 0,
+                backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
         }
 
-//        создание профиля
+        /** создание профиля */
         composable(route = Routes.CreateProfile.route) {
             CreateUpdateProfileScreen(navController, true, snackbarHostState, scope)
         }
 
-//        обновление профиля
+        /** обновление профиля */
         composable(
             route = Routes.UpdateProfile.route + "/{profileId}",
             arguments = listOf(
@@ -68,13 +68,13 @@ fun NavGraphBuilder.mainNavGraph(
                 false,
                 snackbarHostState,
                 scope,
-                backStackEntry.arguments?.getInt("profileId")
+                backStackEntry.arguments?.getInt("profileId") ?: -1
             )
         }
 
 
 
-//        список процедур
+        /** список процедур */
         composable(
             route = BottomBarRoutes.ListProcedures.route + "/{profileId}" + "/{canNavigateBack}",
             arguments = listOf(
@@ -88,12 +88,12 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             ListProcedureScreen(
                 navController = navController,
-                profileId = backStackEntry.arguments?.getInt("profileId"),
-                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack")
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
         }
     }
-//        создание процедуры
+        /** создание процедуры */
         composable(route = Routes.CreateProcedure.route + "/{profileId}",
             arguments = listOf(
                 navArgument(name = "profileId") {
@@ -104,7 +104,7 @@ fun NavGraphBuilder.mainNavGraph(
             //CreateProcedureScreen(navController, context, backStackEntry.arguments?.getString("profileId"))
         }
 
-//        процедура
+        /** процедура */
         composable(route = Routes.Procedure.route + "/{profileId}" + "/{procedureId}",
             arguments = listOf(
                 navArgument(name = "profileId") {
@@ -117,12 +117,12 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             ProcedureScreen(
                 navController,
-                backStackEntry.arguments?.getInt("profileId"),
-                backStackEntry.arguments?.getInt("procedureId")
+                backStackEntry.arguments?.getInt("profileId") ?: -1,
+                backStackEntry.arguments?.getInt("procedureId") ?: -1
             )
         }
 
-//        изменение процедуры
+        /** изменение процедуры */
         composable(route = Routes.UpdateProcedure.route + "/{profileId}" + "/{procedureId}",
             arguments = listOf(
                 navArgument(name = "profileId") {
@@ -143,7 +143,7 @@ fun NavGraphBuilder.mainNavGraph(
 
 
 
-//        медкарта
+    /** медкарта */
     composable(
         route = BottomBarRoutes.MedCard.route + "/{profileId}" + "/{canNavigateBack}",
         arguments = listOf(

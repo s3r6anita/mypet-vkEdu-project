@@ -74,7 +74,7 @@ fun CreateUpdateProfileScreen(
     isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
-    profileId: Int? = -1
+    profileId: Int = -1
 ) {
     val context = LocalContext.current
 
