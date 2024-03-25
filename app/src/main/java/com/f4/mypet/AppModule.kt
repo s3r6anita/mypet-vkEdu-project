@@ -27,30 +27,6 @@ object AppModule {
             myDB.prTitleDAO()
         )
     }
-//
-//    @Singleton
-//    @Provides
-//    fun getPetDao(database: PetDatabase): PetDAO {
-//        return database.petDAO()
-//    }
-//
-//    @Singleton
-//    @Provides
-//    fun getProcedureDao(database: PetDatabase): ProcedureDAO {
-//        return database.procedureDAO()
-//    }
-//
-//    @Singleton
-//    @Provides
-//    fun getPrTitleDao(database: PetDatabase): PrTitleDAO {
-//        return database.prTitleDAO()
-//    }
-//
-//    @Singleton
-//    @Provides
-//    fun getMedRecordDao(database: PetDatabase): MedRecordDAO {
-//        return database.medRecordDAO()
-//    }
 
     @Singleton
     @Provides

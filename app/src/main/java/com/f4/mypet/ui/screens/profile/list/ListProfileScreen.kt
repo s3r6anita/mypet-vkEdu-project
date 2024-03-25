@@ -78,7 +78,7 @@ fun ListProfileScreen(
         }
     }
 
-    val pets by viewModel.petUiState.collectAsState()
+    val pets by viewModel.petsUiState.collectAsState()
     // пока только так, а потом добавлю еще заглушку, если отсуствуют профили
 
     val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }

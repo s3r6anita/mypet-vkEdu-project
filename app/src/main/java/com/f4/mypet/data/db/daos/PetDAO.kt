@@ -15,4 +15,11 @@ interface PetDAO {
 
     @Query("SELECT * from pet")
     fun getPets(): Flow<List<Pet>>
+
+    @Query("SELECT * from pet where id = :petId")
+    fun getPet(petId: Int): Flow<Pet>
+
+    @Query("SELECT * from pet where id = :petId")
+    fun getPetForCU(petId: Int): Pet
+
 }

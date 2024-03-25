@@ -15,13 +15,13 @@ import javax.inject.Inject
 class ListProfileViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
-    private val _petUiState = MutableStateFlow(emptyList<Pet>())
-    val petUiState = _petUiState.asStateFlow()
+    private val _petsUiState = MutableStateFlow(emptyList<Pet>())
+    val petsUiState = _petsUiState.asStateFlow()
 
     fun getPetsProfiles() {
         viewModelScope.launch(IO) {
             repository.getPets().collect() { pets ->
-                _petUiState.value = pets
+                _petsUiState.value = pets
             }
         }
 

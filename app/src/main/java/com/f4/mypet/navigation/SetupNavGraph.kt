@@ -10,9 +10,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.f4.mypet.ui.screens.profile.CreateUpdateProfileScreen
 import com.f4.mypet.ui.screens.profile.ListProfileScreen
-import com.f4.mypet.ui.screens.profile.ProfileScreen
+import com.f4.mypet.ui.screens.profile.createupdate_profile.CreateUpdateProfileScreen
+import com.f4.mypet.ui.screens.profile.show_profile.ProfileScreen
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -67,7 +67,8 @@ fun NavGraphBuilder.NavGraph(
             ProfileScreen(
                 navController,
                 snackbarHostState,
-                backStackEntry.arguments?.getInt("id")
+                backStackEntry.arguments?.getInt("id"),
+                scope
             )
         }
 

@@ -7,7 +7,7 @@
     <string name="pet_sex">Пол</string>
     <string name="pet_color">Окрас</string>
     <string name="pet_breed">Порода</string>
-    <string name="pet_coat">Шерсть</string>
+    <string name="pet_coat">Тип шерсти</string>
     <string name="pet_microchip">Номер микрочипа</string>
     <string name="pet_birthday">Дата рождения</string>
     <string name="pet_photo_description">Фото питомца</string>

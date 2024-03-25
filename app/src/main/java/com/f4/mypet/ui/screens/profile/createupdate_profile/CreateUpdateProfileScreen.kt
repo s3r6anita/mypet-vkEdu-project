@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile
+package com.f4.mypet.ui.screens.profile.createupdate_profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,6 +28,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,16 +41,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.PastOrPresentSelectableDates
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Pet
-import com.f4.mypet.dateFormat
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.ClearIcon
 import com.f4.mypet.ui.CustomSnackBar
 import com.f4.mypet.ui.MyPetTopBar
 import com.f4.mypet.ui.SHOWSNACKDURATION
+import com.f4.mypet.ui.screens.profile.show_profile.ProfileViewModel
 import com.f4.mypet.validate
 import com.f4.mypet.validateMicrochipNumber
 import kotlinx.coroutines.CoroutineScope
@@ -71,24 +74,35 @@ fun CreateUpdateProfileScreen(
 ) {
     val context = LocalContext.current
 
+    val viewModel = hiltViewModel<ProfileViewModel>()
+    LaunchedEffect(Unit) {
+        scope.launch {
+            viewModel.getPetProfile(profileId)
+        }
+    }
+
+    val petDB by viewModel.petUiState.collectAsState()
+
     var pet by remember {
         mutableStateOf(
-            if (isCreateScreen) {
-                Pet(
-                    "", "", "", "Самец", LocalDateTime.of(
-                        LocalDate.now(),
-                        LocalTime.now()
-                    ), "", "", ""
-                )
-            } else {
-                // TODO: поменять на данные, получаемые из ViewModel
-                Pet(
-                    "", "", "", "Самец", LocalDateTime.of(
-                        LocalDate.now(),
-                        LocalTime.now()
-                    ), "", "", ""
-                )
-            }
+            Pet(
+                "", "", "", "Самец",
+                LocalDateTime.of(LocalDate.now(), LocalTime.now()),
+                "", "", ""
+            )
+        )
+    }
+    if (!isCreateScreen) {
+        pet = pet.copy(
+            petDB.name,
+            petDB.kind,
+            petDB.breed,
+            petDB.sex,
+            petDB.birthday,
+            petDB.color,
+            petDB.coat,
+            petDB.microchipNumber,
+            petDB.id
         )
     }
 
@@ -283,7 +297,8 @@ fun CreateUpdateProfileScreen(
             var dateIsCorrect by remember { mutableStateOf(true) }
 
             OutlinedTextField(
-                value = dateFormat.format(pet.birthday),
+                //TODO: отформатировать дату
+                value = pet.birthday.toString(),
                 onValueChange = { },
                 label = { Text(stringResource(id = R.string.pet_birthday)) },
                 supportingText = { Text(text = stringResource(id = R.string.date_format)) },
