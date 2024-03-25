@@ -68,7 +68,7 @@ dependencies {
 
     // Room
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.4")
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 

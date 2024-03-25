@@ -10,6 +10,7 @@ import javax.inject.Inject
 
 interface Repository {
     suspend fun insertPet(pet: Pet)
+    suspend fun updatePet(pet: Pet)
     suspend fun getPets(): Flow<List<Pet>>
     suspend fun getPet(petId: Int): Flow<Pet>
     suspend fun getPetForCU(petId: Int): Pet
@@ -23,6 +24,10 @@ class DBRepository @Inject constructor(
 ) : Repository {
     override suspend fun insertPet(pet: Pet) {
         petDAO.insert(pet)
+    }
+
+    override suspend fun updatePet(pet: Pet) {
+        petDAO.update(pet)
     }
 
     override suspend fun getPets(): Flow<List<Pet>> {

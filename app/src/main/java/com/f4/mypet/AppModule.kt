@@ -1,7 +1,6 @@
 package com.f4.mypet
 
 import android.app.Application
-import androidx.room.Room
 import com.f4.mypet.data.db.DBRepository
 import com.f4.mypet.data.db.PetDatabase
 import com.f4.mypet.data.db.Repository
@@ -31,13 +30,6 @@ object AppModule {
     @Singleton
     @Provides
     fun provideDatabase(app: Application): PetDatabase {
-        return Room.databaseBuilder(
-            app,
-            PetDatabase::class.java,
-            "pet_database"
-        )
-            .createFromAsset("databases/initial_db.db")
-            .fallbackToDestructiveMigration()
-            .build()
+        return PetDatabase.getDatabase(app)
     }
 }

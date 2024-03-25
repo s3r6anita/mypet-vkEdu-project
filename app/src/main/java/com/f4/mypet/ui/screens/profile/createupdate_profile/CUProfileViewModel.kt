@@ -9,33 +9,36 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateUpdateProfileViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
-    private val _petUiState = MutableStateFlow(
-        Pet(
-            "", "", "", "Самец",
-            LocalDateTime.of(LocalDate.now(), LocalTime.now()),
-            "", "", ""
-        )
-    )
-    val petUiState = _petUiState.asStateFlow()
 
-    fun getPetProfile(petId: Int?) {
+    private val _petsUiState = MutableStateFlow(emptyList<Pet>())
+    val petsUiState = _petsUiState.asStateFlow()
+
+    init {
         viewModelScope.launch(Dispatchers.IO) {
-            //TODO: сделать тут try catch на petID
-            if (petId != null) {
-                repository.getPet(petId).collect() { pet ->
-                    _petUiState.value = pet
-                }
+            repository.getPets().collect() { pets ->
+                _petsUiState.value = pets
             }
         }
 
     }
+
+    fun createPet(pet: Pet) {
+        viewModelScope.launch {
+            repository.insertPet(pet)
+        }
+    }
+
+    fun updatePet(pet: Pet) {
+        viewModelScope.launch {
+            repository.updatePet(pet)
+        }
+    }
+
+
 }

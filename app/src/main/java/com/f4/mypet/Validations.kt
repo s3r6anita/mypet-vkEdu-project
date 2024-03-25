@@ -18,15 +18,15 @@ fun validateMicrochipNumber(chipNumber: String): Boolean = chipNumber.matches(ch
 
 fun validateDate(dateString: String): Boolean = dateString.matches(dateRegex)
 
-fun validateBirthday(dateString: String): Boolean {
-    if ((LocalDateTime.parse(dateString, PetDateTimeFormatter.date)
-            ?: throw IllegalArgumentException("Ошибка парсинга введенной даты")) > Date().toInstant()
+fun validateBirthday(date: LocalDateTime): Boolean {
+//    throw IllegalArgumentException("Ошибка парсинга введенной даты")
+    if (date > Date().toInstant()
             .atZone(ZoneId.systemDefault())
             .toLocalDateTime()
     ) {
         throw IllegalArgumentException("Дата больше сегодняшней")
     }
-    return validateDate(dateString)
+    return validateDate(date.format(PetDateTimeFormatter.date))
 }
 
 fun validateTime(timeString: String) {

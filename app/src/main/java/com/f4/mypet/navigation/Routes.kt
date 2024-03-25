@@ -9,8 +9,8 @@ sealed class Routes(
     val route: String,
     @StringRes val title: Int
 ) {
-    object ListProfile : Routes("ListProfile", R.string.list_profile_screen_title)
-    object Profile : Routes("Profile", R.string.profile_screen_title)
-    object CreateProfile : Routes("CreateProfile", R.string.create_profile_screen_title)
-    object UpdateProfile : Routes("UpdateProfile", R.string.update_profile_screen_title)
+    data object ListProfile : Routes("ListProfile", R.string.list_profile_screen_title)
+    data object Profile : Routes("Profile", R.string.profile_screen_title)
+    data object CreateProfile : Routes("CreateProfile", R.string.create_profile_screen_title)
+    data object UpdateProfile : Routes("UpdateProfile", R.string.update_profile_screen_title)
 }

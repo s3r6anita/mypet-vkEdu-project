@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.f4.mypet.data.db.entities.Pet
 import kotlinx.coroutines.flow.Flow
 
@@ -12,6 +13,9 @@ import kotlinx.coroutines.flow.Flow
 interface PetDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(pet: Pet)
+
+    @Update
+    suspend fun update(pet: Pet)
 
     @Query("SELECT * from pet")
     fun getPets(): Flow<List<Pet>>
