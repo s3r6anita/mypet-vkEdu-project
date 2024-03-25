@@ -48,8 +48,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.PastOrPresentSelectableDates
 import com.f4.mypet.PetDateTimeFormatter
@@ -59,6 +59,7 @@ import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.SHOWSNACKDURATION
+import com.f4.mypet.ui.screens.profile.createUpdate.CreateUpdateProfileViewModel
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.validate
 import com.f4.mypet.validateBirthday
@@ -81,14 +82,12 @@ fun CreateUpdateProfileScreen(
     isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
-    profileId: Int
+    profileId: Int = -1
 ) {
     val context = LocalContext.current
 
     val viewModel: CreateUpdateProfileViewModel = hiltViewModel()
-
     val pets by viewModel.petsUiState.collectAsState()
-
     var pet by remember {
         mutableStateOf(
             Pet(
@@ -98,7 +97,6 @@ fun CreateUpdateProfileScreen(
             )
         )
     }
-
     if (!isCreateScreen) {
         pets.forEach { onePet ->
             if (onePet.id == profileId) {
@@ -106,6 +104,14 @@ fun CreateUpdateProfileScreen(
             }
         }
     }
+
+//    val petDB by viewModel.petUiState.collectAsState()
+//    var pet by remember {
+//        mutableStateOf(petDB)
+//    }
+//    LaunchedEffect(petDB){
+//        pet = petDB
+//    }
 
     Scaffold(
         topBar = {
@@ -161,7 +167,7 @@ fun CreateUpdateProfileScreen(
                     .height(10.dp)
                     .width(50.dp)
                 )
-                radioOptions.forEach { elem ->
+                radioOptions.forEach { text ->
                     Column(
                     ) {
                         Row(
@@ -346,7 +352,7 @@ fun CreateUpdateProfileScreen(
                                 )
                                 try {
                                     dateIsCorrect =
-                                        validateBirthday(dateFormat.format(pet.birthday))
+                                        validateBirthday(pet.birthday)
                                 } catch (e: IllegalArgumentException) {
                                     scope.launch {
                                         snackbarHostState.showSnackbar(

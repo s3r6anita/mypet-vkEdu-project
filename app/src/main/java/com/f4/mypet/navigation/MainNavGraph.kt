@@ -12,7 +12,7 @@ import com.f4.mypet.ui.screens.procedure.ListProcedureScreen
 import com.f4.mypet.ui.screens.procedure.ProcedureScreen
 import com.f4.mypet.ui.screens.profile.CreateUpdateProfileScreen
 import com.f4.mypet.ui.screens.profile.ListProfileScreen
-import com.f4.mypet.ui.screens.profile.ProfileScreen
+import com.f4.mypet.ui.screens.profile.show.ProfileScreen
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -45,6 +45,7 @@ fun NavGraphBuilder.mainNavGraph(
             ProfileScreen(
                 navController,
                 snackbarHostState,
+                scope,
                 backStackEntry.arguments?.getInt("profileId") ?: -1,
                 backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )

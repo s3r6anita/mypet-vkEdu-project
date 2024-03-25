@@ -26,14 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
-import com.f4.mypet.dateFormat
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
-import com.f4.mypet.timeFormat
 import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetTopBar
-import java.util.Date
 
 @Composable
 fun ListProcedureScreen(
@@ -48,7 +45,6 @@ fun ListProcedureScreen(
         topBar = {
             MyPetTopBar(
                 text = "Питомец #$profileId", // TODO: заменить на {pet.name}, т.е. кличку
-                canNavigateBack = canNavigateBack,
                 navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка выхода
@@ -131,7 +127,7 @@ fun ProcedureItem(
             Text(text = "Название")
         },
         supportingContent = {
-            Text(text = "${timeFormat.format(Date())}\n${dateFormat.format(Date())}")
+//            Text(text = "${timeFormat.format(Date())}\n${dateFormat.format(Date())}")
         },
         trailingContent = {
             if (true) {

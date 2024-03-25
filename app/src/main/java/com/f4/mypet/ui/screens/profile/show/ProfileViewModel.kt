@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile.showProfile
+package com.f4.mypet.ui.screens.profile.show
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

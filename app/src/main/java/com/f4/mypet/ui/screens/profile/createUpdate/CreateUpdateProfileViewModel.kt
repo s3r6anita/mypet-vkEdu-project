@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile.createUpdateProfile
+package com.f4.mypet.ui.screens.profile.createUpdate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
