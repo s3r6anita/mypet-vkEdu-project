@@ -12,7 +12,7 @@ data class Pet(
     val name: String,
     val kind: String, // кошка собака морж
     val breed: String, // порода
-    val sex: Boolean, // "Мужской" | "Женский"
+    val sex: Boolean, // "Самец" | "Самка"
     val birthday: Date, // TODO: нужен конвертер типов для даты
     val color: String, // окрас
     val coat: String, // вид шерсти

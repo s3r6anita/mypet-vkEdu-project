@@ -1,6 +1,5 @@
 package com.f4.mypet
 
-import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import java.time.LocalDate
@@ -37,7 +36,6 @@ object PastOrPresentSelectableDates: SelectableDates {
     }
 
     override fun isSelectableYear(year: Int): Boolean {
-        Log.d("mytag", "${LocalDate.now().year}")
         return year <= LocalDate.now().year
     }
 }

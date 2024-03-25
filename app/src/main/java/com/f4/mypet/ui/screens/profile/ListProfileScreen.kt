@@ -48,8 +48,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
-import com.f4.mypet.ui.CustomSnackBar
-import com.f4.mypet.ui.MyPetTopBar
+import com.f4.mypet.ui.components.BottomBarData
+import com.f4.mypet.ui.components.MyPetSnackBar
+import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
@@ -64,8 +65,6 @@ fun ListProfileScreen(
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
 ) {
-    val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             MyPetTopBar(
@@ -80,8 +79,8 @@ fun ListProfileScreen(
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState
-            ){
-                CustomSnackBar(it.visuals.message)
+            ) {
+                MyPetSnackBar(it.visuals.message)
             }
         }
     ) { innerPadding ->
@@ -93,16 +92,15 @@ fun ListProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-//          Чекбокс + список питомцев
             Column(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .height(650.dp)
-                ,
+                    .height(650.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 //              чек бокс "Запомнить мой выбор"
+                val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -130,7 +128,6 @@ fun ListProfileScreen(
                     )
                 }
 
-
 //            список питомцев
                 @Suppress("MagicNumber") Column(
                     modifier = Modifier
@@ -139,8 +136,8 @@ fun ListProfileScreen(
                 ) {
                     listOf(1, 2, 3).forEachIndexed { index, pet ->
                         PetItem(
-                            profileId = index,
-                            canExit = rememberUserChoice,
+                            profileId = index, // TODO: заменить на {pet.id}
+                            canNavigateBack = !rememberUserChoice,
                             navController = navController,
                             closeSnackbar = { scope.coroutineContext.cancelChildren() }
                         )
@@ -160,7 +157,7 @@ fun ListProfileScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.add_button_icon_description)
+                    contentDescription = stringResource(id = R.string.list_profile_screen_add_button_icon_description)
                 )
                 Text(
                     text = stringResource(id = R.string.add_button_description),
@@ -174,12 +171,13 @@ fun ListProfileScreen(
 }
 
 @Composable
-fun PetItem (
+fun PetItem(
     profileId: Int,
-    canExit: Boolean,
+    canNavigateBack: Boolean,
     navController: NavHostController,
     closeSnackbar: () -> Unit
 ) {
+    BottomBarData.selectedItemIndex = 0
     Card(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
@@ -191,13 +189,22 @@ fun PetItem (
             .fillMaxWidth()
             .clickable {
                 closeSnackbar()
-                navController.navigate(Routes.Profile.route + "/" + profileId)
+                navController.navigate(
+                    Routes.BottomBarRoutes.ListProcedures.route + "/" + profileId + "/" + canNavigateBack) {
+                    launchSingleTop = true
+                    if (!canNavigateBack) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        restoreState = true
+                    }
+                }
             }
     ) {
         Row(
             modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row() {

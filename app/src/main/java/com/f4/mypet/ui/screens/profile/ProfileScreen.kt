@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Edit
@@ -46,8 +47,10 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
-import com.f4.mypet.ui.CustomSnackBar
-import com.f4.mypet.ui.MyPetTopBar
+import com.f4.mypet.ui.components.BottomBarData
+import com.f4.mypet.ui.components.MyPetBottomBar
+import com.f4.mypet.ui.components.MyPetSnackBar
+import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
 
@@ -55,44 +58,49 @@ import com.f4.mypet.ui.theme.LightBlueBackground
 fun ProfileScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    profileId: Int?
+    profileId: Int,
+    canNavigateBack: Boolean
 ) {
 
     var openAlertDialog by remember { mutableStateOf(false) }
 
     if (openAlertDialog) {
-        AlertDialog(title = {
-            Text(text = stringResource(id = R.string.profile_screen_delete_pet_title))
-        }, text = {
-            Text(text = stringResource(id = R.string.profile_screen_delete_pet_text))
-        }, onDismissRequest = {
-            openAlertDialog = false
-        }, confirmButton = {
-            TextButton(onClick = {
+        AlertDialog(
+            title = {
+                Text(text = stringResource(id = R.string.profile_screen_delete_pet_title))
+            },
+            text = {
+                Text(text = stringResource(id = R.string.profile_screen_delete_pet_text))
+            },
+            onDismissRequest = {
                 openAlertDialog = false
-                navController.navigate(START) {
-                    popUpTo(Routes.ListProfile.route) {
-                        inclusive = true
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    openAlertDialog = false
+                    navController.navigate(START) {
+                        popUpTo(Routes.ListProfile.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
                     }
-                    launchSingleTop = true
+                    // TODO: вставить вызов функции removePet(id) внутри scope.launch { delay(100), ...}
+                }) {
+                    Text(stringResource(id = R.string.profile_screen_delete_dialog_confirm))
                 }
-                // TODO: вставить вызов функции removePet(id) внутри scope.launch { delay(100), ...}
-            }) {
-                Text(text = stringResource(id = R.string.confirm_button_description))
+            },
+            dismissButton = {
+                TextButton(onClick = { openAlertDialog = false }) {
+                    Text(stringResource(id = R.string.profile_screen_delete_dialog_delete))
+                }
             }
-        }, dismissButton = {
-            TextButton(onClick = {
-                openAlertDialog = false
-            }) {
-                Text(text = stringResource(id = R.string.cancel_button_description))
-            }
-        })
+        )
     }
 
     Scaffold(
         topBar = {
-            MyPetTopBar(text = stringResource(Routes.Profile.title),
-                canNavigateBack = true,
+            MyPetTopBar(text = stringResource(Routes.BottomBarRoutes.Profile.title),
+                canNavigateBack = canNavigateBack,
                 navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка удалить
@@ -114,16 +122,40 @@ fun ProfileScreen(
                             contentDescription = stringResource(id = R.string.share_button_description)
                         )
                     }
-                })
+
+                    // кнопка выхода
+                    IconButton(onClick = {
+                        navController.navigate(START) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = stringResource(id = R.string.exit_button_description)
+                        )
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            MyPetBottomBar(
+                navController = navController,
+                profileId = profileId,
+                canNavigateBack = canNavigateBack,
+                items = BottomBarData.items
+            )
         },
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState
-            ){
-                CustomSnackBar(it.visuals.message)
+            ) {
+                MyPetSnackBar(it.visuals.message)
             }
-        },
-
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -136,8 +168,8 @@ fun ProfileScreen(
             Box(
                 modifier = Modifier
                     .padding(vertical = 50.dp)
-            ){
-                Card (
+            ) {
+                Card(
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 6.dp
                     ),
@@ -146,14 +178,13 @@ fun ProfileScreen(
                     ),
                     modifier = Modifier
                         .padding(top = 50.dp)
-                ){
-                    Column (
+                ) {
+                    Column(
                         modifier = Modifier
                             .padding(20.dp)
-                            .padding(top = 50.dp)
-                        ,
+                            .padding(top = 50.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
                         Text(
                             // TODO: потом заменить строку из ресурсов на кличку (pet.nickname)
                             text = stringResource(R.string.pet) + "#$profileId",
@@ -173,7 +204,8 @@ fun ProfileScreen(
                             header = stringResource(R.string.pet_sex), value = "some paul"
                         )
                         TextComponent(
-                            header = stringResource(R.string.pet_birthday), value = "some birth date"
+                            header = stringResource(R.string.pet_birthday),
+                            value = "some birth date"
                         )
                         TextComponent(
                             header = stringResource(R.string.pet_coat), value = "some coat"
@@ -182,15 +214,16 @@ fun ProfileScreen(
                             header = stringResource(R.string.pet_color), value = "some color"
                         )
                         TextComponent(
-                            header = stringResource(R.string.pet_microchip), value = "some microchip number"
+                            header = stringResource(R.string.pet_microchip),
+                            value = "some microchip number"
                         )
                         // TODO: value для каждого TextComponent (example: value = pet.nickname)
                     }
                 }
-                Row (
+                Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
-                ){
+                ) {
                     Image(
                         painter = painterResource(id = R.drawable.pet_icon),
                         contentDescription = stringResource(id = R.string.pet_photo_description),
@@ -220,9 +253,11 @@ fun ProfileScreen(
                     Icons.Rounded.Edit,
                     stringResource(id = R.string.update_profile_button_description)
                 )
-                Text(text = stringResource(id = R.string.edit_button_description),
+                Text(
+                    text = stringResource(id = R.string.edit_button_description),
                     modifier = Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium)
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         }
     }
@@ -230,13 +265,13 @@ fun ProfileScreen(
 
 @Composable
 fun TextComponent(header: String, value: String) {
-    Row (
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         Text(
             text = header,
             style = MaterialTheme.typography.labelLarge,
