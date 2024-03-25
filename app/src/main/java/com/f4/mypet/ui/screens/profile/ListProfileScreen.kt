@@ -189,7 +189,8 @@ fun PetItem(
             .fillMaxWidth()
             .clickable {
                 closeSnackbar()
-                navController.navigate(Routes.BottomBarRoutes.ListProcedures.route + "/" + profileId + "/" + canNavigateBack) {
+                navController.navigate(
+                    Routes.BottomBarRoutes.ListProcedures.route + "/" + profileId + "/" + canNavigateBack) {
                     launchSingleTop = true
                     if (!canNavigateBack) {
                         popUpTo(navController.graph.startDestinationId) {
