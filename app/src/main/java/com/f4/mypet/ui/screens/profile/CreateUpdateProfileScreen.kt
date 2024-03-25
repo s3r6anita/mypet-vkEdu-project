@@ -51,12 +51,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.f4.mypet.PastOrPresentSelectableDates
 import com.f4.mypet.R
-import com.f4.mypet.SHOWSNACKDURATION
 import com.f4.mypet.dateFormat
 import com.f4.mypet.db.entities.Pet
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.components.SHOWSNACKDURATION
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.validate
 import com.f4.mypet.validateBirthday

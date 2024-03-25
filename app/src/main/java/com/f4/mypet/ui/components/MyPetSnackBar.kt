@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
 
+const val SHOWSNACKDURATION = 3000L
 
 @Composable
 fun MyPetSnackBar(text: String) {
