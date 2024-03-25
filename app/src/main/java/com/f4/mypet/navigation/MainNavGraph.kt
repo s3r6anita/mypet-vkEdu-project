@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.f4.mypet.ui.screens.procedure.CreateProcedureScreen
 import com.f4.mypet.ui.screens.procedure.ListProcedureScreen
 import com.f4.mypet.ui.screens.procedure.ProcedureScreen
 import com.f4.mypet.ui.screens.profile.CreateUpdateProfileScreen
@@ -51,7 +52,12 @@ fun NavGraphBuilder.mainNavGraph(
 
         /** создание профиля */
         composable(route = Routes.CreateProfile.route) {
-            CreateUpdateProfileScreen(navController, true, snackbarHostState, scope)
+            CreateUpdateProfileScreen(
+                navController,
+                true,
+                snackbarHostState,
+                scope
+            )
         }
 
         /** обновление профиля */
@@ -73,7 +79,6 @@ fun NavGraphBuilder.mainNavGraph(
         }
 
 
-
         /** список процедур */
         composable(
             route = Routes.BottomBarRoutes.ListProcedures.route + "/{profileId}" + "/{canNavigateBack}",
@@ -93,54 +98,56 @@ fun NavGraphBuilder.mainNavGraph(
             )
         }
     }
-        /** создание процедуры */
-        composable(route = Routes.CreateProcedure.route + "/{profileId}",
-            arguments = listOf(
-                navArgument(name = "profileId") {
-                    type = NavType.IntType
-                }
-            )
-        ) { backStackEntry ->
-            //CreateProcedureScreen(navController, context, backStackEntry.arguments?.getString("profileId"))
-        }
+    /** создание процедуры */
+    composable(route = Routes.CreateProcedure.route + "/{profileId}",
+        arguments = listOf(
+            navArgument(name = "profileId") {
+                type = NavType.IntType
+            }
+        )
+    ) { backStackEntry ->
+        CreateProcedureScreen(
+            navController,
+            backStackEntry.arguments?.getInt("profileId") ?: -1
+        )
+    }
 
-        /** процедура */
-        composable(route = Routes.Procedure.route + "/{profileId}" + "/{procedureId}",
-            arguments = listOf(
-                navArgument(name = "profileId") {
-                    type = NavType.IntType
-                },
-                navArgument(name = "procedureId") {
-                    type = NavType.IntType
-                }
-            )
-        ) { backStackEntry ->
-            ProcedureScreen(
-                navController,
-                backStackEntry.arguments?.getInt("profileId") ?: -1,
-                backStackEntry.arguments?.getInt("procedureId") ?: -1
-            )
-        }
+    /** процедура */
+    composable(route = Routes.Procedure.route + "/{profileId}" + "/{procedureId}",
+        arguments = listOf(
+            navArgument(name = "profileId") {
+                type = NavType.IntType
+            },
+            navArgument(name = "procedureId") {
+                type = NavType.IntType
+            }
+        )
+    ) { backStackEntry ->
+        ProcedureScreen(
+            navController,
+            backStackEntry.arguments?.getInt("profileId") ?: -1,
+            backStackEntry.arguments?.getInt("procedureId") ?: -1
+        )
+    }
 
-        /** изменение процедуры */
-        composable(route = Routes.UpdateProcedure.route + "/{profileId}" + "/{procedureId}",
-            arguments = listOf(
-                navArgument(name = "profileId") {
-                    type = NavType.IntType
-                },
-                navArgument(name = "procedureId") {
-                    type = NavType.IntType
-                }
-            )
-        ) { backStackEntry ->
+    /** изменение процедуры */
+    composable(route = Routes.UpdateProcedure.route + "/{profileId}" + "/{procedureId}",
+        arguments = listOf(
+            navArgument(name = "profileId") {
+                type = NavType.IntType
+            },
+            navArgument(name = "procedureId") {
+                type = NavType.IntType
+            }
+        )
+    ) { backStackEntry ->
 //            UpdateProcedureScreen(
 //                navController,
 //                context,
 //                backStackEntry.arguments?.getString("profileId"),
 //                backStackEntry.arguments?.getString("procedureId")
 //            )
-        }
-
+    }
 
 
     /** медкарта */

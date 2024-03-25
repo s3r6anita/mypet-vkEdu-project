@@ -48,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.dateFormat
 import com.f4.mypet.db.entities.Procedure
@@ -60,7 +61,10 @@ const val CORRECT_DATE_DIGIT_NUMBER = 10
 @Suppress("CyclomaticComplexMethod", "LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateProcedureScreen() {
+fun CreateProcedureScreen(
+    navController: NavHostController,
+    profileId: Int
+) {
     val context = LocalContext.current
     //TODO val id = profileId?.toInt() ?: 0
 
