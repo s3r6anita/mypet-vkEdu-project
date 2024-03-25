@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile.createupdate_profile
+package com.f4.mypet.ui.screens.profile.createUpdateProfile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -389,7 +389,9 @@ fun CreateUpdateProfileScreen(
                         viewModel.createPet(pet)
                         scope.launch {
                             val job = launch {
-                                snackbarHostState.showSnackbar(context.resources.getString(R.string.create_profile_successful_pet_creation))
+                                snackbarHostState.showSnackbar(
+                                    context.resources.getString(R.string.create_profile_successful_pet_creation)
+                                )
                             }
                             delay(SHOWSNACKDURATION)
                             job.cancel()
@@ -398,7 +400,9 @@ fun CreateUpdateProfileScreen(
                         viewModel.updatePet(pet)
                         scope.launch {
                             val job = launch {
-                                snackbarHostState.showSnackbar(context.resources.getString(R.string.create_profile_successful_pet_update))
+                                snackbarHostState.showSnackbar(
+                                    context.resources.getString(R.string.create_profile_successful_pet_update)
+                                )
                             }
                             delay(SHOWSNACKDURATION)
                             job.cancel()

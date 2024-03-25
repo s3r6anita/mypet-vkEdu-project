@@ -52,5 +52,4 @@ abstract class PetDatabase : RoomDatabase() {
             }
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile.createupdate_profile
+package com.f4.mypet.ui.screens.profile.createUpdateProfile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,6 +39,4 @@ class CreateUpdateProfileViewModel @Inject constructor(
             repository.updatePet(pet)
         }
     }
-
-
 }

@@ -11,8 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.f4.mypet.ui.screens.profile.ListProfileScreen
-import com.f4.mypet.ui.screens.profile.createupdate_profile.CreateUpdateProfileScreen
-import com.f4.mypet.ui.screens.profile.show_profile.ProfileScreen
+import com.f4.mypet.ui.screens.profile.createUpdateProfile.CreateUpdateProfileScreen
+import com.f4.mypet.ui.screens.profile.showProfile.ProfileScreen
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
