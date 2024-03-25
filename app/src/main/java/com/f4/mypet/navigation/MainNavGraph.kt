@@ -31,7 +31,7 @@ fun NavGraphBuilder.mainNavGraph(
         }
         /** профиль */
         composable(
-            route = BottomBarRoutes.Profile.route + "/{profileId}" + "/{canNavigateBack}",
+            route = Routes.BottomBarRoutes.Profile.route + "/{profileId}" + "/{canNavigateBack}",
             arguments = listOf(
                 navArgument(name = "profileId") {
                     type = NavType.IntType
@@ -44,7 +44,7 @@ fun NavGraphBuilder.mainNavGraph(
             ProfileScreen(
                 navController,
                 snackbarHostState,
-                backStackEntry.arguments?.getInt("profileId") ?: 0,
+                backStackEntry.arguments?.getInt("profileId") ?: -1,
                 backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
         }
@@ -76,7 +76,7 @@ fun NavGraphBuilder.mainNavGraph(
 
         /** список процедур */
         composable(
-            route = BottomBarRoutes.ListProcedures.route + "/{profileId}" + "/{canNavigateBack}",
+            route = Routes.BottomBarRoutes.ListProcedures.route + "/{profileId}" + "/{canNavigateBack}",
             arguments = listOf(
                 navArgument(name = "profileId") {
                     type = NavType.IntType
@@ -145,7 +145,7 @@ fun NavGraphBuilder.mainNavGraph(
 
     /** медкарта */
     composable(
-        route = BottomBarRoutes.MedCard.route + "/{profileId}" + "/{canNavigateBack}",
+        route = Routes.BottomBarRoutes.MedCard.route + "/{profileId}" + "/{canNavigateBack}",
         arguments = listOf(
             navArgument(name = "profileId") {
                 type = NavType.IntType

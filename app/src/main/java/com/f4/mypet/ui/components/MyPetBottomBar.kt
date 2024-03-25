@@ -1,6 +1,7 @@
 package com.f4.mypet.ui.components
 
 import android.util.Log
+import androidx.annotation.DrawableRes
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
@@ -12,27 +13,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
-import com.f4.mypet.navigation.BottomBarRoutes
+import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 
 data class BottomNavigationItem(
-    val bbroute: BottomBarRoutes,
-    val hasNews: Boolean
+    val route: Routes.BottomBarRoutes,
+    @DrawableRes var icon: Int,
+    val hasNews: Boolean = false
 )
 
-object BottomBarData {
+data object BottomBarData {
     val items = listOf(
         BottomNavigationItem(
-            bbroute = BottomBarRoutes.ListProcedures,
-            hasNews = false
+            route = Routes.BottomBarRoutes.ListProcedures,
+            icon = R.drawable.procedures_icon
         ),
         BottomNavigationItem(
-            bbroute = BottomBarRoutes.MedCard,
-            hasNews = false
+            route = Routes.BottomBarRoutes.MedCard,
+            icon = R.drawable.therapy_icon
         ),
         BottomNavigationItem(
-            bbroute = BottomBarRoutes.Profile,
-            hasNews = false
+            route = Routes.BottomBarRoutes.Profile,
+            icon = R.drawable.pet_icon
         )
     )
     var selectedItemIndex = 0
@@ -51,13 +53,13 @@ fun MyPetBottomBar(
     ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
-                label = { Text(text = stringResource(item.bbroute.title)) },
+                label = { Text(text = stringResource(item.route.title)) },
                 selected = BottomBarData.selectedItemIndex == index,
                 onClick = {
                     Log.d("my", "sel=${BottomBarData.selectedItemIndex} --- index=$index")
                     BottomBarData.selectedItemIndex = index
                     Log.d("my", "sel=${BottomBarData.selectedItemIndex} --- index=$index")
-                    navController.navigate(item.bbroute.route + "/" + profileId + "/" + canNavigateBack) {
+                    navController.navigate(item.route.route + "/" + profileId + "/" + canNavigateBack) {
                         popUpTo(Routes.ListProfile.route) {
                             inclusive = false
                         }
@@ -74,8 +76,8 @@ fun MyPetBottomBar(
                         }
                     ) {
                         Icon(
-                            painter = painterResource(item.bbroute.icon),
-                            contentDescription = stringResource(item.bbroute.title)
+                            painter = painterResource(item.icon),
+                            contentDescription = stringResource(item.route.title)
                         )
                     }
                 }
