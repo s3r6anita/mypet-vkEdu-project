@@ -65,4 +65,23 @@
     <string name="procedure_screen_tmp_time_for_proc">"за 5 минут до процедуры"</string>
     <string name="procedure_screen_tmp_notice">"..."</string>
     <string name="procedure_screen_delete_button">Удалить</string>
+
+
+    <string name="creation_procedure_screen_title">Создание процедуры</string>
+    <string name="creation_procedure_screen_period">Период</string>
+    <string name="creation_procedure_screen_frequence">Периодичность</string>
+    <string name="creation_procedure_screen_name">Название</string>
+    <string name="creation_procedure_screen_pick_time">Выберите время</string>
+    <string name="creation_procedure_screen_open_clock">Открыть часы</string>
+    <string name="creation_procedure_screen_duration">Время выполнения</string>
+    <string name="creation_procedure_screen_time_format">Формат времени: ЧЧ.ММ</string>
+    <string name="creation_procedure_screen_open_calendar">Открыть календарь</string>
+    <string name="creation_procedure_screen_date_of_completion">Дата выполнения</string>
+
+    <string name="creation_procedure_screen_notes_format">Формат времени: ЧЧ.ММ</string>
+    <string name="creation_procedure_screen_time_before_notification">За сколько минут напомнить</string>
+    <string name="creation_procedure_screen_notes">Заметки</string>
+    <string name="creation_procedure_screen_procedure_type">Тип процедуры</string>
+
+
 </resources>
