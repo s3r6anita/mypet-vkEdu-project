@@ -2,7 +2,8 @@
     <string name="app_name">My Pet</string>
 
     <string name="information_about_pet">Информация о питомце</string>
-    <string name="pet_nickname">Кличка</string>
+    <string name="pet">Питомец</string>
+    <string name="pet_name">Кличка</string>
     <string name="pet_view">Вид</string>
     <string name="pet_sex">Пол</string>
     <string name="pet_color">Окрас</string>
@@ -26,8 +27,9 @@
     <string name="delete_button_description">Удалить</string>
     <string name="confirm_button_description">Ок</string>
     <string name="cancel_button_description">Отмена</string>
+    <string name="add_button_icon_description">Icon +</string>
     <string name="arrow_right_description">Стрелка вправо</string>
-
+    <string name="edit_button_description">Редактировать</string>
 
     <string name="remember_my_choice">Запоминать выбор питомца на время сессии приложения</string>
 
@@ -77,4 +79,23 @@
 
     <string name="update_procedure_screen_title">Редактирование процедуры</string>
     <string name="medcard_screen_title">Медкарта</string>
+
+
+    <string name="creation_procedure_screen_title">Создание процедуры</string>
+    <string name="creation_procedure_screen_period">Период</string>
+    <string name="creation_procedure_screen_frequence">Периодичность</string>
+    <string name="creation_procedure_screen_name">Название</string>
+    <string name="creation_procedure_screen_pick_time">Выберите время</string>
+    <string name="creation_procedure_screen_open_clock">Открыть часы</string>
+    <string name="creation_procedure_screen_duration">Время выполнения</string>
+    <string name="creation_procedure_screen_time_format">Формат времени: ЧЧ.ММ</string>
+    <string name="creation_procedure_screen_open_calendar">Открыть календарь</string>
+    <string name="creation_procedure_screen_date_of_completion">Дата выполнения</string>
+
+    <string name="creation_procedure_screen_notes_format">Формат времени: ЧЧ.ММ</string>
+    <string name="creation_procedure_screen_time_before_notification">За сколько минут напомнить</string>
+    <string name="creation_procedure_screen_notes">Заметки</string>
+    <string name="creation_procedure_screen_procedure_type">Тип процедуры</string>
+
+
 </resources>
