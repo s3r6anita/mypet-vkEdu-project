@@ -48,7 +48,7 @@ fun ListProcedureScreen(
         topBar = {
             MyPetTopBar(
                 text = "Питомец #$profileId", // TODO: заменить на {pet.name}, т.е. кличку
-                canNavigateBack = canNavigateBack ?: true,
+                canNavigateBack = canNavigateBack,
                 navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка выхода
@@ -72,8 +72,8 @@ fun ListProcedureScreen(
         bottomBar = {
             MyPetBottomBar(
                 navController = navController,
-                profileId = profileId ?: 0,
-                canNavigateBack = canNavigateBack ?: true,
+                profileId = profileId,
+                canNavigateBack = canNavigateBack,
                 items = BottomBarData.items
             )
         },

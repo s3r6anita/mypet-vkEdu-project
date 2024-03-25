@@ -52,7 +52,7 @@ import com.f4.mypet.R
 import com.f4.mypet.dateFormat
 import com.f4.mypet.db.entities.Procedure
 import com.f4.mypet.timeFormat
-import com.f4.mypet.ui.MyPetTopBar
+import com.f4.mypet.ui.components.MyPetTopBar
 import java.util.Date
 
 const val CORRECT_DATE_DIGIT_NUMBER = 10

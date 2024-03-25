@@ -49,6 +49,7 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.BottomBarRoutes
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.theme.BlueCheckbox
@@ -177,6 +178,7 @@ fun PetItem(
     navController: NavHostController,
     closeSnackbar: () -> Unit
 ) {
+    BottomBarData.selectedItemIndex = 0
     Card(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp

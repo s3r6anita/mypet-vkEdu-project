@@ -178,7 +178,7 @@ fun CreateUpdateProfileScreen(
                     nameIsCorrect = validate(it)
                     pet = pet.copy(name = it)
                 },
-                label = { Text(stringResource(id = R.string.pet_nickname)) },
+                label = { Text(stringResource(id = R.string.pet_name)) },
                 trailingIcon = {
                     ClearIcon {
                         nameIsCorrect = false

@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,11 +45,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.navigation.BottomBarRoutes
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.components.BottomBarData
-import com.f4.mypet.ui.components.MyPetBottomBar
-import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
@@ -59,7 +59,8 @@ import com.f4.mypet.ui.theme.LightBlueBackground
 fun ProfileScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    profileId: Int?
+    profileId: Int,
+    canNavigateBack: Boolean
 ) {
 
     var openAlertDialog by remember { mutableStateOf(false) }
@@ -94,13 +95,13 @@ fun ProfileScreen(
                     Text(stringResource(id = R.string.profile_screen_delete_dialog_delete))
                 }
             }
-        })
+        )
     }
 
     Scaffold(
         topBar = {
-            MyPetTopBar(text = stringResource(Routes.Profile.title),
-                canNavigateBack = true,
+            MyPetTopBar(text = stringResource(BottomBarRoutes.Profile.title),
+                canNavigateBack = canNavigateBack,
                 navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка удалить
@@ -145,7 +146,7 @@ fun ProfileScreen(
             MyPetBottomBar(
                 navController = navController,
                 profileId = profileId,
-                canNavigateBack = canNavigateBack ?: true,
+                canNavigateBack = canNavigateBack,
                 items = BottomBarData.items
             )
         },
@@ -168,8 +169,8 @@ fun ProfileScreen(
             Box(
                 modifier = Modifier
                     .padding(vertical = 50.dp)
-            ){
-                Card (
+            ) {
+                Card(
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 6.dp
                     ),
@@ -178,14 +179,13 @@ fun ProfileScreen(
                     ),
                     modifier = Modifier
                         .padding(top = 50.dp)
-                ){
-                    Column (
+                ) {
+                    Column(
                         modifier = Modifier
                             .padding(20.dp)
-                            .padding(top = 50.dp)
-                        ,
+                            .padding(top = 50.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
                         Text(
                             // TODO: потом заменить строку из ресурсов на кличку (pet.nickname)
                             text = stringResource(R.string.pet) + "#$profileId",
@@ -205,7 +205,8 @@ fun ProfileScreen(
                             header = stringResource(R.string.pet_sex), value = "some paul"
                         )
                         TextComponent(
-                            header = stringResource(R.string.pet_birthday), value = "some birth date"
+                            header = stringResource(R.string.pet_birthday),
+                            value = "some birth date"
                         )
                         TextComponent(
                             header = stringResource(R.string.pet_coat), value = "some coat"
@@ -214,15 +215,16 @@ fun ProfileScreen(
                             header = stringResource(R.string.pet_color), value = "some color"
                         )
                         TextComponent(
-                            header = stringResource(R.string.pet_microchip), value = "some microchip number"
+                            header = stringResource(R.string.pet_microchip),
+                            value = "some microchip number"
                         )
                         // TODO: value для каждого TextComponent (example: value = pet.nickname)
                     }
                 }
-                Row (
+                Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
-                ){
+                ) {
                     Image(
                         painter = painterResource(id = R.drawable.pet_icon),
                         contentDescription = stringResource(id = R.string.pet_photo_description),
@@ -252,9 +254,11 @@ fun ProfileScreen(
                     Icons.Rounded.Edit,
                     stringResource(id = R.string.update_profile_button_description)
                 )
-                Text(text = stringResource(id = R.string.edit_button_description),
+                Text(
+                    text = stringResource(id = R.string.edit_button_description),
                     modifier = Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium)
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         }
     }
@@ -262,13 +266,13 @@ fun ProfileScreen(
 
 @Composable
 fun TextComponent(header: String, value: String) {
-    Row (
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         Text(
             text = header,
             style = MaterialTheme.typography.labelLarge,
