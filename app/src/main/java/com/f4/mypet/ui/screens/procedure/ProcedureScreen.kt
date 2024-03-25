@@ -35,14 +35,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
-import com.f4.mypet.ui.MyPetTopBar
+import com.f4.mypet.navigation.Routes
+import com.f4.mypet.ui.components.MyPetTopBar
 
 
 @Composable
-fun ProcedureScreen() {
-
-    //TODO val procedure = pets[..]
+fun ProcedureScreen(
+    navController: NavHostController,
+    profileId: Int,
+    procedureId: Int
+) {
     var openAlertDialog by remember { mutableStateOf(false) }
 
     if (openAlertDialog) {
@@ -59,7 +63,9 @@ fun ProcedureScreen() {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        //TODO navController
+                        openAlertDialog = false
+                        navController.navigateUp()
+//                      // TODO: вставить вызов функции removeProcedure(id) внутри scope.launch { delay(100), ...}
                     }
                 ) {
                     Text(stringResource(R.string.procedure_screen_ok))
@@ -80,18 +86,17 @@ fun ProcedureScreen() {
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(R.string.procedure_screen_title),
+                //TODO: поменять на text = stringResource(R.string.procedure_screen_title),
+                text = "Процедура #$procedureId",
                 canNavigateBack = true,
-                navigateUp = { //TODO navigateUp
-                     },
+                navigateUp = { navController.navigateUp() },
                 actions = {
                     IconButton(onClick = {
                         openAlertDialog = true
-                    }
-                    ) {
+                    }) {
                         Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = stringResource(R.string.procedure_screen_delete_button)
+                            Icons.Filled.Delete,
+                            stringResource(R.string.procedure_screen_delete_button)
                         )
                     }
                 }
@@ -100,7 +105,9 @@ fun ProcedureScreen() {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    //TODO navController...
+                    navController.navigate(Routes.UpdateProcedure.route + "/" + profileId + "/" + procedureId) {
+                        launchSingleTop = true
+                    }
                 },
             ) {
                 Icon(Icons.Rounded.Edit, stringResource(R.string.procedure_screen_edit_procedure))
@@ -134,15 +141,13 @@ fun ProcedureScreen() {
                         imageVector = Icons.Rounded.Done,
                         contentDescription = stringResource(R.string.procedure_screen_procedure_is_done)
                     )
-                }
-                else {
-                    if (true /*заглушка... TODO procedure.dateDone < Date()*/){
+                } else {
+                    if (true /*заглушка... TODO procedure.dateDone < Date()*/) {
                         Icon(
                             imageVector = Icons.Rounded.Close,
                             contentDescription = stringResource(R.string.procedure_screen_procedure_is_not_done)
                         )
-                    }
-                    else {
+                    } else {
                         Icon(
                             imageVector = Icons.Rounded.Info,
                             contentDescription = stringResource(R.string.procedure_screen_procedure_will_be_done)
@@ -176,18 +181,16 @@ fun ProcedureScreen() {
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
-            }
-            else {
+            } else {
                 Text(
-                    text = stringResource(R.string.procedure_screen_turned_off) ,
+                    text = stringResource(R.string.procedure_screen_turned_off),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
             }
 
             OutlinedTextField(
-                value = stringResource(R.string.procedure_screen_tmp_notice),
-                //TODO procedure.notes
+                value = stringResource(R.string.procedure_screen_tmp_notice), //TODO procedure.notes
                 onValueChange = { /*TODO procedure.notes*/ },
                 readOnly = true,
                 label = { Text(stringResource(R.string.procedure_screen_notice)) },

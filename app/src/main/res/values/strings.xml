@@ -4,7 +4,6 @@
     <string name="information_about_pet">Информация о питомце</string>
     <string name="pet">Питомец</string>
     <string name="pet_name">Кличка</string>
-    <string name="pet_nickname">Кличка</string>
     <string name="pet_view">Вид</string>
     <string name="pet_sex">Пол</string>
     <string name="pet_color">Окрас</string>
@@ -13,8 +12,8 @@
     <string name="pet_microchip">Номер микрочипа</string>
     <string name="pet_birthday">Дата рождения</string>
     <string name="pet_photo_description">Фото питомца</string>
-    <string name="male_sex">Мужской</string>
-    <string name="female_sex">Женский</string>
+    <string name="male_sex">Самец</string>
+    <string name="female_sex">Самка</string>
     <string name="date_format">Формат даты: ДД.ММ.ГГГГ</string>
 
     <string name="clear">Очистить</string>
@@ -43,13 +42,18 @@
     <string name="create_profile_supp_chip">Номер должен состоять из 15 цифр</string>
 
     <string name="list_profile_screen_title">Мои питомцы</string>
+    <string name="list_profile_screen_add_button_icon_description">Добавить питомца</string>
+
 
     <string name="profile_screen_title">Профиль</string>
     <string name="profile_screen_delete_pet_text">Вы уверены, что хотите удалить профиль?</string>
     <string name="profile_screen_delete_pet_title">Удаление профиля</string>
+    <string name="profile_screen_delete_dialog_confirm">ОК</string>
+    <string name="profile_screen_delete_dialog_delete">Отмена</string>
     <string name="incorrect_date">Введена некорректная дата</string>
 
-    <string name="procedure_screen_title">Создание процедуры</string>
+    <string name="procedure_screen_title">Процедура</string>
+    <string name="procedure_screen_creation">Создание процедуры</string>
     <string name="procedure_screen_delete">Удаление процедуры</string>
     <string name="procedure_screen_question_delete_procedure">"Вы уверены, что хотите удалить процедуру?"</string>
     <string name="procedure_screen_cancel">"Отмена"</string>
@@ -67,6 +71,14 @@
     <string name="procedure_screen_tmp_time_for_proc">"за 5 минут до процедуры"</string>
     <string name="procedure_screen_tmp_notice">"..."</string>
     <string name="procedure_screen_delete_button">Удалить</string>
+
+    <string name="list_procedure_screen_title">Процедуры</string>
+    <string name="list_procedure_screen_add_procedure">Добавить процедуру</string>
+
+    <string name="create_procedure_screen_title">Создание процедуры</string>
+
+    <string name="update_procedure_screen_title">Редактирование процедуры</string>
+    <string name="medcard_screen_title">Медкарта</string>
 
 
     <string name="creation_procedure_screen_title">Создание процедуры</string>
