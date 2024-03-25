@@ -27,12 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.dateFormat
-import com.f4.mypet.navigation.BottomBarRoutes
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
 import com.f4.mypet.timeFormat
-import com.f4.mypet.ui.MyPetBottomBar
-import com.f4.mypet.ui.MyPetTopBar
+import com.f4.mypet.ui.components.BottomBarData
+import com.f4.mypet.ui.components.MyPetBottomBar
+import com.f4.mypet.ui.components.MyPetTopBar
 import java.util.Date
 
 @Composable
@@ -74,11 +74,7 @@ fun ListProcedureScreen(
                 navController = navController,
                 profileId = profileId ?: 0,
                 canNavigateBack = canNavigateBack ?: true,
-                items = listOf(
-                    BottomBarRoutes.ListProcedures,
-                    BottomBarRoutes.MedCard,
-                    BottomBarRoutes.Profile
-                )
+                items = BottomBarData.items
             )
         },
         floatingActionButton = {

@@ -24,6 +24,6 @@ fun SetupNavGraph(
 *       popExitTransition = { ExitTransition.None },
  */
     ) {
-        MainNavGraph(navController, snackbarHostState, scope)
+        mainNavGraph(navController, snackbarHostState, scope)
     }
 }

@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -54,9 +55,8 @@ import com.f4.mypet.SHOWSNACKDURATION
 import com.f4.mypet.dateFormat
 import com.f4.mypet.db.entities.Pet
 import com.f4.mypet.navigation.Routes
-import com.f4.mypet.ui.ClearIcon
-import com.f4.mypet.ui.CustomSnackBar
-import com.f4.mypet.ui.MyPetTopBar
+import com.f4.mypet.ui.components.MyPetSnackBar
+import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.validate
 import com.f4.mypet.validateBirthday
@@ -99,15 +99,14 @@ fun CreateUpdateProfileScreen(
                         Routes.UpdateProfile.title
                 ),
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() },
-                actions = { }
+                navigateUp = { navController.navigateUp() }
             )
         },
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState
             ) {
-                CustomSnackBar(it.visuals.message)
+                MyPetSnackBar(it.visuals.message)
             }
         }
     ) { innerPadding ->
@@ -418,5 +417,15 @@ fun CreateUpdateProfileScreen(
                     fontWeight = FontWeight.Bold)
             }
         }
+    }
+}
+
+@Composable
+fun ClearIcon(clear: () -> Unit) {
+    IconButton(onClick = clear) {
+        Icon(
+            Icons.Default.Clear,
+            contentDescription = stringResource(id = R.string.clear)
+        )
     }
 }

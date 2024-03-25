@@ -34,9 +34,10 @@ import com.f4.mypet.R
 import com.f4.mypet.navigation.BottomBarRoutes
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
-import com.f4.mypet.ui.CustomSnackBar
-import com.f4.mypet.ui.MyPetBottomBar
-import com.f4.mypet.ui.MyPetTopBar
+import com.f4.mypet.ui.components.BottomBarData
+import com.f4.mypet.ui.components.MyPetBottomBar
+import com.f4.mypet.ui.components.MyPetSnackBar
+import com.f4.mypet.ui.components.MyPetTopBar
 
 @Composable
 fun ProfileScreen(
@@ -131,18 +132,14 @@ fun ProfileScreen(
                 navController = navController,
                 profileId = profileId ?: 0,
                 canNavigateBack = canNavigateBack ?: true,
-                items = listOf(
-                    BottomBarRoutes.ListProcedures,
-                    BottomBarRoutes.MedCard,
-                    BottomBarRoutes.Profile
-                )
+                items = BottomBarData.items
             )
         },
         snackbarHost = {
             SnackbarHost(
                 hostState = snackbarHostState
             ) {
-                CustomSnackBar(it.visuals.message)
+                MyPetSnackBar(it.visuals.message)
             }
         },
 

@@ -15,7 +15,7 @@ import com.f4.mypet.ui.screens.profile.ProfileScreen
 import kotlinx.coroutines.CoroutineScope
 
 
-fun NavGraphBuilder.MainNavGraph(
+fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope
