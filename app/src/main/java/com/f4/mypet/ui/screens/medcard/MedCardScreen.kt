@@ -83,7 +83,7 @@ fun MedCardScreen(
             PetCardHeader(profileId = profileId)
 
             // Список мед мероприятий
-            Column (
+            @Suppress("MagicNumber") Column (
                 modifier = Modifier
                     .height(400.dp)
                     .verticalScroll(rememberScrollState())
