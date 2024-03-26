@@ -14,4 +14,8 @@ interface ProcedureDAO {
 
     @Query("SELECT * from procedure where pet = :petId")
     fun getProceduresForPet(petId: Int): Flow<List<Procedure>>
+
+    @Query("SELECT * from procedure where id = :procedureId")
+    fun getProcedure(procedureId: Int): Flow<Procedure>
+
 }

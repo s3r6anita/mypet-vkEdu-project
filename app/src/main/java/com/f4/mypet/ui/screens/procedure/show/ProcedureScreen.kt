@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.procedure
+package com.f4.mypet.ui.screens.procedure.show
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,19 +26,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 
 @Composable
@@ -47,6 +54,19 @@ fun ProcedureScreen(
     profileId: Int,
     procedureId: Int
 ) {
+    val scope = rememberCoroutineScope()
+    val viewModel: ProcedureViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            viewModel.getProcedure(procedureId)
+        }
+    }
+
+    val procedure by viewModel.procedureUiState.collectAsState()
+
+    val title = viewModel.titles.find { title -> title.id == procedure.title }
+
     var openAlertDialog by remember { mutableStateOf(false) }
 
     if (openAlertDialog) {
@@ -86,8 +106,7 @@ fun ProcedureScreen(
     Scaffold(
         topBar = {
             MyPetTopBar(
-                //TODO: поменять на text = stringResource(R.string.procedure_screen_title),
-                text = "Процедура #$procedureId",
+                text = stringResource(R.string.procedure_screen_title),
                 canNavigateBack = true,
                 navigateUp = { navController.navigateUp() },
                 actions = {
@@ -132,17 +151,17 @@ fun ProcedureScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(R.string.procedure_screen_tmp_name),
+                    text = title?.name ?: "Без названия",
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.weight(1f)
                 )
-                if (true /*заглушка... TODO procedure.isDone */) {
+                if (procedure.isDone == 1) {
                     Icon(
                         imageVector = Icons.Rounded.Done,
                         contentDescription = stringResource(R.string.procedure_screen_procedure_is_done)
                     )
                 } else {
-                    if (true /*заглушка... TODO procedure.dateDone < Date()*/) {
+                    if (procedure.dateDone!! < LocalDateTime.now()) {
                         Icon(
                             imageVector = Icons.Rounded.Close,
                             contentDescription = stringResource(R.string.procedure_screen_procedure_is_not_done)
@@ -158,13 +177,11 @@ fun ProcedureScreen(
 
             // дата и время выполенения
             Text(
-                text = stringResource(R.string.procedure_screen_tmp_time),
-                //TODO timeFormat.format(procedure.timeDone)
+                text = procedure.dateCreated.format(PetDateTimeFormatter.time),
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = stringResource(R.string.procedure_screen_tmp_date),
-                //TODO text = dateFormat.format(procedure.dateDone)
+                text = procedure.dateCreated.format(PetDateTimeFormatter.date),
                 style = MaterialTheme.typography.titleMedium
             )
 
@@ -174,10 +191,9 @@ fun ProcedureScreen(
                 fontSize = 20.sp,
                 modifier = Modifier.padding(top = 20.dp, bottom = 8.dp)
             )
-            if (true /*заглушка... TODO procedure.settings.isReminderEnabled*/) {
+            if (procedure.reminder?.format(PetDateTimeFormatter.dateTime) != "01.01.1001 00:00") {
                 Text(
-                    text = stringResource(R.string.procedure_screen_tmp_time_for_proc),
-                    //TODO ${procedure.settings.beforeReminderTime}
+                    text = procedure.reminder!!.format(PetDateTimeFormatter.dateTime),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
@@ -190,7 +206,7 @@ fun ProcedureScreen(
             }
 
             OutlinedTextField(
-                value = stringResource(R.string.procedure_screen_tmp_notice), //TODO procedure.notes
+                value = procedure.notes,
                 onValueChange = { /*TODO procedure.notes*/ },
                 readOnly = true,
                 label = { Text(stringResource(R.string.procedure_screen_notice)) },

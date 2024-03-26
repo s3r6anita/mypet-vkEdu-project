@@ -70,6 +70,7 @@ fun ProfileScreen(
 ) {
 
     val viewModel: ProfileViewModel = hiltViewModel()
+
     LaunchedEffect(Unit) {
         scope.launch {
             viewModel.getPetProfile(profileId)

@@ -53,10 +53,10 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.navigation.Routes
-import com.f4.mypet.ui.screens.profile.list.ListProfileViewModel
 import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.screens.profile.list.ListProfileViewModel
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
@@ -72,7 +72,8 @@ fun ListProfileScreen(
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
 ) {
-    val viewModel = hiltViewModel<ListProfileViewModel>()
+    val viewModel: ListProfileViewModel = hiltViewModel()
+
     LaunchedEffect(Unit) {
         scope.launch {
             viewModel.getPetsProfiles()
@@ -209,7 +210,8 @@ fun PetItem(
             .clickable {
                 closeSnackbar()
                 navController.navigate(
-                    Routes.BottomBarRoutes.ListProcedures.route + "/" + pet.id + "/" + canNavigateBack) {
+                    Routes.BottomBarRoutes.ListProcedures.route + "/" + pet.id + "/" + canNavigateBack
+                ) {
                     launchSingleTop = true
                     if (!canNavigateBack) {
                         popUpTo(navController.graph.startDestinationId) {

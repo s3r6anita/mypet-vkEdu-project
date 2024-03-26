@@ -1,6 +1,7 @@
-package com.f4.mypet.ui.screens.procedure
+package com.f4.mypet.ui.screens.procedure.createUpdate
 
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,9 +38,12 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,15 +53,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.ui.components.MyPetTopBar
+import kotlinx.coroutines.launch
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.ZoneId
 
 
@@ -66,27 +70,54 @@ const val CORRECT_DATE_DIGIT_NUMBER = 10
 @Suppress("CyclomaticComplexMethod", "LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateProcedureScreen(
+fun CreateUpdateProcedureScreen(
     navController: NavHostController,
-    profileId: Int
+    profileId: Int,
+    procedureId: Int = -1
 ) {
     val context = LocalContext.current
-    //TODO val id = profileId?.toInt() ?: 0
+    val scope = rememberCoroutineScope()
+
+    val viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
+    scope.launch {
+        viewModel.getPetProcedure(procedureId)
+    }
+    val procedureDB by viewModel.procedureUiState.collectAsState()
+    val titles = viewModel.titles
+    val types = viewModel.types
+    Log.d("types", types.toString())
+    val titleDB = titles.find { title -> title.id == procedureDB.title }
+    val typeDB = types.find { type -> type.id == (titleDB?.type ?: 0) }
+    var procedure by remember {
+        mutableStateOf(procedureDB)
+    }
+    var title by remember {
+        mutableStateOf(titleDB)
+    }
+    var type by remember {
+        mutableStateOf(typeDB)
+    }
+    LaunchedEffect(procedureDB) {
+        procedure = procedureDB
+        title = titleDB
+        type = typeDB
+    }
+
 
     var mutableProc by remember {
         mutableStateOf(
             @Suppress("MagicNumber")
-            (Procedure(
-                title = 1, // название
-                isDone = 1, // выполнена ли
-                frequency = 1, // частота выполнения
-                dateDone = LocalDateTime.of(LocalDate.now(), LocalTime.now()), // когда выполнена
-                dateCreated = LocalDateTime.of(LocalDate.now(), LocalTime.now()), // когда создана
-                notes = "Заметки", // заметки
-                reminder = LocalDateTime.of(LocalDate.now(), LocalTime.now()), // время уведомлений
-                pet = 1, // питомец
-                inHistory = 1, // нужно ли добавить в медкарту
-            ))
+            Procedure(
+                1, // название
+                1, // выполнена ли
+                1, // частота выполнения
+                LocalDateTime.now(), // когда выполнена
+                LocalDateTime.now(), // когда создана
+                "Заметки", // заметки
+                LocalDateTime.now(), // время уведомлений
+                1, // питомец
+                1, // нужно ли добавить в медкарту
+            )
         )
     }
 
@@ -301,11 +332,16 @@ fun CreateProcedureScreen(
             var openTimeDialog by remember { mutableStateOf(false) }
             val state = rememberTimePickerState()
             //TODO разобраться с форматом времени (уже по известным данным из БД)
-            var time by remember { mutableStateOf(
-                LocalDateTime.of(LocalDate.now(), LocalTime.now())) }
+            var timeString by remember {
+                mutableStateOf(
+                    mutableProc.dateCreated.format(
+                        PetDateTimeFormatter.time
+                    )
+                )
+            }
 
             OutlinedTextField(
-                value = time.format(PetDateTimeFormatter.time),
+                value = timeString,
                 onValueChange = { },
                 readOnly = true,
                 label = { Text(stringResource(id = R.string.creation_procedure_screen_duration)) },
@@ -331,8 +367,7 @@ fun CreateProcedureScreen(
                     onDismissRequest = { openTimeDialog = false },
                     confirmButton = {
                         TextButton(onClick = {
-                            time = time.withHour(state.hour)
-                            time = time.withMinute(state.minute)
+                            timeString = "${state.hour}:${state.minute}"
                             openTimeDialog = false
                         }) {
                             Text(stringResource(id = R.string.procedure_screen_ok))
@@ -349,16 +384,23 @@ fun CreateProcedureScreen(
             // дата выполнения
             //TODO разобраться с форматом времени (уже по известным данным из БД)
             var openDateDialog by remember { mutableStateOf(false) }
-            var date by remember { mutableStateOf(
-                LocalDateTime.of(LocalDate.now(), LocalTime.now())) }
+            var dateString by remember {
+                mutableStateOf(
+                    mutableProc.dateCreated.format(
+                        PetDateTimeFormatter.date
+                    )
+                )
+            }
 
             OutlinedTextField(
-                value = date.format(PetDateTimeFormatter.date),
-                onValueChange = { },
+                value = dateString,
+                onValueChange = {
+                    //TODO const val CORRECT_DATE_DIGIT_NUMBER = 10???
+                    if (it.length <= CORRECT_DATE_DIGIT_NUMBER) dateString = it
+                },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
-                readOnly = true,
                 label = { Text(stringResource(id = R.string.creation_procedure_screen_date_of_completion)) },
                 supportingText = { Text(text = stringResource(id = R.string.date_format)) },
                 trailingIcon = {
@@ -381,12 +423,13 @@ fun CreateProcedureScreen(
                         TextButton(
                             onClick = {
                                 openDateDialog = false
-                                date = LocalDateTime.ofInstant(
-                                    Instant.ofEpochMilli(
-                                        datePickerState.selectedDateMillis ?: 0
-                                    ),
-                                    ZoneId.of("UTC")
-                                )
+                                dateString =
+                                    (LocalDateTime.ofInstant(
+                                        Instant.ofEpochMilli(
+                                            datePickerState.selectedDateMillis ?: 0
+                                        ),
+                                        ZoneId.of("UTC")
+                                    )).format(PetDateTimeFormatter.date)
                             },
                         ) {
                             Text(stringResource(id = R.string.confirm_button_description))

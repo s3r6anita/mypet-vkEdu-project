@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,7 +55,6 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.PastOrPresentSelectableDates
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
-import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
@@ -68,9 +68,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.ZoneId
 
 
@@ -87,31 +85,34 @@ fun CreateUpdateProfileScreen(
     val context = LocalContext.current
 
     val viewModel: CreateUpdateProfileViewModel = hiltViewModel()
-    val pets by viewModel.petsUiState.collectAsState()
-    var pet by remember {
-        mutableStateOf(
-            Pet(
-                "", "", "", "Самец",
-                LocalDateTime.of(LocalDate.now(), LocalTime.now()),
-                "", "", ""
-            )
-        )
-    }
-    if (!isCreateScreen) {
-        pets.forEach { onePet ->
-            if (onePet.id == profileId) {
-                pet = onePet
-            }
-        }
-    }
-
-//    val petDB by viewModel.petUiState.collectAsState()
+//    val pets by viewModel.petsUiState.collectAsState()
 //    var pet by remember {
-//        mutableStateOf(petDB)
+//        mutableStateOf(
+//            Pet(
+//                "", "", "", "Самец",
+//                LocalDateTime.of(LocalDate.now(), LocalTime.now()),
+//                "", "", ""
+//            )
+//        )
 //    }
-//    LaunchedEffect(petDB){
-//        pet = petDB
+//    if (!isCreateScreen) {
+//        pets.forEach { onePet ->
+//            if (onePet.id == profileId) {
+//                pet = onePet
+//            }
+//        }
 //    }
+    scope.launch {
+        viewModel.getPetProfile(profileId)
+    }
+    val petDB by viewModel.petUiState.collectAsState()
+
+    var pet by remember {
+        mutableStateOf(petDB)
+    }
+    LaunchedEffect(petDB) {
+        pet = petDB
+    }
 
     Scaffold(
         topBar = {

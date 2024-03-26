@@ -23,7 +23,7 @@ data class ProcedureTitle(
 )
 
 data class TitleWithProcedures(
-    @Embedded val procedure: Procedure,
+    @Embedded val title: ProcedureTitle,
     @Relation(
         parentColumn = "id",
         entityColumn = "title"
