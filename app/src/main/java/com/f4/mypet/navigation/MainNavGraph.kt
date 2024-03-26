@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.f4.mypet.ui.screens.medcard.MedCardScreen
 import com.f4.mypet.ui.screens.procedure.CreateProcedureScreen
 import com.f4.mypet.ui.screens.procedure.ListProcedureScreen
 import com.f4.mypet.ui.screens.procedure.ProcedureScreen
@@ -161,11 +162,11 @@ fun NavGraphBuilder.mainNavGraph(
                 type = NavType.BoolType
             }
         )
-    ) { // backStackEntry ->
-//        MedCardScreen(
-//            navController = navController,
-//            profileId = backStackEntry.arguments?.getInt("profileId"),
-//            canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack")
-//        )
+    ) { backStackEntry ->
+        MedCardScreen(
+            navController = navController,
+            profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+            canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
+        )
     }
 }
