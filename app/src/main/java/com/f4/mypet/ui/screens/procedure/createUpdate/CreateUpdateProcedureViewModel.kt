@@ -43,8 +43,10 @@ class CreateUpdateProcedureViewModel @Inject constructor(
 
     fun getPetProcedure(procedureId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getProcedure(procedureId).collect() { procedures ->
-                _procedureUiState.value = procedures
+            if (procedureId != -1) {
+                repository.getProcedure(procedureId).collect { procedure ->
+                    _procedureUiState.value = procedure
+                }
             }
         }
     }
