@@ -1,6 +1,5 @@
 package com.f4.mypet.ui.components
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -56,9 +55,6 @@ fun MyPetBottomBar(
                 label = { Text(text = stringResource(item.route.title)) },
                 selected = BottomBarData.selectedItemIndex == index,
                 onClick = {
-                    Log.d("my", "sel=${BottomBarData.selectedItemIndex} --- index=$index")
-                    BottomBarData.selectedItemIndex = index
-                    Log.d("my", "sel=${BottomBarData.selectedItemIndex} --- index=$index")
                     navController.navigate(item.route.route + "/" + profileId + "/" + canNavigateBack) {
                         popUpTo(Routes.ListProfile.route) {
                             inclusive = false
@@ -66,6 +62,7 @@ fun MyPetBottomBar(
                         launchSingleTop = true
                         restoreState = true
                     }
+                    BottomBarData.selectedItemIndex = index
                 },
                 icon = {
                     BadgedBox(
