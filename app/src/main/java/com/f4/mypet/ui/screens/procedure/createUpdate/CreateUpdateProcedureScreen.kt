@@ -1,7 +1,6 @@
 package com.f4.mypet.ui.screens.procedure.createUpdate
 
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,12 +37,9 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,13 +49,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.ui.components.MyPetTopBar
-import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -76,32 +70,32 @@ fun CreateUpdateProcedureScreen(
     procedureId: Int = -1
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-
-    val viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
-    scope.launch {
-        viewModel.getPetProcedure(procedureId)
-    }
-    val procedureDB by viewModel.procedureUiState.collectAsState()
-    val titles = viewModel.titles
-    val types = viewModel.types
-    Log.d("types", types.toString())
-    val titleDB = titles.find { title -> title.id == procedureDB.title }
-    val typeDB = types.find { type -> type.id == (titleDB?.type ?: 0) }
-    var procedure by remember {
-        mutableStateOf(procedureDB)
-    }
-    var title by remember {
-        mutableStateOf(titleDB)
-    }
-    var type by remember {
-        mutableStateOf(typeDB)
-    }
-    LaunchedEffect(procedureDB) {
-        procedure = procedureDB
-        title = titleDB
-        type = typeDB
-    }
+//    val scope = rememberCoroutineScope()
+//
+//    val viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
+//    scope.launch {
+//        viewModel.getPetProcedure(procedureId)
+//    }
+//    val procedureDB by viewModel.procedureUiState.collectAsState()
+//    val titles = viewModel.titles
+//    val types = viewModel.types
+//    Log.d("types", types.toString())
+//    val titleDB = titles.find { title -> title.id == procedureDB.title }
+//    val typeDB = types.find { type -> type.id == (titleDB?.type ?: 0) }
+//    var procedure by remember {
+//        mutableStateOf(procedureDB)
+//    }
+//    var title by remember {
+//        mutableStateOf(titleDB)
+//    }
+//    var type by remember {
+//        mutableStateOf(typeDB)
+//    }
+//    LaunchedEffect(procedureDB) {
+//        procedure = procedureDB
+//        title = titleDB
+//        type = typeDB
+//    }
 
 
     var mutableProc by remember {

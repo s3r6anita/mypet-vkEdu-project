@@ -83,33 +83,13 @@ fun CreateUpdateProfileScreen(
     profileId: Int = -1
 ) {
     val context = LocalContext.current
-
     val viewModel: CreateUpdateProfileViewModel = hiltViewModel()
-//    val pets by viewModel.petsUiState.collectAsState()
-//    var pet by remember {
-//        mutableStateOf(
-//            Pet(
-//                "", "", "", "Самец",
-//                LocalDateTime.of(LocalDate.now(), LocalTime.now()),
-//                "", "", ""
-//            )
-//        )
-//    }
-//    if (!isCreateScreen) {
-//        pets.forEach { onePet ->
-//            if (onePet.id == profileId) {
-//                pet = onePet
-//            }
-//        }
-//    }
+
     scope.launch {
         viewModel.getPetProfile(profileId)
     }
     val petDB by viewModel.petUiState.collectAsState()
-
-    var pet by remember {
-        mutableStateOf(petDB)
-    }
+    var pet by remember { mutableStateOf(petDB) }
     LaunchedEffect(petDB) {
         pet = petDB
     }

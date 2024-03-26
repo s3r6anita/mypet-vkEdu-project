@@ -18,7 +18,6 @@ import javax.inject.Inject
 class CreateUpdateProfileViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
-
     private val _petUiState = MutableStateFlow(
         Pet(
             "", "", "", "Самец",
@@ -27,30 +26,16 @@ class CreateUpdateProfileViewModel @Inject constructor(
         )
     )
     val petUiState = _petUiState.asStateFlow()
-
-    fun getPetProfile(petId: Int?) {
+    fun getPetProfile(petId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             //TODO: сделать тут try catch на petID
-            if (petId != null) {
-                repository.getPet(petId).collect() { pet ->
+            if (petId != -1) {
+                repository.getPet(petId).collect { pet ->
                     _petUiState.value = pet
                 }
             }
         }
-
     }
-
-//    private val _petsUiState = MutableStateFlow(emptyList<Pet>())
-//    val petsUiState = _petsUiState.asStateFlow()
-//
-//    init {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repository.getPets().collect() { pets ->
-//                _petsUiState.value = pets
-//            }
-//        }
-//
-//    }
 
     fun createPet(pet: Pet) {
         viewModelScope.launch {
