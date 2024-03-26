@@ -31,6 +31,9 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,12 +48,15 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.screens.profile.list.ListProfileViewModel
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
@@ -58,6 +64,7 @@ import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.ui.theme.White
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListProfileScreen(
@@ -65,6 +72,19 @@ fun ListProfileScreen(
     snackbarHostState: SnackbarHostState,
     scope: CoroutineScope,
 ) {
+    val viewModel: ListProfileViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            viewModel.getPetsProfiles()
+        }
+    }
+
+    val pets by viewModel.petsUiState.collectAsState()
+    // пока только так, а потом добавлю еще заглушку, если отсуствуют профили
+
+    val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             MyPetTopBar(
@@ -134,9 +154,9 @@ fun ListProfileScreen(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    listOf(1, 2, 3).forEachIndexed { index, pet ->
+                    pets.forEach { pet ->
                         PetItem(
-                            profileId = index, // TODO: заменить на {pet.id}
+                            pet = pet,
                             canNavigateBack = !rememberUserChoice,
                             navController = navController,
                             closeSnackbar = { scope.coroutineContext.cancelChildren() }
@@ -172,7 +192,7 @@ fun ListProfileScreen(
 
 @Composable
 fun PetItem(
-    profileId: Int,
+    pet: Pet,
     canNavigateBack: Boolean,
     navController: NavHostController,
     closeSnackbar: () -> Unit
@@ -190,7 +210,8 @@ fun PetItem(
             .clickable {
                 closeSnackbar()
                 navController.navigate(
-                    Routes.BottomBarRoutes.ListProcedures.route + "/" + profileId + "/" + canNavigateBack) {
+                    Routes.BottomBarRoutes.ListProcedures.route + "/" + pet.id + "/" + canNavigateBack
+                ) {
                     launchSingleTop = true
                     if (!canNavigateBack) {
                         popUpTo(navController.graph.startDestinationId) {
@@ -219,7 +240,7 @@ fun PetItem(
                     colorFilter = ColorFilter.tint(LightBlueBackground)
                 )
                 Text(
-                    text = "Питомец #$profileId",
+                    text = pet.name,
                     color = Color.Black,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,

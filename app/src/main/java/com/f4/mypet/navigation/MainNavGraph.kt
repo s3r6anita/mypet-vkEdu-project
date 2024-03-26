@@ -8,12 +8,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.f4.mypet.ui.screens.medcard.MedCardScreen
-import com.f4.mypet.ui.screens.procedure.CreateProcedureScreen
-import com.f4.mypet.ui.screens.procedure.ListProcedureScreen
-import com.f4.mypet.ui.screens.procedure.ProcedureScreen
+import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureScreen
+import com.f4.mypet.ui.screens.procedure.list.ListProcedureScreen
+import com.f4.mypet.ui.screens.procedure.show.ProcedureScreen
 import com.f4.mypet.ui.screens.profile.CreateUpdateProfileScreen
 import com.f4.mypet.ui.screens.profile.ListProfileScreen
-import com.f4.mypet.ui.screens.profile.ProfileScreen
+import com.f4.mypet.ui.screens.profile.show.ProfileScreen
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -46,6 +46,7 @@ fun NavGraphBuilder.mainNavGraph(
             ProfileScreen(
                 navController,
                 snackbarHostState,
+                scope,
                 backStackEntry.arguments?.getInt("profileId") ?: -1,
                 backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
@@ -107,7 +108,7 @@ fun NavGraphBuilder.mainNavGraph(
             }
         )
     ) { backStackEntry ->
-        CreateProcedureScreen(
+        CreateUpdateProcedureScreen(
             navController,
             backStackEntry.arguments?.getInt("profileId") ?: -1
         )
@@ -142,12 +143,11 @@ fun NavGraphBuilder.mainNavGraph(
             }
         )
     ) { backStackEntry ->
-//            UpdateProcedureScreen(
-//                navController,
-//                context,
-//                backStackEntry.arguments?.getString("profileId"),
-//                backStackEntry.arguments?.getString("procedureId")
-//            )
+        CreateUpdateProcedureScreen(
+            navController,
+            backStackEntry.arguments?.getInt("profileId") ?: -1,
+            backStackEntry.arguments?.getInt("procedureId") ?: -1
+        )
     }
 
 
