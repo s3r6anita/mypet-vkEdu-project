@@ -28,15 +28,26 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,9 +55,15 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
+import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import com.f4.mypet.ui.screens.profile.TextComponent
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.RedButton
@@ -57,6 +74,19 @@ fun ProcedureScreen(
     profileId: Int,
     procedureId: Int
 ) {
+    val scope = rememberCoroutineScope()
+    val viewModel: ProcedureViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            viewModel.getProcedure(procedureId)
+        }
+    }
+
+    val procedure by viewModel.procedureUiState.collectAsState()
+
+    val title = viewModel.titles.find { title -> title.id == procedure.title }
+
     var openAlertDialog by remember { mutableStateOf(false) }
     val dialogShape = RoundedCornerShape(12.dp)
     if (openAlertDialog) {
@@ -101,8 +131,7 @@ fun ProcedureScreen(
     Scaffold(
         topBar = {
             MyPetTopBar(
-                //TODO: поменять на text = stringResource(R.string.procedure_screen_title),
-                text = "Процедура #$procedureId",
+                text = stringResource(R.string.procedure_screen_title),
                 canNavigateBack = true,
                 navigateUp = { navController.navigateUp() },
             )
@@ -138,28 +167,47 @@ fun ProcedureScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            // TODO: потом заменить строку из ресурсов на кличку (pet.nickname)
-                            text = stringResource(R.string.procedure_screen_tmp_name),
+                            text = title?.name ?: "Без названия",
                             style = MaterialTheme.typography.headlineMedium,
                             modifier = Modifier.weight(1f),
                         )
+                        if (procedure.isDone == 1) {
+                            Icon(
+                                imageVector = Icons.Rounded.Done,
+                                contentDescription = stringResource(R.string.procedure_screen_procedure_is_done)
+                            )
+                        } else {
+                            if (procedure.dateDone!! < LocalDateTime.now()) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Close,
+                                    contentDescription = stringResource(R.string.procedure_screen_procedure_is_not_done)
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Rounded.Info,
+                                    contentDescription = stringResource(R.string.procedure_screen_procedure_will_be_done)
+                                )
+                            }
+                        }
                         TextComponent(
-                            header = stringResource(R.string.procedure_screen_type), value = "Вакцинация"
+                            header = stringResource(R.string.procedure_screen_type),
+                            value = "Вакцинация" // TODO: return procedure.title.type
                         )
                         TextComponent(
-                            header = stringResource(R.string.procedure_screen_date_of_event), value = stringResource(R.string.procedure_screen_tmp_date)
+                            header = procedure.dateCreated.format(PetDateTimeFormatter.date),
+                            value = stringResource(R.string.procedure_screen_tmp_date)
                         )
                         TextComponent(
-                            header = stringResource(R.string.procedure_screen_time_of_event), value = stringResource(R.string.procedure_screen_tmp_time)
+                            header = procedure.dateCreated.format(PetDateTimeFormatter.time),
+                            value = stringResource(R.string.procedure_screen_tmp_time)
                         )
                         TextComponent(
-                            header = stringResource(R.string.procedure_screen_place_of_event), value = stringResource(R.string.procedure_screen_tmp_place)
+                            header = stringResource(R.string.procedure_screen_reminder),
+                            value = procedure.reminder?.format(PetDateTimeFormatter.dateTime) != "01.01.1001 00:00"
                         )
                         TextComponent(
-                            header = stringResource(R.string.procedure_screen_reminder), value = stringResource(R.string.procedure_screen_tmp_time_for_proc)
-                        )
-                        TextComponent(
-                            header = stringResource(R.string.procedure_screen_notice), value = stringResource(R.string.procedure_screen_tmp_notice)
+                            header = stringResource(R.string.procedure_screen_notice),
+                            value = procedure.notes
                         )
                     }
                 }
@@ -177,7 +225,6 @@ fun ProcedureScreen(
                             .background(LightBlueBackground)
                     )
                 }
-
             }
             Row(modifier = Modifier
                 .fillMaxWidth()
@@ -224,11 +271,7 @@ fun ProcedureScreen(
             }
 
         }
-
     }
-
-
-
 }
 
 //TODO removeProcedure

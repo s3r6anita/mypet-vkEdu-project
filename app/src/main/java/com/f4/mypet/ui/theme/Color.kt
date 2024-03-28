@@ -14,7 +14,7 @@ val Pink40 = Color(0xFF7D5260)
 val GrayBackground = Color(0xFFEBEDF0) // Серый фон
 val LightBlueBackground = Color(0xFFC0DDFF) // Голубой для фона, иконок
 val White = Color(0xFFFFFFFF) // Белый
-
+val LightGreenBackground = Color(0xFFC6DDC6) // Green для фона, иконок
 val GreenButton = Color(0xFF4BB34B) // Зеленые кнопки: добавить
 val RedButton = Color(0xFFE64646) // Красные кнопки: удалить
 val LightGrayTint = Color(0xFF99A2AD) // Для иконок/неотмеченных чекбоксов/незаполненных полей и дефолтного текста
