@@ -1,27 +1,34 @@
-package com.f4.mypet.ui.screens.procedure.show
+package com.f4.mypet.ui.screens.procedure
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -35,18 +42,26 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
-import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.screens.procedure.show.ProcedureViewModel
+import com.f4.mypet.ui.screens.profile.show.TextComponent
+import com.f4.mypet.ui.theme.BlueCheckbox
+import com.f4.mypet.ui.theme.GreenButton
+import com.f4.mypet.ui.theme.LightBlueBackground
+import com.f4.mypet.ui.theme.RedButton
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-
 
 @Composable
 fun ProcedureScreen(
@@ -68,11 +83,12 @@ fun ProcedureScreen(
     val title = viewModel.titles.find { title -> title.id == procedure.title }
 
     var openAlertDialog by remember { mutableStateOf(false) }
-
+    val dialogShape = RoundedCornerShape(12.dp)
     if (openAlertDialog) {
         AlertDialog(
+            shape = dialogShape,
             title = {
-                Text(text = stringResource(R.string.procedure_screen_delete))
+                Text(text = stringResource(R.string.procedure_screen_delete_title_alert))
             },
             text = {
                 Text(text = stringResource(R.string.procedure_screen_question_delete_procedure))
@@ -82,24 +98,28 @@ fun ProcedureScreen(
             },
             confirmButton = {
                 TextButton(
+                    colors = ButtonDefaults.textButtonColors(contentColor = BlueCheckbox),
                     onClick = {
                         openAlertDialog = false
                         navController.navigateUp()
 //                      // TODO: вставить вызов функции removeProcedure(id) внутри scope.launch { delay(100), ...}
                     }
                 ) {
-                    Text(stringResource(R.string.procedure_screen_ok))
+                    Text(stringResource(R.string.procedure_screen_delete))
                 }
             },
             dismissButton = {
                 TextButton(
+                    colors = ButtonDefaults.textButtonColors(contentColor = BlueCheckbox),
                     onClick = {
                         openAlertDialog = false
                     }
                 ) {
                     Text(stringResource(R.string.procedure_screen_cancel))
                 }
-            }
+            },
+            containerColor = Color.White,
+            modifier = Modifier.shadow(elevation = 8.dp, shape = dialogShape)
         )
     }
 
@@ -109,30 +129,8 @@ fun ProcedureScreen(
                 text = stringResource(R.string.procedure_screen_title),
                 canNavigateBack = true,
                 navigateUp = { navController.navigateUp() },
-                actions = {
-                    IconButton(onClick = {
-                        openAlertDialog = true
-                    }) {
-                        Icon(
-                            Icons.Filled.Delete,
-                            stringResource(R.string.procedure_screen_delete_button)
-                        )
-                    }
-                }
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate(Routes.UpdateProcedure.route + "/" + profileId + "/" + procedureId) {
-                        launchSingleTop = true
-                    }
-                },
-            ) {
-                Icon(Icons.Rounded.Edit, stringResource(R.string.procedure_screen_edit_procedure))
-            }
-        },
-        floatingActionButtonPosition = FabPosition.End
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -140,82 +138,140 @@ fun ProcedureScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
             // название
-            Row(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp, bottom = 20.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(vertical = 50.dp)
             ) {
-                Text(
-                    text = title?.name ?: "Без названия",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.weight(1f)
-                )
-                if (procedure.isDone == 1) {
-                    Icon(
-                        imageVector = Icons.Rounded.Done,
-                        contentDescription = stringResource(R.string.procedure_screen_procedure_is_done)
-                    )
-                } else {
-                    if (procedure.dateDone!! < LocalDateTime.now()) {
-                        Icon(
-                            imageVector = Icons.Rounded.Close,
-                            contentDescription = stringResource(R.string.procedure_screen_procedure_is_not_done)
+                Card(
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 6.dp
+                    ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.onSecondary,
+                    ),
+                    modifier = Modifier
+                        .padding(top = 50.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .padding(top = 50.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = title?.name ?: "Без названия",
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.weight(1f),
                         )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Rounded.Info,
-                            contentDescription = stringResource(R.string.procedure_screen_procedure_will_be_done)
+                        if (procedure.isDone == 1) {
+                            Icon(
+                                imageVector = Icons.Rounded.Done,
+                                contentDescription = stringResource(R.string.procedure_screen_procedure_is_done)
+                            )
+                        } else {
+                            if (procedure.dateDone!! < LocalDateTime.now()) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Close,
+                                    contentDescription = stringResource(R.string.procedure_screen_procedure_is_not_done)
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Rounded.Info,
+                                    contentDescription = stringResource(
+                                        R.string.procedure_screen_procedure_will_be_done
+                                    )
+                                )
+                            }
+                        }
+                        TextComponent(
+                            header = stringResource(R.string.procedure_screen_type),
+                            // TODO: return procedure.title.type
+                            value = stringResource(id = R.string.procedure_screen_type)
+                        )
+                        TextComponent(
+                            header = procedure.dateCreated.format(PetDateTimeFormatter.date),
+                            value = stringResource(R.string.procedure_screen_tmp_date)
+                        )
+                        TextComponent(
+                            header = procedure.dateCreated.format(PetDateTimeFormatter.time),
+                            value = stringResource(R.string.procedure_screen_tmp_time)
+                        )
+                        TextComponent(
+                            header = stringResource(R.string.procedure_screen_reminder),
+                            value = procedure.reminder?.format(PetDateTimeFormatter.dateTime)
+                                ?: "01.01.1001 00:00"
+                        )
+                        TextComponent(
+                            header = stringResource(R.string.procedure_screen_notice),
+                            value = procedure.notes
                         )
                     }
                 }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.some_procedure_icon),
+                        contentDescription = stringResource(id = R.string.pet_photo_description),
+                        contentScale = ContentScale.Inside,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                            .background(LightBlueBackground)
+                    )
+                }
             }
 
-            // дата и время выполенения
-            Text(
-                text = procedure.dateCreated.format(PetDateTimeFormatter.time),
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = procedure.dateCreated.format(PetDateTimeFormatter.date),
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            Text(
-                text = stringResource(R.string.procedure_screen_reminder),
-                style = MaterialTheme.typography.labelMedium,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(top = 20.dp, bottom = 8.dp)
-            )
-            if (procedure.reminder?.format(PetDateTimeFormatter.dateTime) != "01.01.1001 00:00") {
-                Text(
-                    text = procedure.reminder!!.format(PetDateTimeFormatter.dateTime),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(bottom = 12.dp)
-                )
-            } else {
-                Text(
-                    text = stringResource(R.string.procedure_screen_turned_off),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(bottom = 12.dp)
-                )
-            }
-
-            OutlinedTextField(
-                value = procedure.notes,
-                onValueChange = { /*TODO procedure.notes*/ },
-                readOnly = true,
-                label = { Text(stringResource(R.string.procedure_screen_notice)) },
+            //  кнопки редактирования и удаления
+            Row(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
                     .fillMaxWidth()
-                    .padding(bottom = 20.dp)
-            )
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Button(
+                    modifier = Modifier
+                        .padding(bottom = 40.dp)
+                        .weight(1f),
+                    contentPadding = PaddingValues(start = 1.dp, end = 1.dp),
+                    onClick = {
+                        //TODO сделать навагацию
+                    },
+                    border = BorderStroke(1.dp, GreenButton),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.edit_button_description),
+                        modifier = Modifier.padding(start = 5.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                Spacer(modifier = Modifier.width(24.dp))
+                // кнопка удаления
+                Button(
+                    modifier = Modifier
+                        .padding(bottom = 40.dp)
+                        .weight(1f), // Добавляем отступ 24 пикселя между кнопками,
+                    onClick = {
+                        openAlertDialog = true
+                    },
+                    border = BorderStroke(1.dp, RedButton),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = RedButton)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.procedure_screen_delete),
+                        modifier = Modifier.padding(start = 10.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
+
         }
     }
 }
