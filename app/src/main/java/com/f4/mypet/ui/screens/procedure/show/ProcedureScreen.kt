@@ -3,20 +3,8 @@ package com.f4.mypet.ui.screens.procedure
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import com.f4.mypet.ui.theme.GreenButton
-import com.f4.mypet.ui.theme.LightBlueBackground
-
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,19 +12,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -51,22 +42,26 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
-import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.screens.procedure.show.ProcedureViewModel
+import com.f4.mypet.ui.screens.profile.show.TextComponent
+import com.f4.mypet.ui.theme.BlueCheckbox
+import com.f4.mypet.ui.theme.GreenButton
+import com.f4.mypet.ui.theme.LightBlueBackground
+import com.f4.mypet.ui.theme.RedButton
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import com.f4.mypet.ui.screens.profile.TextComponent
-import com.f4.mypet.ui.theme.BlueCheckbox
-import com.f4.mypet.ui.theme.RedButton
 
 @Composable
 fun ProcedureScreen(
@@ -124,7 +119,7 @@ fun ProcedureScreen(
                 }
             },
             containerColor = Color.White,
-            modifier = Modifier.shadow(elevation = 8.dp,shape = dialogShape)
+            modifier = Modifier.shadow(elevation = 8.dp, shape = dialogShape)
         )
     }
 
@@ -147,13 +142,14 @@ fun ProcedureScreen(
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             // название
-            Box(modifier = Modifier
-                .padding(vertical = 50.dp)
+            Box(
+                modifier = Modifier
+                    .padding(vertical = 50.dp)
             ) {
-                Card (
+                Card(
                     elevation = CardDefaults.cardElevation(
-                    defaultElevation = 6.dp
-                ),
+                        defaultElevation = 6.dp
+                    ),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.onSecondary,
                     ),
@@ -185,13 +181,16 @@ fun ProcedureScreen(
                             } else {
                                 Icon(
                                     imageVector = Icons.Rounded.Info,
-                                    contentDescription = stringResource(R.string.procedure_screen_procedure_will_be_done)
+                                    contentDescription = stringResource(
+                                        R.string.procedure_screen_procedure_will_be_done
+                                    )
                                 )
                             }
                         }
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_type),
-                            value = "Вакцинация" // TODO: return procedure.title.type
+                            // TODO: return procedure.title.type
+                            value = stringResource(id = R.string.procedure_screen_type)
                         )
                         TextComponent(
                             header = procedure.dateCreated.format(PetDateTimeFormatter.date),
@@ -203,7 +202,8 @@ fun ProcedureScreen(
                         )
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_reminder),
-                            value = procedure.reminder?.format(PetDateTimeFormatter.dateTime) != "01.01.1001 00:00"
+                            value = procedure.reminder?.format(PetDateTimeFormatter.dateTime)
+                                ?: "01.01.1001 00:00"
                         )
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_notice),
@@ -226,12 +226,15 @@ fun ProcedureScreen(
                     )
                 }
             }
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+
+            //  кнопки редактирования и удаления
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Bottom,
-            ){
+            ) {
                 Button(
                     modifier = Modifier
                         .padding(bottom = 40.dp)
@@ -254,8 +257,7 @@ fun ProcedureScreen(
                 Button(
                     modifier = Modifier
                         .padding(bottom = 40.dp)
-                        .weight(1f)
-                    , // Добавляем отступ 24 пикселя между кнопками,
+                        .weight(1f), // Добавляем отступ 24 пикселя между кнопками,
                     onClick = {
                         openAlertDialog = true
                     },
