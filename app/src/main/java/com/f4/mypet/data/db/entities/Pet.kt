@@ -1,19 +1,19 @@
-package com.f4.mypet.db.entities
+package com.f4.mypet.data.db.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import java.util.Date
+import java.time.LocalDateTime
 
 @Entity
 data class Pet(
     val name: String,
     val kind: String, // кошка собака морж
     val breed: String, // порода
-    val sex: Boolean, // "Самец" | "Самка"
-    val birthday: Date, // TODO: нужен конвертер типов для даты
+    val sex: String, // "Самка" | "Самец"
+    val birthday: LocalDateTime,
     val color: String, // окрас
     val coat: String, // вид шерсти
     val microchipNumber: String, // 15 цифр
@@ -36,5 +36,5 @@ data class PetWithMedRecords(
         parentColumn = "id",
         entityColumn = "pet"
     )
-    val medRecord: List<MedRecord>
+    val medRecords: List<MedRecord>
 )

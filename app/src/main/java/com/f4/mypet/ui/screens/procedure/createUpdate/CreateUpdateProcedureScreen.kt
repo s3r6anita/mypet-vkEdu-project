@@ -1,5 +1,7 @@
-package com.f4.mypet.ui.screens.procedure
+package com.f4.mypet.ui.screens.procedure.createUpdate
 
+
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,9 +38,12 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,49 +53,63 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
-import com.f4.mypet.dateFormat
-import com.f4.mypet.db.entities.Procedure
-import com.f4.mypet.timeFormat
+import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
-import java.util.Date
+import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+
 
 const val CORRECT_DATE_DIGIT_NUMBER = 10
 
 @Suppress("CyclomaticComplexMethod", "LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateProcedureScreen(
+fun CreateUpdateProcedureScreen(
     navController: NavHostController,
-    profileId: Int
+    profileId: Int,
+    procedureId: Int = -1
 ) {
     val context = LocalContext.current
-    //TODO val id = profileId?.toInt() ?: 0
+    val scope = rememberCoroutineScope()
+    val viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 
-    var mutableProc by remember {
-        mutableStateOf(
-            @Suppress("MagicNumber")
-            Procedure(
-                1, // название
-                true, // выполнена ли
-                1, // частота выполнения
-                Date(122, 0, 1, 12, 0), // когда выполнена
-                Date(122, 0, 1, 12, 0), // когда создана
-                "Заметки", // заметки
-                Date(122, 0, 1, 12, 0), // время уведомлений
-                1, // питомец
-                true, // нужно ли добавить в медкарту
-            )
-        )
+    scope.launch {
+        viewModel.getPetProcedure(procedureId)
     }
+    val titles = viewModel.titles
+    val types = viewModel.types
+
+    val procedureDB by viewModel.procedureUiState.collectAsState()
+    val titleDB = titles.find { title -> title.id == procedureDB.title }
+    val typeDB = types.find { type -> type.id == (titleDB?.type ?: -1) }
+    var procedure by remember {
+        mutableStateOf(procedureDB)
+    }
+    var title by remember {
+        mutableStateOf(titleDB)
+    }
+    var type by remember {
+        mutableStateOf(typeDB)
+    }
+    LaunchedEffect(procedureDB) {
+        procedure = procedureDB
+        title = titleDB
+        type = typeDB
+    }
+    Log.d("my", "$procedureDB")
 
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(/* TODO Routes.CreateProcedure.title*/ R.string.creation_procedure_screen_title),
+                text = stringResource(Routes.CreateProcedure.title),
                 canNavigateBack = true,
-                navigateUp = { /*TODO navController.navigateUp()*/ },
+                navigateUp = { navController.navigateUp() },
                 actions = {}
             )
         },
@@ -296,7 +315,13 @@ fun CreateProcedureScreen(
             var openTimeDialog by remember { mutableStateOf(false) }
             val state = rememberTimePickerState()
             //TODO разобраться с форматом времени (уже по известным данным из БД)
-            var timeString by remember { mutableStateOf(timeFormat.format(mutableProc)) }
+            var timeString by remember {
+                mutableStateOf(
+                    procedure.dateCreated.format(
+                        PetDateTimeFormatter.time
+                    )
+                )
+            }
 
             OutlinedTextField(
                 value = timeString,
@@ -342,7 +367,13 @@ fun CreateProcedureScreen(
             // дата выполнения
             //TODO разобраться с форматом времени (уже по известным данным из БД)
             var openDateDialog by remember { mutableStateOf(false) }
-            var dateString by remember { mutableStateOf(dateFormat.format(mutableProc.dateDone)) }
+            var dateString by remember {
+                mutableStateOf(
+                    procedure.dateCreated.format(
+                        PetDateTimeFormatter.date
+                    )
+                )
+            }
 
             OutlinedTextField(
                 value = dateString,
@@ -376,7 +407,12 @@ fun CreateProcedureScreen(
                             onClick = {
                                 openDateDialog = false
                                 dateString =
-                                    dateFormat.format(datePickerState.selectedDateMillis ?: 0)
+                                    (LocalDateTime.ofInstant(
+                                        Instant.ofEpochMilli(
+                                            datePickerState.selectedDateMillis ?: 0
+                                        ),
+                                        ZoneId.of("UTC")
+                                    )).format(PetDateTimeFormatter.date)
                             },
                         ) {
                             Text(stringResource(id = R.string.confirm_button_description))
@@ -442,11 +478,11 @@ fun CreateProcedureScreen(
 
             // заметки
             OutlinedTextField(
-                value = mutableProc.notes,
-                onValueChange = { mutableProc = mutableProc.copy(notes = it) },
+                value = procedure.notes,
+                onValueChange = { procedure = procedure.copy(notes = it) },
                 label = { Text(stringResource(id = R.string.creation_procedure_screen_notes)) },
                 trailingIcon = {
-                    IconButton(onClick = { mutableProc = mutableProc.copy(notes = "") }) {
+                    IconButton(onClick = { procedure = procedure.copy(notes = "") }) {
                         Icon(
                             Icons.Default.Clear,
                             contentDescription = stringResource(id = R.string.clear)

@@ -35,6 +35,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,15 +50,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.PastOrPresentSelectableDates
+import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
-import com.f4.mypet.dateFormat
-import com.f4.mypet.db.entities.Pet
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.SHOWSNACKDURATION
+import com.f4.mypet.ui.screens.profile.createUpdate.CreateUpdateProfileViewModel
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.validate
 import com.f4.mypet.validateBirthday
@@ -64,7 +67,10 @@ import com.f4.mypet.validateMicrochipNumber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Date
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,16 +83,15 @@ fun CreateUpdateProfileScreen(
     profileId: Int = -1
 ) {
     val context = LocalContext.current
+    val viewModel: CreateUpdateProfileViewModel = hiltViewModel()
 
-    var pet by remember {
-        mutableStateOf(
-            if (isCreateScreen) {
-                Pet("", "", "", true, Date(), "", "", "")
-            } else {
-                // TODO: поменять на данные, получаемые из ViewModel
-                Pet("", "", "", true, Date(), "", "", "")
-            }
-        )
+    scope.launch {
+        viewModel.getPetProfile(profileId)
+    }
+    val petDB by viewModel.petUiState.collectAsState()
+    var pet by remember { mutableStateOf(petDB) }
+    LaunchedEffect(petDB) {
+        pet = petDB
     }
 
     Scaffold(
@@ -125,10 +130,10 @@ fun CreateUpdateProfileScreen(
                 .padding(top = 5.dp)
 
             // пол
-            val radioOptions = mapOf(
-                stringResource(id = R.string.male_sex) to true,
-                stringResource(id = R.string.female_sex) to false
-            )
+            val radioOptions = listOf("Самец", "Самка")
+            val selectedOption by remember {
+                mutableStateOf(radioOptions[0])
+            }
             Row(
                 modifier
                     .selectableGroup()
@@ -143,24 +148,24 @@ fun CreateUpdateProfileScreen(
                     .height(10.dp)
                     .width(50.dp)
                 )
-                radioOptions.forEach { elem ->
+                radioOptions.forEach { text ->
                     Column(
                     ) {
                         Row(
                             modifier = Modifier
                                 .selectable(
-                                    selected = (elem.value == pet.sex),
-                                    onClick = { pet = pet.copy(sex = elem.value) },
+                                    selected = (text == selectedOption),
+                                    onClick = { pet = pet.copy(sex = text) },
                                     role = Role.RadioButton
                                 )
                                 .padding(horizontal = 16.dp, vertical = 10.dp),
                         ) {
                             RadioButton(
-                                selected = (elem.value == pet.sex),
+                                selected = (text == pet.sex),
                                 onClick = null
                             )
                             Text(
-                                text = elem.key,
+                                text = text,
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.padding(start = 10.dp)
                             )
@@ -169,7 +174,7 @@ fun CreateUpdateProfileScreen(
                 }
             }
             // кличка
-            var nameIsCorrect by remember { mutableStateOf(false) }
+            var nameIsCorrect by remember { mutableStateOf(!isCreateScreen) }
             OutlinedTextField(
                 value = pet.name,
                 singleLine = true,
@@ -192,7 +197,7 @@ fun CreateUpdateProfileScreen(
                 modifier = modifier
             )
             // вид
-            var kindIsCorrect by remember { mutableStateOf(false) }
+            var kindIsCorrect by remember { mutableStateOf(!isCreateScreen) }
             OutlinedTextField(
                 value = pet.kind,
                 shape = RoundedCornerShape(10.dp),
@@ -215,7 +220,7 @@ fun CreateUpdateProfileScreen(
                 modifier = modifier
             )
             // порода
-            var breedIsCorrect by remember { mutableStateOf(false) }
+            var breedIsCorrect by remember { mutableStateOf(!isCreateScreen) }
             OutlinedTextField(
                 value = pet.breed,
                 singleLine = true,
@@ -238,7 +243,7 @@ fun CreateUpdateProfileScreen(
                 modifier = modifier
             )
             // шерсть
-            var coatIsCorrect by remember { mutableStateOf(false) }
+            var coatIsCorrect by remember { mutableStateOf(!isCreateScreen) }
             OutlinedTextField(
                 value = pet.coat,
                 singleLine = true,
@@ -261,7 +266,7 @@ fun CreateUpdateProfileScreen(
                 modifier = modifier
             )
             // окрас
-            var colorIsCorrect by remember { mutableStateOf(false) }
+            var colorIsCorrect by remember { mutableStateOf(!isCreateScreen) }
             OutlinedTextField(
                 value = pet.color,
                 singleLine = true,
@@ -291,7 +296,8 @@ fun CreateUpdateProfileScreen(
             var dateIsCorrect by remember { mutableStateOf(true) }
 
             OutlinedTextField(
-                value = dateFormat.format(pet.birthday),
+                //TODO: отформатировать дату
+                value = pet.birthday.format(PetDateTimeFormatter.date),
                 onValueChange = { },
                 shape = RoundedCornerShape(10.dp),
                 label = { Text(stringResource(id = R.string.pet_birthday)) },
@@ -318,11 +324,16 @@ fun CreateUpdateProfileScreen(
                             onClick = {
                                 openDialog = false
                                 pet = pet.copy(
-                                    birthday = Date(datePickerState.selectedDateMillis ?: 0)
+                                    birthday = LocalDateTime.ofInstant(
+                                        Instant.ofEpochMilli(
+                                            datePickerState.selectedDateMillis ?: 0
+                                        ),
+                                        ZoneId.of("UTC")
+                                    )
                                 )
                                 try {
                                     dateIsCorrect =
-                                        validateBirthday(dateFormat.format(pet.birthday))
+                                        validateBirthday(pet.birthday)
                                 } catch (e: IllegalArgumentException) {
                                     scope.launch {
                                         snackbarHostState.showSnackbar(
@@ -347,7 +358,7 @@ fun CreateUpdateProfileScreen(
             }
 
             // номер микрочипа
-            var microchipNumberIsCorrect by remember { mutableStateOf(false) }
+            var microchipNumberIsCorrect by remember { mutableStateOf(!isCreateScreen) }
             OutlinedTextField(
                 value = pet.microchipNumber,
                 singleLine = true,
@@ -385,18 +396,28 @@ fun CreateUpdateProfileScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                 onClick = {
                     //TODO: добавление в питомца в БД
-
-                    scope.launch {
-                        val job = launch {
-                            snackbarHostState.showSnackbar(
-                                if (isCreateScreen)
+                    if (isCreateScreen) {
+                        viewModel.createPet(pet)
+                        scope.launch {
+                            val job = launch {
+                                snackbarHostState.showSnackbar(
                                     context.resources.getString(R.string.create_profile_successful_pet_creation)
-                                else
-                                    context.resources.getString(R.string.create_profile_successful_pet_update)
-                            )
+                                )
+                            }
+                            delay(SHOWSNACKDURATION)
+                            job.cancel()
                         }
-                        delay(SHOWSNACKDURATION)
-                        job.cancel()
+                    } else {
+                        viewModel.updatePet(pet)
+                        scope.launch {
+                            val job = launch {
+                                snackbarHostState.showSnackbar(
+                                    context.resources.getString(R.string.create_profile_successful_pet_update)
+                                )
+                            }
+                            delay(SHOWSNACKDURATION)
+                            job.cancel()
+                        }
                     }
 
                     if (isCreateScreen) {

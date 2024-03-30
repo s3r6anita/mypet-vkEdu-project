@@ -18,9 +18,9 @@ import com.f4.mypet.R
 @Composable
 fun MyPetTopBar(
     text: String,
-    canNavigateBack: Boolean,
+    canNavigateBack: Boolean = false,
     navigateUp: () -> Unit,
-    actions: @Composable() RowScope.() -> Unit = {  },
+    actions: @Composable() RowScope.() -> Unit = { },
     modifier: Modifier = Modifier
 ) {
     CenterAlignedTopAppBar(
