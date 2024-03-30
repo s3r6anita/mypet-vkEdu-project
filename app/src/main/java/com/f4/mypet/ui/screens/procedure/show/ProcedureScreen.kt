@@ -29,10 +29,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -82,7 +79,7 @@ fun ProcedureScreen(
                     onClick = {
                         openAlertDialog = false
                         navController.navigateUp()
-//                      // TODO: вставить вызов функции removeProcedure(id) внутри scope.launch { delay(100), ...}
+                        // TODO: вставить вызов функции removeProcedure(id) внутри scope.launch { delay(100), ...}
                     }
                 ) {
                     Text(stringResource(R.string.procedure_screen_delete))
@@ -122,7 +119,6 @@ fun ProcedureScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            // название
             Box(modifier = Modifier
                 .padding(vertical = 50.dp)
             ) {
@@ -148,7 +144,7 @@ fun ProcedureScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ){
                             Text(
-                                // TODO: потом заменить строку из ресурсов на кличку (pet.nickname)
+                                // TODO: потом заменить строку из ресурсов на данные из БД
                                 text = stringResource(R.string.procedure_screen_tmp_name),
                                 style = MaterialTheme.typography.headlineSmall,
                                 modifier = Modifier.weight(1f),
@@ -157,25 +153,18 @@ fun ProcedureScreen(
                                 Image(
                                     painter = painterResource(id = R.drawable.procedure_done_icon),
                                     contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_done),
-                                    // modifier = Modifier.align(Alignment.CenterVertically)
                                 )
                             }
                             else {
-                                if (/*procedure.dateDone < Date()*/true){
-                                    Image(
-                                        painter = painterResource(id = R.drawable.procedure_not_done_icon),
-                                        contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_not_done),
-                                        // modifier = Modifier.align(Alignment.CenterVertically)
-                                    )
-                                }
-                                else {
-                                    Icon(Icons.Rounded.Info, contentDescription = "Процедура будет выполнена")
-                                }
+                                Image(
+                                    painter = painterResource(id = R.drawable.procedure_not_done_icon),
+                                    contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_not_done),
+                                )
                             }
                         }
                         Spacer(modifier = Modifier.height(24.dp))
                         TextComponent(
-                            header = stringResource(R.string.procedure_screen_type), value = "Вакцинация"
+                            header = stringResource(R.string.procedure_screen_type), value = stringResource(R.string.procedure_screen_type)
                         )
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_date_of_event), value = stringResource(R.string.procedure_screen_tmp_date)
@@ -200,7 +189,7 @@ fun ProcedureScreen(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.some_procedure_icon),
-                        contentDescription = stringResource(id = R.string.pet_photo_description),
+                        contentDescription = stringResource(id = R.string.procedure_screen_tmp_icon_procedure),
                         contentScale = ContentScale.Inside,
                         modifier = Modifier
                             .size(100.dp)
@@ -239,7 +228,7 @@ fun ProcedureScreen(
                     modifier = Modifier
                         .padding(bottom = 40.dp)
                         .weight(1f)
-                    , // Добавляем отступ 24 пикселя между кнопками,
+                    ,
                     onClick = {
                         openAlertDialog = true
                     },
