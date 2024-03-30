@@ -23,12 +23,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,6 +54,7 @@ import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.profile.TextComponent
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.RedButton
+import java.util.Date
 
 @Composable
 fun ProcedureScreen(
@@ -59,6 +64,7 @@ fun ProcedureScreen(
 ) {
     var openAlertDialog by remember { mutableStateOf(false) }
     val dialogShape = RoundedCornerShape(12.dp)
+    val tmpIsDone = true
     if (openAlertDialog) {
         AlertDialog(
             shape = dialogShape,
@@ -137,12 +143,38 @@ fun ProcedureScreen(
                             .padding(top = 50.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            // TODO: потом заменить строку из ресурсов на кличку (pet.nickname)
-                            text = stringResource(R.string.procedure_screen_tmp_name),
-                            style = MaterialTheme.typography.headlineMedium,
-                            modifier = Modifier.weight(1f),
-                        )
+                        Row (modifier = Modifier
+                            .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ){
+                            Text(
+                                // TODO: потом заменить строку из ресурсов на кличку (pet.nickname)
+                                text = stringResource(R.string.procedure_screen_tmp_name),
+                                style = MaterialTheme.typography.headlineSmall,
+                                modifier = Modifier.weight(1f),
+                            )
+                            if (tmpIsDone) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.procedure_done_icon),
+                                    contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_done),
+                                   // modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                            }
+                            else {
+                                if (/*procedure.dateDone < Date()*/true){
+                                    Image(
+                                        painter = painterResource(id = R.drawable.procedure_not_done_icon),
+                                        contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_not_done),
+                                        // modifier = Modifier.align(Alignment.CenterVertically)
+                                    )
+                                }
+                                else {
+                                    Icon(Icons.Rounded.Info, contentDescription = "Процедура будет выполнена")
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(24.dp))
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_type), value = "Вакцинация"
                         )
@@ -153,7 +185,7 @@ fun ProcedureScreen(
                             header = stringResource(R.string.procedure_screen_time_of_event), value = stringResource(R.string.procedure_screen_tmp_time)
                         )
                         TextComponent(
-                            header = stringResource(R.string.procedure_screen_place_of_event), value = stringResource(R.string.procedure_screen_tmp_place)
+                            header = stringResource(R.string.procedure_screen_frequency), value = stringResource(R.string.procedure_screen_tmp_frequency)
                         )
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_reminder), value = stringResource(R.string.procedure_screen_tmp_time_for_proc)
@@ -169,7 +201,7 @@ fun ProcedureScreen(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.some_procedure_icon),
-                        contentDescription = stringResource(id = R.string.pet_photo_description),
+                        contentDescription = stringResource(id = R.string.procedure_screen_tmp_icon_procedure),
                         contentScale = ContentScale.Inside,
                         modifier = Modifier
                             .size(100.dp)
