@@ -79,13 +79,13 @@ fun CreateUpdateProfileScreen(
     navController: NavHostController,
     isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope,
+    scope: CoroutineScope, //TODO get scope inside function
     profileId: Int = -1
 ) {
     val context = LocalContext.current
     val viewModel: CreateUpdateProfileViewModel = hiltViewModel()
 
-    scope.launch {
+    scope.launch {// TODO LaunchedEffect
         viewModel.getPetProfile(profileId)
     }
     val petDB by viewModel.petUiState.collectAsState()
@@ -144,9 +144,10 @@ fun CreateUpdateProfileScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 10.dp)
                 )
-                Spacer(modifier = Modifier
-                    .height(10.dp)
-                    .width(50.dp)
+                Spacer(
+                    modifier = Modifier
+                        .height(10.dp)
+                        .width(50.dp)
                 )
                 radioOptions.forEach { text ->
                     Column(
@@ -435,7 +436,8 @@ fun CreateUpdateProfileScreen(
                 Text(
                     text = stringResource(id = R.string.save_button_description),
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold)
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

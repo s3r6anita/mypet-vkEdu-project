@@ -20,6 +20,7 @@ import javax.annotation.Nullable
             childColumns = ["title"]
         )]
 )
+// TODO @Stable or correct to get StabilityInferred
 data class Procedure(
     val title: Int, // название
     val isDone: Int, // выполнена ли: 0 - нет, 1 - да

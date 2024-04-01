@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile
+package com.f4.mypet.ui.screens.profile.list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -56,7 +56,6 @@ import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
-import com.f4.mypet.ui.screens.profile.list.ListProfileViewModel
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
@@ -70,7 +69,7 @@ import kotlinx.coroutines.launch
 fun ListProfileScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope,
+    scope: CoroutineScope, //TODO IN FUNCTION
 ) {
     val viewModel: ListProfileViewModel = hiltViewModel()
 

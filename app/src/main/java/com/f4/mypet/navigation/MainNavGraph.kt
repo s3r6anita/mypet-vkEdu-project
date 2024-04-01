@@ -12,7 +12,7 @@ import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureScree
 import com.f4.mypet.ui.screens.procedure.list.ListProcedureScreen
 import com.f4.mypet.ui.screens.procedure.show.ProcedureScreen
 import com.f4.mypet.ui.screens.profile.CreateUpdateProfileScreen
-import com.f4.mypet.ui.screens.profile.ListProfileScreen
+import com.f4.mypet.ui.screens.profile.list.ListProfileScreen
 import com.f4.mypet.ui.screens.profile.show.ProfileScreen
 import kotlinx.coroutines.CoroutineScope
 

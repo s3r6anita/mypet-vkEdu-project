@@ -65,7 +65,7 @@ fun ProcedureScreen(
 
     val procedure by viewModel.procedureUiState.collectAsState()
 
-    val title = viewModel.titles.find { title -> title.id == procedure.title }
+    val title = viewModel.titles.find { title -> title.id == procedure.title } // TODO change logic of retrieval
 
     var openAlertDialog by remember { mutableStateOf(false) }
 
@@ -124,7 +124,7 @@ fun ProcedureScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Routes.UpdateProcedure.route + "/" + profileId + "/" + procedureId) {
+                    navController.navigate(Routes.UpdateProcedure.route + "/" + profileId + "/" + procedureId) {// TODO (optional) Convert to string template
                         launchSingleTop = true
                     }
                 },
@@ -161,7 +161,7 @@ fun ProcedureScreen(
                         contentDescription = stringResource(R.string.procedure_screen_procedure_is_done)
                     )
                 } else {
-                    if (procedure.dateDone!! < LocalDateTime.now()) {
+                    if (procedure.dateDone!! < LocalDateTime.now()) { //TODO !! -> ?
                         Icon(
                             imageVector = Icons.Rounded.Close,
                             contentDescription = stringResource(R.string.procedure_screen_procedure_is_not_done)

@@ -79,7 +79,7 @@ fun CreateUpdateProcedureScreen(
     val scope = rememberCoroutineScope()
     val viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 
-    scope.launch {
+    scope.launch { //TODO LAUNCHED EFFECT
         viewModel.getPetProcedure(procedureId)
     }
     val titles = viewModel.titles

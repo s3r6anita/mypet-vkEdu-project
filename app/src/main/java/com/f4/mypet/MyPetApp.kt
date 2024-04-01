@@ -15,7 +15,7 @@ fun MyPetApp() {
         SetupNavGraph(
             navController = rememberNavController(),
             snackbarHostState = remember { SnackbarHostState() },
-            scope = rememberCoroutineScope()
+            scope = rememberCoroutineScope() //TODO Перенести внутрь
         )
     }
 }
