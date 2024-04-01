@@ -97,5 +97,6 @@
     <string name="creation_procedure_screen_notes">Заметки</string>
     <string name="creation_procedure_screen_procedure_type">Тип процедуры</string>
 
+    <string name="unknown">Неизвестно</string>
 
 </resources>
