@@ -79,8 +79,10 @@ fun CreateUpdateProcedureScreen(
     val scope = rememberCoroutineScope()
     val viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 
-    scope.launch {
-        viewModel.getPetProcedure(procedureId)
+    LaunchedEffect(Unit){
+        scope.launch {
+            viewModel.getPetProcedure(procedureId)
+        }
     }
     val titles = viewModel.titles
     val types = viewModel.types
@@ -88,6 +90,7 @@ fun CreateUpdateProcedureScreen(
     val procedureDB by viewModel.procedureUiState.collectAsState()
     val titleDB = titles.find { title -> title.id == procedureDB.title }
     val typeDB = types.find { type -> type.id == (titleDB?.type ?: -1) }
+
     var procedure by remember {
         mutableStateOf(procedureDB)
     }
@@ -102,7 +105,10 @@ fun CreateUpdateProcedureScreen(
         title = titleDB
         type = typeDB
     }
-    Log.d("my", "$procedureDB")
+
+
+    Log.d("my", "${titles}")
+    Log.d("my", "${types}")
 
     Scaffold(
         topBar = {
@@ -129,7 +135,7 @@ fun CreateUpdateProcedureScreen(
 
             // Тип процедуры - выпадающее меню с выбором
             val typeOptions =
-                listOf("Гигиеническая", "Медицинская", "Пользовательская") // TODO: получение из VM
+                listOf("Гигиеническая", "Медицинская", "Пользовательская") // TODO: types.map { it.name }
             var typeExpanded by remember { mutableStateOf(false) }
             var selectedType by remember { mutableStateOf(typeOptions[0]) }
 

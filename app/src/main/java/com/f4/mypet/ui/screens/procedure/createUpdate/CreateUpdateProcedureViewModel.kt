@@ -33,7 +33,6 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     var titles = emptyList<ProcedureTitle>()
     var types = emptyList<ProcedureType>()
 
-
     init {
         viewModelScope.launch(Dispatchers.IO) {
             titles = repository.getProcedureTitles()
