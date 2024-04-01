@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.procedure
+package com.f4.mypet.ui.screens.procedure.list
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,19 +21,26 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
-import com.f4.mypet.dateFormat
+import com.f4.mypet.data.db.entities.Procedure
+import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
-import com.f4.mypet.timeFormat
 import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetTopBar
-import java.util.Date
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListProcedureScreen(
@@ -41,14 +48,24 @@ fun ListProcedureScreen(
     profileId: Int,
     canNavigateBack: Boolean
 ) {
-//    val pet = pets[profileId]
-//    val procedures = pet.procedures
+    val scope = rememberCoroutineScope()
+    val viewModel: ListProcedureViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            viewModel.getPetsProcedures(profileId)
+        }
+    }
+
+    val procedures by viewModel.proceduresUiState.collectAsState()
+
+    val titles = viewModel.titles
+    val pet = viewModel.pet
 
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = "Питомец #$profileId", // TODO: заменить на {pet.name}, т.е. кличку
-                canNavigateBack = canNavigateBack,
+                text = pet.name,
                 navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка выхода
@@ -107,9 +124,10 @@ fun ListProcedureScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
-                listOf(1, 2, 3).forEach { index ->
+                procedures.forEach { procedure ->
                     ProcedureItem(
-                        procedureId = index, // TODO: заменить на {procedure.id}
+                        procedure = procedure,
+                        titles = titles,
                         profileId = profileId,
                         navController = navController
                     )
@@ -122,25 +140,29 @@ fun ListProcedureScreen(
 
 @Composable
 fun ProcedureItem(
-    procedureId: Int,
+    procedure: Procedure,
+    titles: List<ProcedureTitle>,
     profileId: Int?,
     navController: NavHostController
 ) {
-    ListItem( // TODO: поменять на данные, полученные из ВМ
+    ListItem(
         headlineContent = {
-            Text(text = "Название")
+            Text(
+                text = titles.find { title -> title.id == procedure.title }?.name ?: "Неизвестно",
+                fontSize = 20.sp
+            )
         },
         supportingContent = {
-            Text(text = "${timeFormat.format(Date())}\n${dateFormat.format(Date())}")
+            Text(text = procedure.dateCreated.format(PetDateTimeFormatter.dateTime))
         },
         trailingContent = {
-            if (true) {
+            if (procedure.isDone == 1) {
                 Icon(Icons.Rounded.Done, contentDescription = null)
             }
         },
         modifier = Modifier
             .clickable {
-                navController.navigate(Routes.Procedure.route + "/" + profileId + "/" + procedureId) {
+                navController.navigate(Routes.Procedure.route + "/" + profileId + "/" + procedure.id) {
                     launchSingleTop = true
                 }
             }

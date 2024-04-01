@@ -1,4 +1,4 @@
-package com.f4.mypet.db.entities
+package com.f4.mypet.data.db.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
@@ -9,7 +9,6 @@ import androidx.room.Relation
 @Entity
 data class ProcedureType(
     val name: String,
-    val type: Int,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0
 )

@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.procedure
+package com.f4.mypet.ui.screens.procedure.createUpdate
 
 enum class FrequencyOptions(val period: String) {
     Never("никогда"),
