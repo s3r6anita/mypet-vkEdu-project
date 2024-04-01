@@ -77,7 +77,7 @@
     <string name="procedure_screen_time_of_event">Время</string>
     <string name="procedure_screen_frequency">Периодичность</string>
     <string name="procedure_screen_tmp_frequency">Раз в год</string>
-    <string name="procedure_screen_tmp_icon_procedure">Иконка процедуры</string>
+    <string name="procedure_screen_icon_procedure_desc">Иконка процедуры</string>
 
     <string name="list_procedure_screen_title">Процедуры</string>
     <string name="list_procedure_screen_add_procedure">Добавить процедуру</string>
@@ -103,6 +103,7 @@
     <string name="creation_procedure_screen_time_before_notification">За сколько минут напомнить</string>
     <string name="creation_procedure_screen_notes">Заметки</string>
     <string name="creation_procedure_screen_procedure_type">Тип процедуры</string>
+    <string name="procedure_screen_unknown_procedure_title">Неизвестное название</string>
 
 
 </resources>
