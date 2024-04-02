@@ -21,7 +21,7 @@ fun MyPetTopBar(
     canNavigateBack: Boolean = false,
     navigateUp: () -> Unit,
     actions: @Composable() RowScope.() -> Unit = { },
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier //TODO Modifier parameter should be the first optional parameter
 ) {
     CenterAlignedTopAppBar(
         title = {

@@ -13,7 +13,8 @@ import androidx.room.Relation
             entity = ProcedureType::class,
             parentColumns = ["id"],
             childColumns = ["type"]
-        )]
+        )
+    ]
 )
 data class ProcedureTitle(
     val name: String,
