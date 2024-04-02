@@ -105,5 +105,6 @@
     <string name="creation_procedure_screen_procedure_type">Тип процедуры</string>
     <string name="procedure_screen_unknown_procedure_title">Неизвестное название</string>
 
+    <string name="unknown">Неизвестно</string>
 
 </resources>
