@@ -78,10 +78,10 @@ fun ProcedureScreen(
         }
     }
     val procedure by viewModel.procedureUiState.collectAsState()
-    val title = viewModel.titles.find { title -> title.id == procedure.title }
+    val title = viewModel.titles.find { title -> title.id == procedure.title } // TODO change logic of retrieval
         ?: ProcedureTitle("Unknown", -1, -1)
     val type =
-        viewModel.types.find { type -> type.id == title.type }
+        viewModel.types.find { type -> type.id == title.type } // TODO change logic of retrieval
             ?: ProcedureType("Unknown", -1)
 
     var openAlertDialog by remember { mutableStateOf(false) }
@@ -183,10 +183,12 @@ fun ProcedureScreen(
                                     contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_done)
                                 )
                             } else {
-                                Image(
-                                    imageVector = Icons.Filled.Clear,
-                                    contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_not_done)
-                                )
+                                if (procedure.dateDone < LocalDateTime.now()) {
+                                    Image(
+                                        imageVector = Icons.Filled.Clear,
+                                        contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_not_done)
+                                    )
+                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(24.dp))

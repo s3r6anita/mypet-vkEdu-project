@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 fun SetupNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope,
+    scope: CoroutineScope, //TODO IN FUNCTION
 ) {
     NavHost(
         navController = navController,
