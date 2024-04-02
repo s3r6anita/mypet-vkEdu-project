@@ -320,10 +320,9 @@ fun CreateUpdateProcedureScreen(
             // Время выполнения - тайм пикер
             var openTimeDialog by remember { mutableStateOf(false) }
             val state = rememberTimePickerState()
-            //TODO разобраться с форматом времени (уже по известным данным из БД)
             var timeString by remember {
                 mutableStateOf(
-                    procedure.dateCreated.format(
+                    procedure.dateDone.format(
                         PetDateTimeFormatter.time
                     )
                 )
@@ -371,11 +370,10 @@ fun CreateUpdateProcedureScreen(
             }
 
             // дата выполнения
-            //TODO разобраться с форматом времени (уже по известным данным из БД)
             var openDateDialog by remember { mutableStateOf(false) }
             var dateString by remember {
                 mutableStateOf(
-                    procedure.dateCreated.format(
+                    procedure.dateDone.format(
                         PetDateTimeFormatter.date
                     )
                 )

@@ -37,15 +37,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
-import com.f4.mypet.navigation.Routes
-import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.LightGrayTint
-import com.f4.mypet.ui.theme.LightGreenBackground
 
 @Composable
 fun MedCardScreen(
@@ -80,7 +77,8 @@ fun MedCardScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             // Карточка питомца = заголовок = то что сверху
-            PetCardHeader(profileId = profileId)
+            //TODO: передавать pet.name
+            PetCardHeader(petName = "pet.name", backgroundColor = LightBlueBackground)
 
             // Список мед мероприятий
             @Suppress("MagicNumber") Column (
@@ -120,14 +118,15 @@ fun MedCardScreen(
 
 @Composable
 fun PetCardHeader(
-    profileId: Int
+    petName: String,
+    backgroundColor: Color
 ){
     Card(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = LightGreenBackground,
+            containerColor = backgroundColor,
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -148,7 +147,7 @@ fun PetCardHeader(
                     .background(MaterialTheme.colorScheme.onSecondary),
             )
             Text(
-                text = "Питомец #$profileId", //TODO: заменить на {pet.name}, т.е. кличку
+                text = petName,
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(start = 20.dp)
             )

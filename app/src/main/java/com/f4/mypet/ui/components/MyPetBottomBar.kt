@@ -44,7 +44,7 @@ fun MyPetBottomBar(
     navController: NavHostController,
     profileId: Int?,
     canNavigateBack: Boolean?,
-    items: List<BottomNavigationItem>,
+    items: List<BottomNavigationItem>, //TODO ImmutableList (kotlinx.collections.immutable)
     modifier: Modifier = Modifier
 ) {
     NavigationBar(

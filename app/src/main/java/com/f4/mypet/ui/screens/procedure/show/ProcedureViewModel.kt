@@ -6,6 +6,7 @@ import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.data.db.Repository
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
+import com.f4.mypet.data.db.entities.ProcedureType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,6 @@ class ProcedureViewModel @Inject constructor(
         Procedure(
             0, 0, 0,
             LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
-            LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
             "", LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
             0, 0, 0
         )
@@ -30,16 +30,18 @@ class ProcedureViewModel @Inject constructor(
     val procedureUiState = _procedureUiState.asStateFlow()
 
     var titles = emptyList<ProcedureTitle>()
+    var types = emptyList<ProcedureType>()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             titles = repository.getProcedureTitles()
+            types = repository.getProcedureTypes()
         }
     }
 
     fun getProcedure(procedureId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getProcedure(procedureId).collect() { procedure ->
+            repository.getProcedure(procedureId).collect { procedure ->
                 _procedureUiState.value = procedure
             }
         }

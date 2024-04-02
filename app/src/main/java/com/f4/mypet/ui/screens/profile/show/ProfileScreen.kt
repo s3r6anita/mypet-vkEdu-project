@@ -64,7 +64,7 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope,
+    scope: CoroutineScope, // TODO IN FUNCTION
     profileId: Int,
     canNavigateBack: Boolean
 ) {
