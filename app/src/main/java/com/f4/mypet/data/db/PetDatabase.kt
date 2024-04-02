@@ -46,7 +46,7 @@ abstract class PetDatabase : RoomDatabase() {
                     "pet_database"
                 )
                     .createFromAsset("databases/initial_db.db")
-//                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }
             }

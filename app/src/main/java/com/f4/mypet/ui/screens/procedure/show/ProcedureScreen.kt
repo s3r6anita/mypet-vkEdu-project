@@ -184,7 +184,7 @@ fun ProcedureScreen(
                                     contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_done)
                                 )
                             } else {
-                                if (procedure.dateDone!! < LocalDateTime.now()) { // TODO: remove !!
+                                if (procedure.dateDone < LocalDateTime.now()) {
                                     Image(
                                         imageVector = Icons.Filled.Clear,
                                         contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_not_done)
@@ -199,23 +199,22 @@ fun ProcedureScreen(
                         )
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_date_of_event),
-                            value = procedure.dateDone?.format(PetDateTimeFormatter.date)
-                                ?: "01.01.1001"
+                            value = procedure.dateDone.format(PetDateTimeFormatter.date)
                         )
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_time_of_event),
-                            value = procedure.dateDone?.format(PetDateTimeFormatter.time)
-                                ?: "00:00"
+                            value = procedure.dateDone.format(PetDateTimeFormatter.time)
                         )
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_frequency),
                             value = procedure.frequency.toString()
                         )
-                        TextComponent(
-                            header = stringResource(R.string.procedure_screen_reminder),
-                            value = procedure.reminder?.format(PetDateTimeFormatter.dateTime)
-                                ?: "01.01.1001 00:00"
-                        )
+                        procedure.reminder?.format(PetDateTimeFormatter.dateTime)?.let {
+                            TextComponent(
+                                header = stringResource(R.string.procedure_screen_reminder),
+                                value = it
+                            )
+                        }
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_notice),
                             value = procedure.notes

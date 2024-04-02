@@ -23,7 +23,6 @@ class CreateUpdateProcedureViewModel @Inject constructor(
         Procedure(
             0, 0, 0,
             LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
-            LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
             "", LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
             0, 0, 0
         )
