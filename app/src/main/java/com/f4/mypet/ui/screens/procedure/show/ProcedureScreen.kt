@@ -62,6 +62,7 @@ import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.RedButton
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @Composable
 fun ProcedureScreen(
@@ -183,7 +184,7 @@ fun ProcedureScreen(
                                     contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_done)
                                 )
                             } else {
-                                if (procedure.dateDone < LocalDateTime.now()) {
+                                if (procedure.dateDone!! < LocalDateTime.now()) { // TODO: remove !!
                                     Image(
                                         imageVector = Icons.Filled.Clear,
                                         contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_not_done)
