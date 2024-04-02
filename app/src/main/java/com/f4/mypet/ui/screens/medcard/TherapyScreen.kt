@@ -64,7 +64,7 @@ fun TherapyScreen(navController: NavHostController, profileId: String?, therapyI
 
     var openAlertDialog by remember { mutableStateOf(false) }
     val dialogShape = RoundedCornerShape(12.dp)
-    val delayTime: Long = 100
+    val DELAY_BEFORE_REMOVING_THERAPY: Long = 100
     if (openAlertDialog) {
         AlertDialog(
             shape = dialogShape,
@@ -84,7 +84,7 @@ fun TherapyScreen(navController: NavHostController, profileId: String?, therapyI
                         openAlertDialog = false
                         navController.navigateUp()
                         scope.launch {
-                            delay(delayTime)
+                            delay(DELAY_BEFORE_REMOVING_THERAPY)
                             //TODO removeTherapy(profileId, therapyId)
                         }
                     }
