@@ -58,7 +58,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-val delayBeforeDelete: Long = 100
+const val delayBeforeDelete: Long = 100
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TherapyScreen(navController: NavHostController, profileId: String?, therapyId: String?, scope: CoroutineScope) {
