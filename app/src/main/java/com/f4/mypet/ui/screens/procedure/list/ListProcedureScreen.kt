@@ -211,7 +211,7 @@ fun ProcedureItem(
                         }
                     }
                     Text(
-                        text = procedure.dateCreated.format(PetDateTimeFormatter.dateTime),
+                        text = procedure.dateDone.format(PetDateTimeFormatter.dateTime),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
