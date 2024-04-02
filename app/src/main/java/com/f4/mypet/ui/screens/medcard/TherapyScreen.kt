@@ -58,7 +58,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-const val delayBeforeDelete: Long = 100
+const val DELAY_BEFORE_DELETE: Long = 100
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TherapyScreen(navController: NavHostController, profileId: String?, therapyId: String?, scope: CoroutineScope) {
@@ -85,7 +85,7 @@ fun TherapyScreen(navController: NavHostController, profileId: String?, therapyI
                         openAlertDialog = false
                         navController.navigateUp()
                         scope.launch {
-                            delay(delayBeforeDelete)
+                            delay(DELAY_BEFORE_DELETE)
                             //TODO removeTherapy(profileId, therapyId)
                         }
                     }
