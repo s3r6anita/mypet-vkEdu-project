@@ -153,7 +153,7 @@ fun ProcedureItem(
             )
         },
         supportingContent = {
-            Text(text = procedure.dateCreated.format(PetDateTimeFormatter.dateTime))
+            Text(text = procedure.dateDone.format(PetDateTimeFormatter.dateTime))
         },
         trailingContent = {
             if (procedure.isDone == 1) {

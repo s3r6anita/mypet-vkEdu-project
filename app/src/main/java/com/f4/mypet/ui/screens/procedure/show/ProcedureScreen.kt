@@ -177,11 +177,11 @@ fun ProcedureScreen(
 
             // дата и время выполенения
             Text(
-                text = procedure.dateCreated.format(PetDateTimeFormatter.time),
+                text = procedure.dateDone.format(PetDateTimeFormatter.time),
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = procedure.dateCreated.format(PetDateTimeFormatter.date),
+                text = procedure.dateDone.format(PetDateTimeFormatter.date),
                 style = MaterialTheme.typography.titleMedium
             )
 
