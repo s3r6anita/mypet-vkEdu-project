@@ -101,6 +101,13 @@
     <string name="therapy_tmp_notice">Болел 3 дня.\nЛечение: таблетки, т.д.</string>
     <string name="therapy_tmp_icon">Иконка терапии</string>
 
+    <string name="cu_therapy_title_create">Новая терапия</string>
+    <string name="cu_therapy_title_update">Редактирование</string>
+    <string name="cu_therapy_name">Название</string>
+    <string name="cu_therapy_date">Дата</string>
+    <string name="cu_therapy_open_calendar">Открыть календарь</string>
+    <string name="cu_therapy_tmp_notice">Заметки</string>
+
     <string name="creation_procedure_screen_title">Создание процедуры</string>
     <string name="creation_procedure_screen_period">Период</string>
     <string name="creation_procedure_screen_frequence">Периодичность</string>
