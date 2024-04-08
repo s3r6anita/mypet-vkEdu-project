@@ -28,11 +28,11 @@ class ProcedureViewModel @Inject constructor(
         )
     )
     var title = ProcedureTitle(
-        name = "",
+        name = "Неизвестно",
         type = 0,
     )
     var type = ProcedureType(
-        name = "",
+        name = "Неизвестно",
         id = title.id
     )
 
@@ -40,8 +40,10 @@ class ProcedureViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            title = repository.getProcedureTitles()[_procedureUiState.value.title]
-            type = repository.getProcedureTypes()[title.type]
+            title = repository.getProcedureTitles().find { it.id == _procedureUiState.value.title }
+                ?: title
+            type = repository.getProcedureTypes().find { it.id == title.type }
+                ?: type
         }
     }
 

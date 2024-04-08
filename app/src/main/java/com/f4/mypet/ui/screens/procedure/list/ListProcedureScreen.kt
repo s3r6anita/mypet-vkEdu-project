@@ -72,9 +72,8 @@ fun ListProcedureScreen(
     }
 
     val procedures by viewModel.proceduresUiState.collectAsState()
-
-    val titles = viewModel.titles
     val pet = viewModel.pet
+    val titles = viewModel.titles
 
     Scaffold(
         topBar = {
@@ -106,7 +105,7 @@ fun ListProcedureScreen(
             PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
 
             // список процедур
-            @Suppress("MagicNumber") Column(
+            Column(
                 modifier = Modifier
                     .height(400.dp)
                     .verticalScroll(rememberScrollState())
@@ -115,7 +114,6 @@ fun ListProcedureScreen(
                     ProcedureItem(
                         procedure = procedure,
                         titles = titles,
-                        profileId = profileId,
                         navController = navController
                     )
                 }
@@ -150,7 +148,6 @@ fun ListProcedureScreen(
 fun ProcedureItem(
     procedure: Procedure,
     titles: List<ProcedureTitle>,
-    profileId: Int?,
     navController: NavHostController
 ) {
     Card(
@@ -163,7 +160,7 @@ fun ProcedureItem(
         modifier = Modifier
             .padding(bottom = 15.dp)
             .clickable {
-                navController.navigate(Routes.Procedure.route + "/" + profileId + "/" + procedure.id) {
+                navController.navigate(Routes.Procedure.route + "/" + procedure.id) {
                     launchSingleTop = true
                 }
             }
@@ -178,7 +175,7 @@ fun ProcedureItem(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.procedures_icon),
                     contentDescription = stringResource(id = R.string.list_procedure_screen_title),
@@ -188,17 +185,17 @@ fun ProcedureItem(
                         .background(LightBlueBackground)
                         .size(50.dp),
                 )
-                Column (
+                Column(
                     modifier = Modifier
                         .padding(start = 20.dp),
                     verticalArrangement = Arrangement.Center
-                ){
+                ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
-                    ){
+                    ) {
                         Text(
-                            text = titles.find { title -> title.id == procedure.title }?.name ?: stringResource(
-                                id = R.string.unknown),
+                            text = titles.find { title -> title.id == procedure.title }?.name
+                                ?: stringResource(id = R.string.unknown),
                             style = MaterialTheme.typography.titleLarge
                         )
                         if (procedure.isDone == 1) {

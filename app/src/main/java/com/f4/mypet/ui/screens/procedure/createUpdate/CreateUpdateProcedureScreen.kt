@@ -71,7 +71,6 @@ const val CORRECT_DATE_DIGIT_NUMBER = 10
 @Composable
 fun CreateUpdateProcedureScreen(
     navController: NavHostController,
-    profileId: Int,
     procedureId: Int = -1
 ) {
     val context = LocalContext.current

@@ -50,7 +50,6 @@ fun NavGraphBuilder.mainNavGraph(
                 backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
         }
-
         /** создание профиля */
         composable(route = Routes.CreateProfile.route) {
             CreateUpdateProfileScreen(
@@ -60,7 +59,6 @@ fun NavGraphBuilder.mainNavGraph(
                 scope
             )
         }
-
         /** обновление профиля */
         composable(
             route = Routes.UpdateProfile.route + "/{profileId}",
@@ -112,13 +110,9 @@ fun NavGraphBuilder.mainNavGraph(
             backStackEntry.arguments?.getInt("profileId") ?: -1
         )
     }
-
     /** процедура */
-    composable(route = Routes.Procedure.route + "/{profileId}" + "/{procedureId}",
+    composable(route = Routes.Procedure.route + "/{procedureId}",
         arguments = listOf(
-            navArgument(name = "profileId") {
-                type = NavType.IntType
-            },
             navArgument(name = "procedureId") {
                 type = NavType.IntType
             }
@@ -129,7 +123,6 @@ fun NavGraphBuilder.mainNavGraph(
             backStackEntry.arguments?.getInt("procedureId") ?: -1
         )
     }
-
     /** изменение процедуры */
     composable(route = Routes.UpdateProcedure.route + "/{procedureId}",
         arguments = listOf(
@@ -140,7 +133,6 @@ fun NavGraphBuilder.mainNavGraph(
     ) { backStackEntry ->
         CreateUpdateProcedureScreen(
             navController,
-            backStackEntry.arguments?.getInt("profileId") ?: -1,
             backStackEntry.arguments?.getInt("procedureId") ?: -1
         )
     }
