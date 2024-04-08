@@ -56,6 +56,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
+import com.f4.mypet.data.db.entities.ProcedureType
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.ErrorScreen
@@ -132,7 +133,10 @@ fun CreateUpdateProcedureScreen(
                             if (isCreateScreen)
                                 types[0]
                             else
-                                requireNotNull(types.find { type -> type.id == title.type })
+                                types.find { type -> type.id == title.type } ?: ProcedureType(
+                                    name = "Неизвестно",
+                                    id = title.id
+                                )
                             // TODO:ok?
                         )
                     }
@@ -178,62 +182,65 @@ fun CreateUpdateProcedureScreen(
                         }
                     }
 
-                    // Название процедуры - выпадающее меню с выбором
-                    val titleOptions = titles.filter {
-                        it.type == selectedType.id
-                    }
-                    var selectedTitle by remember {
-                        mutableStateOf(
-                            if (isCreateScreen)
-                                titleOptions[0]
-                            else
-                                requireNotNull(titleOptions.find { title -> title.id == procedure.title })
-                            // TODO:ok?
-                        )
-                    }
-                    var nameExpanded by remember { mutableStateOf(false) }
+//                    // Название процедуры - выпадающее меню с выбором
+//                    val titleOptions = titles.filter {
+//                        it.type == selectedType.id
+//                    }
+//                    var selectedTitle by remember {
+//                        mutableStateOf(
+//                            if (isCreateScreen)
+//                                titleOptions[0]
+//                            else
+//                                requireNotNull(titleOptions.find { title -> title.id == procedure.title })
+//                            // TODO:ok?
+//                        )
+//                    }
+//                    var nameExpanded by remember { mutableStateOf(false) }
 
-                    // если не пользовательский тип процедуры
-                    if (titleOptions != emptyList<String>()) {
-                        ExposedDropdownMenuBox(
-                            expanded = nameExpanded,
-                            onExpandedChange = {
-                                nameExpanded = it
-                            },
-                            modifier = Modifier.padding(bottom = 10.dp)
-                        ) {
-                            TextField(
-                                modifier = Modifier
-                                    .menuAnchor()
-                                    .padding(bottom = 10.dp),
-                                readOnly = true,
-                                value = selectedTitle.name,
-                                onValueChange = { },
-                                label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
-                                trailingIcon = {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(
-                                        expanded = nameExpanded
-                                    )
-                                },
-                            )
-                            ExposedDropdownMenu(
-                                expanded = nameExpanded,
-                                onDismissRequest = {
-                                    nameExpanded = false
-                                }
-                            ) {
-                                titleOptions.forEach { selectionOption ->
-                                    DropdownMenuItem(
-                                        text = { Text(selectionOption.name) },
-                                        onClick = {
-                                            selectedTitle = selectionOption
-                                            nameExpanded = false
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                    }
+
+
+//                    // если не пользовательский тип процедуры
+//                    if (titleOptions != emptyList<String>()) {
+//                        ExposedDropdownMenuBox(
+//                            expanded = nameExpanded,
+//                            onExpandedChange = {
+//                                nameExpanded = it
+//                            },
+//                            modifier = Modifier.padding(bottom = 10.dp)
+//                        ) {
+//                            TextField(
+//                                modifier = Modifier
+//                                    .menuAnchor()
+//                                    .padding(bottom = 10.dp),
+//                                readOnly = true,
+//                                value = selectedTitle.name,
+//                                onValueChange = { },
+//                                label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
+//                                trailingIcon = {
+//                                    ExposedDropdownMenuDefaults.TrailingIcon(
+//                                        expanded = nameExpanded
+//                                    )
+//                                },
+//                            )
+//                            ExposedDropdownMenu(
+//                                expanded = nameExpanded,
+//                                onDismissRequest = {
+//                                    nameExpanded = false
+//                                }
+//                            ) {
+//                                titleOptions.forEach { selectionOption ->
+//                                    DropdownMenuItem(
+//                                        text = { Text(selectionOption.name) },
+//                                        onClick = {
+//                                            selectedTitle = selectionOption
+//                                            nameExpanded = false
+//                                        }
+//                                    )
+//                                }
+//                            }
+//                        }
+//                    }
+
 //                    else {
 //                        // если пользовательский тип процедуры
 //                        OutlinedTextField(
@@ -375,7 +382,6 @@ fun CreateUpdateProcedureScreen(
                     OutlinedTextField(
                         value = dateString,
                         onValueChange = {
-                            //TODO const val CORRECT_DATE_DIGIT_NUMBER = 10???
                             if (it.length <= CORRECT_DATE_DIGIT_NUMBER) dateString = it
                         },
                         keyboardOptions = KeyboardOptions(

@@ -16,10 +16,10 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-sealed interface UiState {
-    data object Loading : UiState
-    data class Error(val e: Exception) : UiState
-    data object Success : UiState
+sealed class UiState {
+    data object Loading : UiState()
+    data class Error(val e: Exception) : UiState()
+    data object Success : UiState()
 }
 
 @HiltViewModel
