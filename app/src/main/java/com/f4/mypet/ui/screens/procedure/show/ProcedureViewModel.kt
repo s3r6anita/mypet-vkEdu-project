@@ -27,15 +27,21 @@ class ProcedureViewModel @Inject constructor(
             0, 0, 0
         )
     )
-    val procedureUiState = _procedureUiState.asStateFlow()
+    var title = ProcedureTitle(
+        name = "",
+        type = 0,
+    )
+    var type = ProcedureType(
+        name = "",
+        id = title.id
+    )
 
-    var titles = emptyList<ProcedureTitle>()
-    var types = emptyList<ProcedureType>()
+    val procedureUiState = _procedureUiState.asStateFlow()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            titles = repository.getProcedureTitles()
-            types = repository.getProcedureTypes()
+            title = repository.getProcedureTitles()[_procedureUiState.value.title]
+            type = repository.getProcedureTypes()[title.type]
         }
     }
 

@@ -46,7 +46,6 @@ fun NavGraphBuilder.mainNavGraph(
             ProfileScreen(
                 navController,
                 snackbarHostState,
-                scope,
                 backStackEntry.arguments?.getInt("profileId") ?: -1,
                 backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
@@ -127,17 +126,13 @@ fun NavGraphBuilder.mainNavGraph(
     ) { backStackEntry ->
         ProcedureScreen(
             navController,
-            backStackEntry.arguments?.getInt("profileId") ?: -1,
             backStackEntry.arguments?.getInt("procedureId") ?: -1
         )
     }
 
     /** изменение процедуры */
-    composable(route = Routes.UpdateProcedure.route + "/{profileId}" + "/{procedureId}",
+    composable(route = Routes.UpdateProcedure.route + "/{procedureId}",
         arguments = listOf(
-            navArgument(name = "profileId") {
-                type = NavType.IntType
-            },
             navArgument(name = "procedureId") {
                 type = NavType.IntType
             }
