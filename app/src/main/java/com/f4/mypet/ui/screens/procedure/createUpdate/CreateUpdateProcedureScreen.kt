@@ -24,11 +24,8 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -43,7 +40,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
@@ -62,14 +58,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
@@ -78,6 +70,7 @@ import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.LightGrayTint
+import com.f4.mypet.ui.theme.RedButton
 import com.f4.mypet.ui.theme.White
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -116,6 +109,23 @@ fun CreateUpdateProcedureScreen(
     var type by remember {
         mutableStateOf(typeDB)
     }
+
+    val outLinedTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+        focusedBorderColor = LightBlueBackground,
+        unfocusedBorderColor = LightGrayTint,
+        containerColor = MaterialTheme.colorScheme.onSecondary,
+        errorBorderColor = RedButton)
+
+    val outLinedTextFieldModifier = Modifier
+        .fillMaxWidth()
+        .padding(bottom = 15.dp)
+
+    val dropdownMenuColors = ExposedDropdownMenuDefaults.textFieldColors(
+        unfocusedIndicatorColor = LightBlueBackground,
+        focusedIndicatorColor = BlueCheckbox,
+        unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary,
+        focusedContainerColor = LightBlueBackground)
+
     LaunchedEffect(procedureDB) {
         procedure = procedureDB
         title = titleDB
@@ -141,14 +151,11 @@ fun CreateUpdateProcedureScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-
-            val modifier = Modifier
-                .fillMaxWidth()
-
             var selectedName by remember { mutableStateOf("") }
 
             Column (
                 Modifier
+                    .height(700.dp)
                     .verticalScroll(rememberScrollState())
                     .padding(vertical = 20.dp)
             ) {
@@ -177,7 +184,8 @@ fun CreateUpdateProcedureScreen(
                             ExposedDropdownMenuDefaults.TrailingIcon(
                                 expanded = typeExpanded
                             )
-                        }
+                        },
+                        colors = dropdownMenuColors
                     )
                     ExposedDropdownMenu(
                         expanded = typeExpanded,
@@ -240,6 +248,7 @@ fun CreateUpdateProcedureScreen(
                                     expanded = nameExpanded
                                 )
                             },
+                            colors = dropdownMenuColors
                         )
                         ExposedDropdownMenu(
                             expanded = nameExpanded,
@@ -266,10 +275,9 @@ fun CreateUpdateProcedureScreen(
                             selectedName = it
                         },
                         label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 15.dp),
+                        modifier = outLinedTextFieldModifier,
                         shape = RoundedCornerShape(12.dp),
+                        colors = outLinedTextFieldColors
                     )
                 }
 
@@ -296,6 +304,7 @@ fun CreateUpdateProcedureScreen(
                             .menuAnchor()
                             .fillMaxWidth()
                             .padding(bottom = 15.dp),
+                        colors = dropdownMenuColors
                     )
                     ExposedDropdownMenu(
                         expanded = frequencyExpanded,
@@ -331,10 +340,9 @@ fun CreateUpdateProcedureScreen(
                                 )
                             }
                         },
-                        modifier = Modifier
-                            .padding(bottom = 10.dp)
-                            .fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
+                        modifier = outLinedTextFieldModifier,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = outLinedTextFieldColors
                     )
                 }
 
@@ -365,10 +373,9 @@ fun CreateUpdateProcedureScreen(
                             )
                         }
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 15.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    modifier = outLinedTextFieldModifier,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = outLinedTextFieldColors
                 )
                 if (openTimeDialog) {
                     AlertDialog(
@@ -422,10 +429,9 @@ fun CreateUpdateProcedureScreen(
                             )
                         }
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 15.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    modifier = outLinedTextFieldModifier,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = outLinedTextFieldColors
                 )
                 if (openDateDialog) {
                     val datePickerState = rememberDatePickerState()
@@ -511,24 +517,126 @@ fun CreateUpdateProcedureScreen(
                     )
                 }
                 if (enableNotifications) {
+                    // дата Уведомления
+                    var openDateDialog by remember { mutableStateOf(false) }
+                    var dateString by remember {
+                        mutableStateOf(
+                            procedure.dateDone.format(
+                                PetDateTimeFormatter.date
+                            )
+                        )
+                    }
+
                     OutlinedTextField(
-                        value = timeNotificationString,
-                        onValueChange = { timeNotificationString = it },
-                        label = { Text(stringResource(id = R.string.creation_procedure_screen_time_before_notification)) },
-                        singleLine = true,
+                        value = dateString,
+                        onValueChange = {
+                            //TODO const val CORRECT_DATE_DIGIT_NUMBER = 10???
+                            if (it.length <= CORRECT_DATE_DIGIT_NUMBER) dateString = it
+                        },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number
                         ),
+                        label = { Text(stringResource(id = R.string.creation_procedure_screen_choose_date)) },
+                        supportingText = { Text(text = stringResource(id = R.string.date_format)) },
                         trailingIcon = {
-                            IconButton(onClick = { timeNotificationString = "" }) {
-                                Icon(Icons.Default.Clear, contentDescription = null)
+                            IconButton(onClick = { openDateDialog = true }) {
+                                Icon(
+                                    Icons.Default.DateRange,
+                                    contentDescription = stringResource(id = R.string.creation_procedure_screen_open_calendar)
+                                )
                             }
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 15.dp),
-                        shape = RoundedCornerShape(12.dp)
+                        modifier = outLinedTextFieldModifier,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = outLinedTextFieldColors
                     )
+                    if (openDateDialog) {
+                        val datePickerState = rememberDatePickerState()
+                        DatePickerDialog(
+                            onDismissRequest = {
+                                openDateDialog = false
+                            },
+                            confirmButton = {
+                                TextButton(
+                                    onClick = {
+                                        openDateDialog = false
+                                        dateString =
+                                            (LocalDateTime.ofInstant(
+                                                Instant.ofEpochMilli(
+                                                    datePickerState.selectedDateMillis ?: 0
+                                                ),
+                                                ZoneId.of("UTC")
+                                            )).format(PetDateTimeFormatter.date)
+                                    },
+                                ) {
+                                    Text(stringResource(id = R.string.confirm_button_description))
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(
+                                    onClick = { openDateDialog = false }
+                                ) {
+                                    Text(stringResource(id = R.string.cancel_button_description))
+                                }
+                            }
+                        ) {
+                            DatePicker(state = datePickerState)
+                        }
+                    }
+
+                    // Время уведомления
+                    var openTimeDialog by remember { mutableStateOf(false) }
+                    val state = rememberTimePickerState()
+                    var timeString by remember {
+                        mutableStateOf(
+                            procedure.dateDone.format(
+                                PetDateTimeFormatter.time
+                            )
+                        )
+                    }
+
+                    OutlinedTextField(
+                        value = timeString,
+                        onValueChange = { },
+                        readOnly = true,
+                        label = { Text(stringResource(id = R.string.creation_procedure_screen_pick_time)) },
+                        supportingText = { Text(text = stringResource(id = R.string.creation_procedure_screen_time_format)) },
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { openTimeDialog = true }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_access_time),
+                                    contentDescription = stringResource(id = R.string.creation_procedure_screen_open_clock)
+                                )
+                            }
+                        },
+                        modifier = outLinedTextFieldModifier,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = outLinedTextFieldColors
+                    )
+                    if (openTimeDialog) {
+                        AlertDialog(
+                            title = {
+                                Text(text = stringResource(id = R.string.creation_procedure_screen_pick_time))
+                            },
+                            text = { TimePicker(state = state) },
+                            onDismissRequest = { openTimeDialog = false },
+                            confirmButton = {
+                                TextButton(onClick = {
+                                    timeString = "${state.hour}:${state.minute}"
+                                    openTimeDialog = false
+                                }) {
+                                    Text(stringResource(id = R.string.procedure_screen_ok))
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = { openTimeDialog = false }) {
+                                    Text(stringResource(id = R.string.procedure_screen_cancel))
+                                }
+                            }
+                        )
+                    }
                 }
 
                 // заметки
@@ -544,11 +652,10 @@ fun CreateUpdateProcedureScreen(
                             )
                         }
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 15.dp),
+                    modifier = outLinedTextFieldModifier,
                     singleLine = false,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    colors = outLinedTextFieldColors
                 )
             }
 
