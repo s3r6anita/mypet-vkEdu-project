@@ -36,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,19 +58,18 @@ import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope, // TODO IN FUNCTION -??
     profileId: Int,
     canNavigateBack: Boolean
 ) {
 
     val viewModel: ProfileViewModel = hiltViewModel()
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -97,7 +97,7 @@ fun ProfileScreen(
                     }
                     launchSingleTop = true
                 }
-                //TODO: вставить вызов функции removePet(id) внутри scope.launch { delay(100), ...}
+                //TODO: вставить вызов функции removePet(id) внутри globalScope.launch { delay(100), ...}
             }) {
                 Text(text = stringResource(id = R.string.confirm_button_description))
             }

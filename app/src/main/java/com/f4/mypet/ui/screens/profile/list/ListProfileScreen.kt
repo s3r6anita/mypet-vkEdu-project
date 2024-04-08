@@ -36,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,20 +70,19 @@ import kotlinx.coroutines.launch
 fun ListProfileScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope, //TODO IN FUNCTION -??
+    globalScope: CoroutineScope, //TODO IN FUNCTION -??
 ) {
     val viewModel: ListProfileViewModel = hiltViewModel()
+    val localScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        scope.launch {
+        localScope.launch {
             viewModel.getPetsProfiles()
         }
     }
 
     val pets by viewModel.petsUiState.collectAsState()
     // пока только так, а потом добавлю еще заглушку, если отсуствуют профили
-
-    val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -158,7 +158,7 @@ fun ListProfileScreen(
                             pet = pet,
                             canNavigateBack = !rememberUserChoice,
                             navController = navController,
-                            closeSnackbar = { scope.coroutineContext.cancelChildren() }
+                            closeSnackbar = { globalScope.coroutineContext.cancelChildren() }
                         )
                         Spacer(modifier = Modifier.height(20.dp))
                     }
@@ -169,7 +169,7 @@ fun ListProfileScreen(
             Button(
                 modifier = Modifier.padding(20.dp),
                 onClick = {
-                    scope.coroutineContext.cancelChildren()
+                    globalScope.coroutineContext.cancelChildren()
                     navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
