@@ -14,6 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 data class BottomNavigationItem(
     val route: Routes.BottomBarRoutes,
@@ -22,7 +24,7 @@ data class BottomNavigationItem(
 )
 
 data object BottomBarData {
-    val items = listOf(
+    val items = persistentListOf(
         BottomNavigationItem(
             route = Routes.BottomBarRoutes.ListProcedures,
             icon = R.drawable.procedures_icon
@@ -44,7 +46,7 @@ fun MyPetBottomBar(
     navController: NavHostController,
     profileId: Int?,
     canNavigateBack: Boolean?,
-    items: List<BottomNavigationItem>, //TODO ImmutableList (kotlinx.collections.immutable)
+    items: ImmutableList<BottomNavigationItem>,
     modifier: Modifier = Modifier
 ) {
     NavigationBar(

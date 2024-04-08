@@ -252,6 +252,7 @@ fun ProcedureScreen(
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
                     onClick = {
                         navController.navigate(Routes.UpdateProcedure.route + "/" + profileId + "/" + procedureId) {
+                            // TODO (optional) Convert to string template
                             launchSingleTop = true
                         }
                     },

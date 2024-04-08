@@ -69,7 +69,7 @@ import kotlinx.coroutines.launch
 fun ListProfileScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope, //TODO IN FUNCTION
+    scope: CoroutineScope, //TODO IN FUNCTION -??
 ) {
     val viewModel: ListProfileViewModel = hiltViewModel()
 

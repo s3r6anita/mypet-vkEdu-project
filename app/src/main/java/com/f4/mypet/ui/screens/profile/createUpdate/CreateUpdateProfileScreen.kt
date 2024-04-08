@@ -79,15 +79,18 @@ fun CreateUpdateProfileScreen(
     navController: NavHostController,
     isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope, //TODO get scope inside function
+    scope: CoroutineScope, //TODO get scope inside function -??
     profileId: Int = -1
 ) {
     val context = LocalContext.current
     val viewModel: CreateUpdateProfileViewModel = hiltViewModel()
 
-    scope.launch {// TODO LaunchedEffect
-        viewModel.getPetProfile(profileId)
+    LaunchedEffect(Unit) {
+        scope.launch {
+            viewModel.getPetProfile(profileId)
+        }
     }
+
     val petDB by viewModel.petUiState.collectAsState()
     var pet by remember { mutableStateOf(petDB) }
     LaunchedEffect(petDB) {

@@ -3,6 +3,7 @@ package com.f4.mypet.navigation
 import androidx.compose.animation.EnterTransition
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 fun SetupNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope, //TODO IN FUNCTION
+    scope: CoroutineScope = rememberCoroutineScope()
 ) {
     NavHost(
         navController = navController,

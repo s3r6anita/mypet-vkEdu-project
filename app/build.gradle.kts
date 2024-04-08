@@ -68,7 +68,7 @@ dependencies {
 
     // Room
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.4")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.5")
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
@@ -78,8 +78,10 @@ dependencies {
 
     // Dagger
     implementation("com.google.dagger:hilt-android:2.48")
-    ksp("com.google.dagger:dagger-compiler:2.48") // Dagger compiler
-    ksp("com.google.dagger:hilt-compiler:2.48")   // Hilt compiler
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0-beta01")
+    ksp("com.google.dagger:dagger-compiler:2.49") // Dagger compiler
+    ksp("com.google.dagger:hilt-compiler:2.49")   // Hilt compiler
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
+    // collections
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 }
