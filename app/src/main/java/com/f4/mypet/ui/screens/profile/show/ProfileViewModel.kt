@@ -38,4 +38,10 @@ class ProfileViewModel @Inject constructor(
         }
 
     }
+
+    fun removePet(pet: Pet) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.removePet(pet)
+        }
+    }
 }

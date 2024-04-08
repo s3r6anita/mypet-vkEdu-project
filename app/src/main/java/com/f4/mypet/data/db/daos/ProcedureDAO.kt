@@ -1,6 +1,7 @@
 package com.f4.mypet.data.db.daos
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -11,6 +12,9 @@ import kotlinx.coroutines.flow.Flow
 interface ProcedureDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(procedure: Procedure)
+
+    @Delete
+    suspend fun delete(procedure: Procedure)
 
     @Query("SELECT * from procedure where pet = :petId")
     fun getProceduresForPet(petId: Int): Flow<List<Procedure>>

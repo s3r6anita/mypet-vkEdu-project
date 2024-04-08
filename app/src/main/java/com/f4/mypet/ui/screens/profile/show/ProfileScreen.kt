@@ -97,7 +97,7 @@ fun ProfileScreen(
                     }
                     launchSingleTop = true
                 }
-                //TODO: вставить вызов функции removePet(id) внутри globalScope.launch { delay(100), ...}
+                viewModel.removePet(pet)
             }) {
                 Text(text = stringResource(id = R.string.confirm_button_description))
             }
@@ -294,8 +294,3 @@ fun TextComponent(header: String, value: String) {
         )
     }
 }
-
-
-// TODO: function formatPet(pet: Pet): String
-
-// TODO: function removePet(id: Int)

@@ -12,7 +12,8 @@ import androidx.room.Relation
         ForeignKey(
             entity = ProcedureType::class,
             parentColumns = ["id"],
-            childColumns = ["type"]
+            childColumns = ["type"],
+            onDelete = ForeignKey.NO_ACTION
         )
     ]
 )

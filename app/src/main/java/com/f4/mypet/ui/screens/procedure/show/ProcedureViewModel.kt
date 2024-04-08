@@ -44,10 +44,25 @@ class ProcedureViewModel @Inject constructor(
             repository.getProcedure(procedureId).collect { procedure ->
                 _procedureUiState.value = procedure
                 title = repository.getProcedureTitles().find { it.id == procedure.title }
-                    ?: title
+                    ?: ProcedureTitle(
+                        name = "Неизвестно",
+                        type = -1,
+                        id = -1
+                    )
                 type = repository.getProcedureTypes().find { it.id == title.type }
-                    ?: type
+                    ?: ProcedureType(
+                        name = "Неизвестно",
+                        id = title.type
+                    )
+
             }
+        }
+
+    }
+
+    fun deleteProcedure(procedure: Procedure) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteProcedure(procedure)
         }
     }
 }

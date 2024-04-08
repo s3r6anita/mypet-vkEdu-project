@@ -13,13 +13,16 @@ import javax.annotation.Nullable
         ForeignKey(
             entity = Pet::class,
             parentColumns = ["id"],
-            childColumns = ["pet"]
+            childColumns = ["pet"],
+            onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = ProcedureTitle::class,
             parentColumns = ["id"],
-            childColumns = ["title"]
-        )]
+            childColumns = ["title"],
+            onDelete = ForeignKey.NO_ACTION
+        )
+    ]
 )
 
 @Stable

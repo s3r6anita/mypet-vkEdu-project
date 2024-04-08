@@ -14,12 +14,14 @@ import javax.inject.Inject
 interface Repository {
     suspend fun insertPet(pet: Pet)
     suspend fun updatePet(pet: Pet)
+    suspend fun removePet(pet: Pet)
     suspend fun getPets(): Flow<List<Pet>>
     suspend fun getPet(petId: Int): Flow<Pet>
     suspend fun getPetForCU(petId: Int): Pet
     suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>>
     suspend fun getProcedureTitles(): List<ProcedureTitle>
     suspend fun getProcedure(procedureId: Int): Flow<Procedure>
+    suspend fun deleteProcedure(procedure: Procedure)
     suspend fun getProcedureTypes(): List<ProcedureType>
 }
 
@@ -35,6 +37,10 @@ class DBRepository @Inject constructor(
 
     override suspend fun updatePet(pet: Pet) {
         petDAO.update(pet)
+    }
+
+    override suspend fun removePet(pet: Pet) {
+        petDAO.delete(pet)
     }
 
     override suspend fun getPets(): Flow<List<Pet>> {
@@ -59,6 +65,10 @@ class DBRepository @Inject constructor(
 
     override suspend fun getProcedure(procedureId: Int): Flow<Procedure> {
         return procedureDAO.getProcedure(procedureId)
+    }
+
+    override suspend fun deleteProcedure(procedure: Procedure) {
+        procedureDAO.delete(procedure)
     }
 
     override suspend fun getProcedureTypes(): List<ProcedureType> {

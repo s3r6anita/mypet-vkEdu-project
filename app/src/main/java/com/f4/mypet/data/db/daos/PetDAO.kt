@@ -1,6 +1,7 @@
 package com.f4.mypet.data.db.daos
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -16,6 +17,9 @@ interface PetDAO {
 
     @Update
     suspend fun update(pet: Pet)
+
+    @Delete
+    suspend fun delete(pet: Pet)
 
     @Query("SELECT * from pet")
     fun getPets(): Flow<List<Pet>>
