@@ -41,11 +41,14 @@ class CreateUpdateProcedureViewModel @Inject constructor(
 
     var titles = emptyList<ProcedureTitle>()
     var types = emptyList<ProcedureType>()
-    var title = titles.find { title -> title.id == procedureUiState.value.title }
-        ?: ProcedureTitle(
-            name = "Неизвестно",
-            type = 0,
-        )
+    var title = ProcedureTitle(
+        name = "Неизвестно",
+        type = 0,
+    )
+    var type = ProcedureType(
+        name = "Неизвестно",
+        id = title.id
+    )
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -60,7 +63,12 @@ class CreateUpdateProcedureViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getProcedure(procedureId).collect { procedure ->
                     _procedureUiState.value = procedure
+                    title = titles.find { title -> title.id == procedure.title }
+                        ?: title
+                    type = types.find { type -> type.id == title.type }
+                        ?:  type
                 }
+                _uiState.update { UiState.Success }
             }
         }
     }

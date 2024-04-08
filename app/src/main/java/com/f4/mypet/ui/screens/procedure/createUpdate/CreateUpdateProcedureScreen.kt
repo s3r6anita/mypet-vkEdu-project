@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
@@ -55,12 +54,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
+import com.f4.mypet.PresentOrFutureSelectableDates
 import com.f4.mypet.R
-import com.f4.mypet.data.db.entities.ProcedureType
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.ErrorScreen
 import com.f4.mypet.ui.screens.LoadingScreen
+import com.f4.mypet.validate
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
@@ -94,6 +94,9 @@ fun CreateUpdateProcedureScreen(
             val types = viewModel.types
             val procedureDB by viewModel.procedureUiState.collectAsState()
 
+            var type by remember {
+                mutableStateOf(viewModel.type)
+            }
             var title by remember {
                 mutableStateOf(viewModel.title)
             }
@@ -130,14 +133,8 @@ fun CreateUpdateProcedureScreen(
                     // Тип процедуры - выпадающее меню с выбором
                     var selectedType by remember {
                         mutableStateOf(
-                            if (isCreateScreen)
-                                types[0]
-                            else
-                                types.find { type -> type.id == title.type } ?: ProcedureType(
-                                    name = "Неизвестно",
-                                    id = title.id
-                                )
-                            // TODO:ok?
+                            if (isCreateScreen) types[1] // косметический тип
+                            else type
                         )
                     }
                     var typeExpanded by remember { mutableStateOf(false) }
@@ -182,78 +179,73 @@ fun CreateUpdateProcedureScreen(
                         }
                     }
 
-//                    // Название процедуры - выпадающее меню с выбором
-//                    val titleOptions = titles.filter {
-//                        it.type == selectedType.id
-//                    }
-//                    var selectedTitle by remember {
-//                        mutableStateOf(
-//                            if (isCreateScreen)
-//                                titleOptions[0]
-//                            else
-//                                requireNotNull(titleOptions.find { title -> title.id == procedure.title })
-//                            // TODO:ok?
-//                        )
-//                    }
-//                    var nameExpanded by remember { mutableStateOf(false) }
+                    // Название процедуры
+                    val titleOptions = titles.filter {
+                        it.type == selectedType.id
+                    }
+                    var selectedTitle by remember {
+                        mutableStateOf(
+                            if (isCreateScreen) titleOptions[0]
+                            else title
+                        )
+                    }
+                    var titleExpanded by remember { mutableStateOf(false) }
+                    var titleIsCorrect by remember { mutableStateOf(!isCreateScreen) }
 
-
-
-//                    // если не пользовательский тип процедуры
-//                    if (titleOptions != emptyList<String>()) {
-//                        ExposedDropdownMenuBox(
-//                            expanded = nameExpanded,
-//                            onExpandedChange = {
-//                                nameExpanded = it
-//                            },
-//                            modifier = Modifier.padding(bottom = 10.dp)
-//                        ) {
-//                            TextField(
-//                                modifier = Modifier
-//                                    .menuAnchor()
-//                                    .padding(bottom = 10.dp),
-//                                readOnly = true,
-//                                value = selectedTitle.name,
-//                                onValueChange = { },
-//                                label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
-//                                trailingIcon = {
-//                                    ExposedDropdownMenuDefaults.TrailingIcon(
-//                                        expanded = nameExpanded
-//                                    )
-//                                },
-//                            )
-//                            ExposedDropdownMenu(
-//                                expanded = nameExpanded,
-//                                onDismissRequest = {
-//                                    nameExpanded = false
-//                                }
-//                            ) {
-//                                titleOptions.forEach { selectionOption ->
-//                                    DropdownMenuItem(
-//                                        text = { Text(selectionOption.name) },
-//                                        onClick = {
-//                                            selectedTitle = selectionOption
-//                                            nameExpanded = false
-//                                        }
-//                                    )
-//                                }
-//                            }
-//                        }
-//                    }
-
-//                    else {
-//                        // если пользовательский тип процедуры
-//                        OutlinedTextField(
-//                            value = selectedTitle.name,
-//                            onValueChange = {
-//                                selectedTitle.name = it
-//                            },
-//                            label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
-//                            modifier = Modifier
-//                                .padding(bottom = 10.dp, start = 30.dp, end = 30.dp)
-//                                .fillMaxWidth()
-//                        )
-//                    }
+                    // если процедура не "Косметического" типа
+                    if (titleOptions != emptyList<String>()) {
+                        ExposedDropdownMenuBox(
+                            expanded = titleExpanded,
+                            onExpandedChange = {
+                                titleExpanded = it
+                            },
+                            modifier = Modifier.padding(bottom = 10.dp)
+                        ) {
+                            TextField(
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .padding(bottom = 10.dp),
+                                value = selectedTitle.name,
+                                readOnly = true,
+                                onValueChange = { },
+                                label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(
+                                        expanded = titleExpanded
+                                    )
+                                },
+                            )
+                            ExposedDropdownMenu(
+                                expanded = titleExpanded,
+                                onDismissRequest = {
+                                    titleExpanded = false
+                                }
+                            ) {
+                                titleOptions.forEach { selectionOption ->
+                                    DropdownMenuItem(
+                                        text = { Text(selectionOption.name) },
+                                        onClick = {
+                                            selectedTitle = selectionOption
+                                            titleExpanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        // если не медицинский тип процедуры
+                        OutlinedTextField(
+                            value = title.name,
+                            onValueChange = {
+                                titleIsCorrect = validate(it)
+                                title = title.copy(name = it)
+                            },
+                            label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
+                            modifier = Modifier
+                                .padding(bottom = 10.dp, start = 30.dp, end = 30.dp)
+                                .fillMaxWidth()
+                        )
+                    }
 
                     // периодичность - выпадающее меню с выбором
                     var frequencyExpanded by remember { mutableStateOf(false) }
@@ -299,14 +291,30 @@ fun CreateUpdateProcedureScreen(
                     if (selectedFrequency != FrequencyOptions.Never) {
                         OutlinedTextField(
                             value = frequencyString,
-                            onValueChange = { frequencyString = it },
+                            onValueChange = {
+                                frequencyString = it
+                                if (it != "") {
+                                    procedure = procedure.copy(
+                                        frequency = when (selectedFrequency) {
+                                            FrequencyOptions.Hours -> frequencyString.toInt()
+                                            FrequencyOptions.Days -> frequencyString.toInt() * 24
+                                            FrequencyOptions.Weeks -> frequencyString.toInt() * 24 * 7
+                                            else -> 0
+                                        }
+                                    )
+                                } else {
+                                    procedure = procedure.copy(frequency = 0)
+                                }
+                            },
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number
                             ),
                             label = { Text(text = stringResource(R.string.creation_procedure_screen_period)) },
                             singleLine = true,
                             trailingIcon = {
-                                IconButton(onClick = { frequencyString = "" }) {
+                                IconButton(onClick = {
+                                    frequencyString = ""
+                                }) {
                                     Icon(
                                         Icons.Default.Clear,
                                         contentDescription = stringResource(id = R.string.clear)
@@ -319,17 +327,11 @@ fun CreateUpdateProcedureScreen(
 
                     // Время выполнения - тайм пикер
                     var openTimeDialog by remember { mutableStateOf(false) }
-                    val state = rememberTimePickerState()
-                    var timeString by remember {
-                        mutableStateOf(
-                            procedure.dateDone.format(
-                                PetDateTimeFormatter.time
-                            )
-                        )
-                    }
+                    val timePickerState = rememberTimePickerState()
+                    var timeIsCorrect by remember { mutableStateOf(true) }
 
                     OutlinedTextField(
-                        value = timeString,
+                        value = procedure.dateDone.format(PetDateTimeFormatter.time),
                         onValueChange = { },
                         readOnly = true,
                         label = { Text(stringResource(id = R.string.creation_procedure_screen_duration)) },
@@ -344,6 +346,7 @@ fun CreateUpdateProcedureScreen(
                                 )
                             }
                         },
+                        isError = !timeIsCorrect,
                         modifier = modifier
                     )
                     if (openTimeDialog) {
@@ -351,13 +354,23 @@ fun CreateUpdateProcedureScreen(
                             title = {
                                 Text(text = stringResource(id = R.string.creation_procedure_screen_pick_time))
                             },
-                            text = { TimePicker(state = state) },
+                            text = { TimePicker(state = timePickerState) },
                             onDismissRequest = { openTimeDialog = false },
                             confirmButton = {
-                                TextButton(onClick = {
-                                    timeString = "${state.hour}:${state.minute}"
-                                    openTimeDialog = false
-                                }) {
+                                TextButton(
+                                    onClick = {
+                                        openTimeDialog = false
+//                                        TODO: find correct format
+//                                        procedure = procedure.copy(
+//                                            dateDone = LocalDateTime.ofInstant(
+//                                                Instant.ofEpochMilli(
+////                                                    timePickerState.hour ?: 0
+////                                                ),
+//                                                ZoneId.of("UTC")
+//                                            )
+//                                        )
+                                        // TODO: catch Errors
+                                    }) {
                                     Text(stringResource(id = R.string.procedure_screen_ok))
                                 }
                             },
@@ -371,36 +384,28 @@ fun CreateUpdateProcedureScreen(
 
                     // дата выполнения
                     var openDateDialog by remember { mutableStateOf(false) }
-                    var dateString by remember {
-                        mutableStateOf(
-                            procedure.dateDone.format(
-                                PetDateTimeFormatter.date
-                            )
-                        )
-                    }
+                    val datePickerState =
+                        rememberDatePickerState(selectableDates = PresentOrFutureSelectableDates)
+                    var dateIsCorrect by remember { mutableStateOf(true) }
 
                     OutlinedTextField(
-                        value = dateString,
-                        onValueChange = {
-                            if (it.length <= CORRECT_DATE_DIGIT_NUMBER) dateString = it
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
+                        value = procedure.dateDone.format(PetDateTimeFormatter.date),
+                        onValueChange = { },
                         label = { Text(stringResource(id = R.string.creation_procedure_screen_date_of_completion)) },
                         supportingText = { Text(text = stringResource(id = R.string.date_format)) },
+                        readOnly = true,
                         trailingIcon = {
                             IconButton(onClick = { openDateDialog = true }) {
                                 Icon(
                                     Icons.Default.DateRange,
-                                    contentDescription = stringResource(id = R.string.creation_procedure_screen_open_calendar)
+                                    contentDescription = stringResource(id = R.string.show_calendar)
                                 )
                             }
                         },
+                        isError = !dateIsCorrect,
                         modifier = modifier
                     )
                     if (openDateDialog) {
-                        val datePickerState = rememberDatePickerState()
                         DatePickerDialog(
                             onDismissRequest = {
                                 openDateDialog = false
@@ -409,22 +414,22 @@ fun CreateUpdateProcedureScreen(
                                 TextButton(
                                     onClick = {
                                         openDateDialog = false
-                                        dateString =
-                                            (LocalDateTime.ofInstant(
+                                        procedure = procedure.copy(
+                                            dateDone = LocalDateTime.ofInstant(
                                                 Instant.ofEpochMilli(
                                                     datePickerState.selectedDateMillis ?: 0
                                                 ),
                                                 ZoneId.of("UTC")
-                                            )).format(PetDateTimeFormatter.date)
+                                            )
+                                        )
+                                        // TODO: catch Errors
                                     },
                                 ) {
                                     Text(stringResource(id = R.string.confirm_button_description))
                                 }
                             },
                             dismissButton = {
-                                TextButton(
-                                    onClick = { openDateDialog = false }
-                                ) {
+                                TextButton(onClick = { openDateDialog = false }) {
                                     Text(stringResource(id = R.string.cancel_button_description))
                                 }
                             }
@@ -434,9 +439,8 @@ fun CreateUpdateProcedureScreen(
                     }
 
                     // уведомление
-                    var enableNotifications by remember { mutableStateOf(false) }
-                    var timeNotificationString by remember { mutableStateOf("") }
-
+                    var enableNotifications by remember { mutableStateOf(procedure.reminder != null) }
+                    var timeNotificationString by remember { mutableStateOf(procedure.reminder.toString()) } // временно
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -452,7 +456,7 @@ fun CreateUpdateProcedureScreen(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "Уведомления",
+                            text = stringResource(id = R.string.cu_screen_notifications),
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(end = 16.dp)
                         )
@@ -493,7 +497,6 @@ fun CreateUpdateProcedureScreen(
                             }
                         },
                         modifier = modifier
-                            .height(120.dp)
                     )
 
                     // сохранение
@@ -502,23 +505,29 @@ fun CreateUpdateProcedureScreen(
                         onClick = {
                             try {
                                 //TODO Проверка на формат даты и на "дату из будущего"
-//                                if (selectedName == "") {
-//                                    throw IllegalArgumentException("Некорректное название")
-//                                }
 
                                 //TODO изменение полей на основе полученных значений
 
                                 //TODO добавление в список процедур
 
-                                // TODO: SnackBar
-
-                                //TODO nav...
+                                if (isCreateScreen) {
+//                                    viewModel.createProcedure(procedure)
+                                    navController.navigate(Routes.BottomBarRoutes.ListProcedures.route) {
+                                        popUpTo(Routes.BottomBarRoutes.ListProcedures.route) {
+                                            inclusive = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+                                } else {
+//                                    viewModel.updateProcedure(procedure)
+                                    navController.navigateUp()
+                                }
                             } catch (e: IllegalArgumentException) {
                                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                             }
                         }
                     ) {
-                        Text(text = "Сохранить")
+                        Text(text = stringResource(id = R.string.save_button_description))
                     }
                 }
             }

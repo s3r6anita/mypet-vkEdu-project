@@ -45,7 +45,6 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Procedure
-import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetBottomBar
@@ -101,7 +100,6 @@ fun ListProcedureScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Карточка питомца = заголовок = то что сверху
             PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
 
             // список процедур
@@ -113,7 +111,8 @@ fun ListProcedureScreen(
                 procedures.forEach { procedure ->
                     ProcedureItem(
                         procedure = procedure,
-                        titles = titles,
+                        title = titles.find { title -> title.id == procedure.title }?.name
+                            ?: stringResource(id = R.string.unknown),
                         navController = navController
                     )
                 }
@@ -147,7 +146,7 @@ fun ListProcedureScreen(
 @Composable
 fun ProcedureItem(
     procedure: Procedure,
-    titles: List<ProcedureTitle>,
+    title: String,
     navController: NavHostController
 ) {
     Card(
@@ -194,8 +193,7 @@ fun ProcedureItem(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = titles.find { title -> title.id == procedure.title }?.name
-                                ?: stringResource(id = R.string.unknown),
+                            text = title,
                             style = MaterialTheme.typography.titleLarge
                         )
                         if (procedure.isDone == 1) {

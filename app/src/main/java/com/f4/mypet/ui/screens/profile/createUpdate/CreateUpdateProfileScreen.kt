@@ -40,6 +40,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,10 +80,11 @@ fun CreateUpdateProfileScreen(
     navController: NavHostController,
     isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope, //TODO get scope inside function -??
+    globalScope: CoroutineScope,
     profileId: Int = -1
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val viewModel: CreateUpdateProfileViewModel = hiltViewModel()
 
     LaunchedEffect(Unit) {
@@ -339,7 +341,7 @@ fun CreateUpdateProfileScreen(
                                     dateIsCorrect =
                                         validateBirthday(pet.birthday)
                                 } catch (e: IllegalArgumentException) {
-                                    scope.launch {
+                                    globalScope.launch {
                                         snackbarHostState.showSnackbar(
                                             e.message
                                                 ?: context.resources.getString(R.string.incorrect_date)
@@ -399,7 +401,7 @@ fun CreateUpdateProfileScreen(
                         coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                 onClick = {
-                    scope.launch {
+                    globalScope.launch {
                         val job = launch {
                             snackbarHostState.showSnackbar(
                                 if (isCreateScreen)

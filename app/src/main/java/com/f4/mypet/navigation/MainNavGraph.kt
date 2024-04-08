@@ -20,7 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope
+    globalScope: CoroutineScope
 ) {
     navigation(
         route = START,
@@ -29,7 +29,7 @@ fun NavGraphBuilder.mainNavGraph(
 
         /** список профилей */
         composable(route = Routes.ListProfile.route) {
-            ListProfileScreen(navController, snackbarHostState, scope)
+            ListProfileScreen(navController, snackbarHostState, globalScope)
         }
         /** профиль */
         composable(
@@ -56,7 +56,7 @@ fun NavGraphBuilder.mainNavGraph(
                 navController,
                 true,
                 snackbarHostState,
-                scope
+                globalScope
             )
         }
         /** обновление профиля */
@@ -72,7 +72,7 @@ fun NavGraphBuilder.mainNavGraph(
                 navController,
                 false,
                 snackbarHostState,
-                scope,
+                globalScope,
                 backStackEntry.arguments?.getInt("profileId") ?: -1
             )
         }
