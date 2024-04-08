@@ -107,6 +107,7 @@ fun NavGraphBuilder.mainNavGraph(
     ) { backStackEntry ->
         CreateUpdateProcedureScreen(
             navController,
+            true,
             backStackEntry.arguments?.getInt("profileId") ?: -1
         )
     }
@@ -133,6 +134,7 @@ fun NavGraphBuilder.mainNavGraph(
     ) { backStackEntry ->
         CreateUpdateProcedureScreen(
             navController,
+            false,
             backStackEntry.arguments?.getInt("procedureId") ?: -1
         )
     }
