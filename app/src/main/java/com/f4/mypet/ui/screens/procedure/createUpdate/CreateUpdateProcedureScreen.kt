@@ -1,8 +1,8 @@
 package com.f4.mypet.ui.screens.procedure.createUpdate
 
-
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,18 +10,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -31,9 +38,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
@@ -51,19 +62,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.theme.BlueCheckbox
+import com.f4.mypet.ui.theme.GreenButton
+import com.f4.mypet.ui.theme.LightBlueBackground
+import com.f4.mypet.ui.theme.LightGrayTint
+import com.f4.mypet.ui.theme.White
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-
 
 const val CORRECT_DATE_DIGIT_NUMBER = 10
 
@@ -118,382 +137,424 @@ fun CreateUpdateProcedureScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState()),
+                .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
 
             val modifier = Modifier
-                .padding(top = 10.dp, start = 30.dp, end = 30.dp)
                 .fillMaxWidth()
 
-            // Тип процедуры - выпадающее меню с выбором
-            val typeOptions =
-                listOf("Гигиеническая", "Медицинская", "Пользовательская") // TODO: получение из VM
-            var typeExpanded by remember { mutableStateOf(false) }
-            var selectedType by remember { mutableStateOf(typeOptions[0]) }
-
-            ExposedDropdownMenuBox(
-                expanded = typeExpanded,
-                onExpandedChange = {
-                    typeExpanded = it
-                },
-                modifier = Modifier.padding(vertical = 10.dp)
-
-            ) {
-                TextField(
-                    modifier = Modifier
-                        .menuAnchor()
-                        .padding(bottom = 10.dp),
-                    readOnly = true,
-                    value = selectedType,
-                    onValueChange = { },
-                    label = { Text(stringResource(id = R.string.creation_procedure_screen_procedure_type)) },
-                    trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(
-                            expanded = typeExpanded
-                        )
-                    }
-                )
-                ExposedDropdownMenu(
-                    expanded = typeExpanded,
-                    onDismissRequest = {
-                        typeExpanded = false
-                    }
-                ) {
-                    typeOptions.forEach { selectionOption ->
-                        DropdownMenuItem(
-                            text = { Text(selectionOption) },
-                            onClick = {
-                                selectedType = selectionOption
-                                typeExpanded = false
-                            }
-                        )
-                    }
-                }
-            }
-
-            // Название процедуры - выпадающее меню с выбором
-            val nameOptions = when (selectedType) { // TODO: получать из VM
-                "Гигиеническая" -> listOf(
-                    "Стрижка шерсти",
-                    "Стрижка когтей",
-                    "Чистка зубов",
-                    "Обработка лап"
-                )
-
-                "Медицинская" -> listOf(
-                    "Прием лекарств и витаминов",
-                    "Вакцинация",
-                    "Дегельминтизация",
-                    "Обработка от блох"
-                )
-
-                else -> emptyList<String>()
-            }
-            var nameExpanded by remember { mutableStateOf(false) }
             var selectedName by remember { mutableStateOf("") }
 
-            if (nameOptions != emptyList<String>()) {
-                // если не пользовательский тип процедуры
+            Column (
+                Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(vertical = 20.dp)
+            ) {
+                // Тип процедуры - выпадающее меню с выбором
+                val typeOptions =
+                    listOf("Гигиеническая", "Медицинская", "Пользовательская") // TODO: получение из VM
+                var typeExpanded by remember { mutableStateOf(false) }
+                var selectedType by remember { mutableStateOf(typeOptions[0]) }
+
                 ExposedDropdownMenuBox(
-                    expanded = nameExpanded,
+                    expanded = typeExpanded,
                     onExpandedChange = {
-                        nameExpanded = it
-                    },
-                    modifier = Modifier.padding(bottom = 10.dp)
+                        typeExpanded = it
+                    }
                 ) {
                     TextField(
                         modifier = Modifier
                             .menuAnchor()
-                            .padding(bottom = 10.dp),
+                            .fillMaxWidth()
+                            .padding(bottom = 15.dp),
                         readOnly = true,
-                        value = selectedName,
+                        value = selectedType,
                         onValueChange = { },
-                        label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
+                        label = { Text(stringResource(id = R.string.creation_procedure_screen_procedure_type)) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
-                                expanded = nameExpanded
+                                expanded = typeExpanded
                             )
-                        },
+                        }
                     )
                     ExposedDropdownMenu(
-                        expanded = nameExpanded,
+                        expanded = typeExpanded,
                         onDismissRequest = {
-                            nameExpanded = false
+                            typeExpanded = false
                         }
                     ) {
-                        nameOptions.forEach { selectionOption ->
+                        typeOptions.forEach { selectionOption ->
                             DropdownMenuItem(
                                 text = { Text(selectionOption) },
                                 onClick = {
-                                    selectedName = selectionOption
-                                    nameExpanded = false
+                                    selectedType = selectionOption
+                                    typeExpanded = false
                                 }
                             )
                         }
                     }
                 }
-            } else {
-                // если пользовательский тип процедуры
-                OutlinedTextField(
-                    value = selectedName,
-                    onValueChange = {
-                        selectedName = it
-                    },
-                    label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
-                    modifier = Modifier
-                        .padding(bottom = 10.dp, start = 30.dp, end = 30.dp)
-                        .fillMaxWidth()
-                )
-            }
 
-            // периодичность - выпадающее меню с выбором
+                // Название процедуры - выпадающее меню с выбором
+                val nameOptions = when (selectedType) { // TODO: получать из VM
+                    "Гигиеническая" -> listOf(
+                        "Стрижка шерсти",
+                        "Стрижка когтей",
+                        "Чистка зубов",
+                        "Обработка лап"
+                    )
 
-            var frequencyExpanded by remember { mutableStateOf(false) }
-            var selectedFrequency by remember { mutableStateOf(FrequencyOptions.Never) }
-            var frequencyString by remember { mutableStateOf("") }
+                    "Медицинская" -> listOf(
+                        "Прием лекарств и витаминов",
+                        "Вакцинация",
+                        "Дегельминтизация",
+                        "Обработка от блох"
+                    )
 
-            ExposedDropdownMenuBox(
-                expanded = frequencyExpanded,
-                onExpandedChange = {
-                    frequencyExpanded = it
-                },
-                modifier = Modifier.padding(bottom = 5.dp)
-            ) {
-                TextField(
-                    value = selectedFrequency.period,
-                    readOnly = true,
-                    label = { Text(stringResource(R.string.creation_procedure_screen_frequence)) },
-                    onValueChange = { },
-                    trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = frequencyExpanded)
-                    },
-                    modifier = Modifier
-                        .menuAnchor()
-                        .padding(bottom = 10.dp),
-                )
-                ExposedDropdownMenu(
+                    else -> emptyList<String>()
+                }
+                var nameExpanded by remember { mutableStateOf(false) }
+
+
+                if (nameOptions != emptyList<String>()) {
+                    // если не пользовательский тип процедуры
+                    ExposedDropdownMenuBox(
+                        expanded = nameExpanded,
+                        onExpandedChange = {
+                            nameExpanded = it
+                        }
+                    ) {
+                        TextField(
+                            modifier = Modifier
+                                .menuAnchor()
+                                .fillMaxWidth()
+                                .padding(bottom = 15.dp),
+                            readOnly = true,
+                            value = selectedName,
+                            onValueChange = { },
+                            label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(
+                                    expanded = nameExpanded
+                                )
+                            },
+                        )
+                        ExposedDropdownMenu(
+                            expanded = nameExpanded,
+                            onDismissRequest = {
+                                nameExpanded = false
+                            }
+                        ) {
+                            nameOptions.forEach { selectionOption ->
+                                DropdownMenuItem(
+                                    text = { Text(selectionOption) },
+                                    onClick = {
+                                        selectedName = selectionOption
+                                        nameExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    // если пользовательский тип процедуры
+                    OutlinedTextField(
+                        value = selectedName,
+                        onValueChange = {
+                            selectedName = it
+                        },
+                        label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 15.dp),
+                        shape = RoundedCornerShape(12.dp),
+                    )
+                }
+
+                // периодичность - выпадающее меню с выбором
+                var frequencyExpanded by remember { mutableStateOf(false) }
+                var selectedFrequency by remember { mutableStateOf(FrequencyOptions.Never) }
+                var frequencyString by remember { mutableStateOf("") }
+
+                ExposedDropdownMenuBox(
                     expanded = frequencyExpanded,
-                    onDismissRequest = {
-                        frequencyExpanded = false
+                    onExpandedChange = {
+                        frequencyExpanded = it
                     }
                 ) {
-                    FrequencyOptions.entries.forEach() { selectionOption ->
-                        DropdownMenuItem(
-                            text = { Text(selectionOption.period) },
-                            onClick = {
-                                selectedFrequency = selectionOption
-                                frequencyExpanded = false
-                            }
-                        )
+                    TextField(
+                        value = selectedFrequency.period,
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.creation_procedure_screen_frequence)) },
+                        onValueChange = { },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = frequencyExpanded)
+                        },
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth()
+                            .padding(bottom = 15.dp),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = frequencyExpanded,
+                        onDismissRequest = {
+                            frequencyExpanded = false
+                        }
+                    ) {
+                        FrequencyOptions.entries.forEach() { selectionOption ->
+                            DropdownMenuItem(
+                                text = { Text(selectionOption.period) },
+                                onClick = {
+                                    selectedFrequency = selectionOption
+                                    frequencyExpanded = false
+                                }
+                            )
+                        }
                     }
                 }
-            }
-            if (selectedFrequency != FrequencyOptions.Never) {
+                if (selectedFrequency != FrequencyOptions.Never) {
+                    OutlinedTextField(
+                        value = frequencyString,
+                        onValueChange = { frequencyString = it },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        label = { Text(text = stringResource(R.string.creation_procedure_screen_period)) },
+                        singleLine = true,
+                        trailingIcon = {
+                            IconButton(onClick = { frequencyString = "" }) {
+                                Icon(
+                                    Icons.Default.Clear,
+                                    contentDescription = stringResource(id = R.string.clear)
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(bottom = 10.dp)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                }
+
+                // Время выполнения - тайм пикер
+                var openTimeDialog by remember { mutableStateOf(false) }
+                val state = rememberTimePickerState()
+                var timeString by remember {
+                    mutableStateOf(
+                        procedure.dateDone.format(
+                            PetDateTimeFormatter.time
+                        )
+                    )
+                }
+
                 OutlinedTextField(
-                    value = frequencyString,
-                    onValueChange = { frequencyString = it },
+                    value = timeString,
+                    onValueChange = { },
+                    readOnly = true,
+                    label = { Text(stringResource(id = R.string.creation_procedure_screen_duration)) },
+                    supportingText = { Text(text = stringResource(id = R.string.creation_procedure_screen_time_format)) },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = { openTimeDialog = true }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_access_time),
+                                contentDescription = stringResource(id = R.string.creation_procedure_screen_open_clock)
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                if (openTimeDialog) {
+                    AlertDialog(
+                        title = {
+                            Text(text = stringResource(id = R.string.creation_procedure_screen_pick_time))
+                        },
+                        text = { TimePicker(state = state) },
+                        onDismissRequest = { openTimeDialog = false },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                timeString = "${state.hour}:${state.minute}"
+                                openTimeDialog = false
+                            }) {
+                                Text(stringResource(id = R.string.procedure_screen_ok))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { openTimeDialog = false }) {
+                                Text(stringResource(id = R.string.procedure_screen_cancel))
+                            }
+                        }
+                    )
+                }
+
+                // дата выполнения
+                var openDateDialog by remember { mutableStateOf(false) }
+                var dateString by remember {
+                    mutableStateOf(
+                        procedure.dateDone.format(
+                            PetDateTimeFormatter.date
+                        )
+                    )
+                }
+
+                OutlinedTextField(
+                    value = dateString,
+                    onValueChange = {
+                        //TODO const val CORRECT_DATE_DIGIT_NUMBER = 10???
+                        if (it.length <= CORRECT_DATE_DIGIT_NUMBER) dateString = it
+                    },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
-                    label = { Text(text = stringResource(R.string.creation_procedure_screen_period)) },
-                    singleLine = true,
+                    label = { Text(stringResource(id = R.string.creation_procedure_screen_date_of_completion)) },
+                    supportingText = { Text(text = stringResource(id = R.string.date_format)) },
                     trailingIcon = {
-                        IconButton(onClick = { frequencyString = "" }) {
+                        IconButton(onClick = { openDateDialog = true }) {
+                            Icon(
+                                Icons.Default.DateRange,
+                                contentDescription = stringResource(id = R.string.creation_procedure_screen_open_calendar)
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                if (openDateDialog) {
+                    val datePickerState = rememberDatePickerState()
+                    DatePickerDialog(
+                        onDismissRequest = {
+                            openDateDialog = false
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    openDateDialog = false
+                                    dateString =
+                                        (LocalDateTime.ofInstant(
+                                            Instant.ofEpochMilli(
+                                                datePickerState.selectedDateMillis ?: 0
+                                            ),
+                                            ZoneId.of("UTC")
+                                        )).format(PetDateTimeFormatter.date)
+                                },
+                            ) {
+                                Text(stringResource(id = R.string.confirm_button_description))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = { openDateDialog = false }
+                            ) {
+                                Text(stringResource(id = R.string.cancel_button_description))
+                            }
+                        }
+                    ) {
+                        DatePicker(state = datePickerState)
+                    }
+                }
+
+                // уведомление
+                var enableNotifications by remember { mutableStateOf(false) }
+                var timeNotificationString by remember { mutableStateOf("") }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp)
+                        .toggleable(
+                            value = enableNotifications,
+                            onValueChange = {
+                                enableNotifications = it
+                            },
+                            role = Role.Checkbox
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Switch(
+                        checked = enableNotifications,
+                        onCheckedChange = {
+                            enableNotifications = it
+                        },
+                        thumbContent = if (enableNotifications) {
+                            {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                                    tint = White
+                                )
+                            }
+                        } else {
+                            null
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = BlueCheckbox,
+                            checkedTrackColor = LightBlueBackground,
+                            uncheckedThumbColor = White,
+                            uncheckedTrackColor = LightGrayTint,
+                            uncheckedBorderColor = White
+                        )
+                    )
+                    Text(
+                        text = "Уведомления",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
+                if (enableNotifications) {
+                    OutlinedTextField(
+                        value = timeNotificationString,
+                        onValueChange = { timeNotificationString = it },
+                        label = { Text(stringResource(id = R.string.creation_procedure_screen_time_before_notification)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        trailingIcon = {
+                            IconButton(onClick = { timeNotificationString = "" }) {
+                                Icon(Icons.Default.Clear, contentDescription = null)
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 15.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                }
+
+                // заметки
+                OutlinedTextField(
+                    value = procedure.notes,
+                    onValueChange = { procedure = procedure.copy(notes = it) },
+                    label = { Text(stringResource(id = R.string.creation_procedure_screen_notes)) },
+                    trailingIcon = {
+                        IconButton(onClick = { procedure = procedure.copy(notes = "") }) {
                             Icon(
                                 Icons.Default.Clear,
                                 contentDescription = stringResource(id = R.string.clear)
                             )
                         }
                     },
-                    modifier = modifier.padding(bottom = 10.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp),
+                    singleLine = false,
+                    shape = RoundedCornerShape(12.dp)
                 )
             }
-
-            // Время выполнения - тайм пикер
-            var openTimeDialog by remember { mutableStateOf(false) }
-            val state = rememberTimePickerState()
-            var timeString by remember {
-                mutableStateOf(
-                    procedure.dateDone.format(
-                        PetDateTimeFormatter.time
-                    )
-                )
-            }
-
-            OutlinedTextField(
-                value = timeString,
-                onValueChange = { },
-                readOnly = true,
-                label = { Text(stringResource(id = R.string.creation_procedure_screen_duration)) },
-                supportingText = { Text(text = stringResource(id = R.string.creation_procedure_screen_time_format)) },
-                trailingIcon = {
-                    IconButton(
-                        onClick = { openTimeDialog = true }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_access_time),
-                            contentDescription = stringResource(id = R.string.creation_procedure_screen_open_clock)
-                        )
-                    }
-                },
-                modifier = modifier
-            )
-            if (openTimeDialog) {
-                AlertDialog(
-                    title = {
-                        Text(text = stringResource(id = R.string.creation_procedure_screen_pick_time))
-                    },
-                    text = { TimePicker(state = state) },
-                    onDismissRequest = { openTimeDialog = false },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            timeString = "${state.hour}:${state.minute}"
-                            openTimeDialog = false
-                        }) {
-                            Text(stringResource(id = R.string.procedure_screen_ok))
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = { openTimeDialog = false }) {
-                            Text(stringResource(id = R.string.procedure_screen_cancel))
-                        }
-                    }
-                )
-            }
-
-            // дата выполнения
-            var openDateDialog by remember { mutableStateOf(false) }
-            var dateString by remember {
-                mutableStateOf(
-                    procedure.dateDone.format(
-                        PetDateTimeFormatter.date
-                    )
-                )
-            }
-
-            OutlinedTextField(
-                value = dateString,
-                onValueChange = {
-                    //TODO const val CORRECT_DATE_DIGIT_NUMBER = 10???
-                    if (it.length <= CORRECT_DATE_DIGIT_NUMBER) dateString = it
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-                label = { Text(stringResource(id = R.string.creation_procedure_screen_date_of_completion)) },
-                supportingText = { Text(text = stringResource(id = R.string.date_format)) },
-                trailingIcon = {
-                    IconButton(onClick = { openDateDialog = true }) {
-                        Icon(
-                            Icons.Default.DateRange,
-                            contentDescription = stringResource(id = R.string.creation_procedure_screen_open_calendar)
-                        )
-                    }
-                },
-                modifier = modifier
-            )
-            if (openDateDialog) {
-                val datePickerState = rememberDatePickerState()
-                DatePickerDialog(
-                    onDismissRequest = {
-                        openDateDialog = false
-                    },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                openDateDialog = false
-                                dateString =
-                                    (LocalDateTime.ofInstant(
-                                        Instant.ofEpochMilli(
-                                            datePickerState.selectedDateMillis ?: 0
-                                        ),
-                                        ZoneId.of("UTC")
-                                    )).format(PetDateTimeFormatter.date)
-                            },
-                        ) {
-                            Text(stringResource(id = R.string.confirm_button_description))
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(
-                            onClick = { openDateDialog = false }
-                        ) {
-                            Text(stringResource(id = R.string.cancel_button_description))
-                        }
-                    }
-                ) {
-                    DatePicker(state = datePickerState)
-                }
-            }
-
-            // уведомление
-            var enableNotifications by remember { mutableStateOf(false) }
-            var timeNotificationString by remember { mutableStateOf("") }
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 10.dp)
-                    .toggleable(
-                        value = enableNotifications,
-                        onValueChange = {
-                            enableNotifications = it
-                        },
-                        role = Role.Checkbox
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Уведомления",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(end = 16.dp)
-                )
-                Checkbox(
-                    checked = enableNotifications,
-                    onCheckedChange = null,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-            }
-            if (enableNotifications) {
-                OutlinedTextField(
-                    value = timeNotificationString,
-                    onValueChange = { timeNotificationString = it },
-                    label = { Text(stringResource(id = R.string.creation_procedure_screen_time_before_notification)) },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
-                    trailingIcon = {
-                        IconButton(onClick = { timeNotificationString = "" }) {
-                            Icon(Icons.Default.Clear, contentDescription = null)
-                        }
-                    }
-                )
-            }
-
-            // заметки
-            OutlinedTextField(
-                value = procedure.notes,
-                onValueChange = { procedure = procedure.copy(notes = it) },
-                label = { Text(stringResource(id = R.string.creation_procedure_screen_notes)) },
-                trailingIcon = {
-                    IconButton(onClick = { procedure = procedure.copy(notes = "") }) {
-                        Icon(
-                            Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.clear)
-                        )
-                    }
-                },
-                modifier = modifier
-                    .height(120.dp)
-            )
 
             // сохранение
             Button(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(vertical = 20.dp),
                 onClick = {
                     try {
                         //TODO Проверка на формат даты и на "дату из будущего"
@@ -511,9 +572,15 @@ fun CreateUpdateProcedureScreen(
                     } catch (e: IllegalArgumentException) {
                         Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                     }
-                }
+                },
+                border = BorderStroke(1.dp, GreenButton),
+                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
             ) {
-                Text(text = "Сохранить")
+                Text(
+                    text = stringResource(id = R.string.save_button_description),
+                    Modifier.padding(start = 10.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         }
     }
