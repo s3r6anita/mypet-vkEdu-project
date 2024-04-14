@@ -121,4 +121,5 @@
     <string name="unknown">Неизвестно</string>
     <string name="cu_screen_notifications">Уведомления</string>
 
+    <string name="creation_procedure_screen_choose_date">Выберите дату</string>
 </resources>
