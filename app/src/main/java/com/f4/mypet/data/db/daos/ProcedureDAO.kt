@@ -16,6 +16,9 @@ interface ProcedureDAO {
     @Delete
     suspend fun delete(procedure: Procedure)
 
+    @Query("DELETE FROM procedure WHERE pet = :petId")
+    suspend fun deleteProceduresForPet(petId: Int)
+
     @Query("SELECT * from procedure where pet = :petId")
     fun getProceduresForPet(petId: Int): Flow<List<Procedure>>
 

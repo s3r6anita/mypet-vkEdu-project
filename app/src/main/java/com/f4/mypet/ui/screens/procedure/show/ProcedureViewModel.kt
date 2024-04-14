@@ -9,6 +9,7 @@ import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -42,26 +43,34 @@ class ProcedureViewModel @Inject constructor(
     fun getProcedure(procedureId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getProcedure(procedureId).collect { procedure ->
-                _procedureUiState.value = procedure
-                title = repository.getProcedureTitles().find { it.id == procedure.title }
-                    ?: ProcedureTitle(
-                        name = "Неизвестно",
-                        type = -1,
-                        id = -1
+                if (procedure != null) {
+                    _procedureUiState.value = procedure
+                    title = repository.getProcedureTitles().find { it.id == procedure.title }
+                        ?: ProcedureTitle(
+                            name = "Неизвестно",
+                            type = -1,
+                            id = -1
+                        )
+                    type = repository.getProcedureTypes().find { it.id == title.type }
+                        ?: ProcedureType(
+                            name = "Неизвестно",
+                            id = title.type
+                        )
+                } else {
+                    _procedureUiState.value = Procedure(
+                        0, 0, 0,
+                        LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
+                        "", LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
+                        0, 0, 0
                     )
-                type = repository.getProcedureTypes().find { it.id == title.type }
-                    ?: ProcedureType(
-                        name = "Неизвестно",
-                        id = title.type
-                    )
-
+                }
             }
         }
-
     }
 
     fun deleteProcedure(procedure: Procedure) {
         viewModelScope.launch(Dispatchers.IO) {
+            delay(500)
             repository.deleteProcedure(procedure)
         }
     }

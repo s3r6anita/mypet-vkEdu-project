@@ -22,7 +22,7 @@ class ProfileViewModel @Inject constructor(
         Pet(
             "", "", "", "Самец",
             LocalDateTime.of(LocalDate.now(), LocalTime.now()),
-            "", "", ""
+            "", "", "", -1
         )
     )
     val petUiState = _petUiState.asStateFlow()
@@ -32,7 +32,9 @@ class ProfileViewModel @Inject constructor(
             //TODO: сделать тут try catch на petID
             if (petId != null) {
                 repository.getPet(petId).collect() { pet ->
-                    _petUiState.value = pet
+                    if (pet != null) {
+                        _petUiState.value = pet
+                    }
                 }
             }
         }
@@ -42,6 +44,8 @@ class ProfileViewModel @Inject constructor(
     fun removePet(pet: Pet) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.removePet(pet)
+            repository.removeProceduresForPet(pet.id)
+            repository.removeMedRecordsForPet(pet.id)
         }
     }
 }

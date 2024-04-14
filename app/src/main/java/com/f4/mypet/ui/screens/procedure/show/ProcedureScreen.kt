@@ -59,7 +59,6 @@ import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.RedButton
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -99,11 +98,7 @@ fun ProcedureScreen(
                     colors = ButtonDefaults.textButtonColors(contentColor = BlueCheckbox),
                     onClick = {
                         openAlertDialog = false
-                        scope.launch {
-                            delay(1000)
-                            viewModel.deleteProcedure(procedure)
-
-                        }
+                        viewModel.deleteProcedure(procedure)
                         navController.navigateUp()
                     }
                 ) {

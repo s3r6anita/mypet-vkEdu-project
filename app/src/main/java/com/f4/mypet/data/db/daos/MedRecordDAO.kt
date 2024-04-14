@@ -14,4 +14,7 @@ interface MedRecordDAO {
 
     @Query("SELECT * from MedRecord where pet = :petId")
     fun getMedRecords(petId: Int): Flow<List<MedRecord>>
+
+    @Query("DELETE FROM medrecord WHERE pet = :petId")
+    suspend fun deleteMedRecordsForPet(petId: Int)
 }

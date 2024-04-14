@@ -10,12 +10,12 @@ import javax.annotation.Nullable
 
 @Entity(
     foreignKeys = [
-        ForeignKey(
-            entity = Pet::class,
-            parentColumns = ["id"],
-            childColumns = ["pet"],
-            onDelete = ForeignKey.CASCADE
-        ),
+//        ForeignKey(
+//            entity = Pet::class,
+//            parentColumns = ["id"],
+//            childColumns = ["pet"],
+//            onDelete = ForeignKey.NO_ACTION
+//        ),
         ForeignKey(
             entity = ProcedureTitle::class,
             parentColumns = ["id"],
