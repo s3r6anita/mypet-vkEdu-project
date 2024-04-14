@@ -40,7 +40,7 @@ class ListProcedureViewModel @Inject constructor(
     fun getPetsProcedures(petId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             pet = repository.getPetForCU(petId)
-            repository.getProceduresForPet(petId).collect() { procedures ->
+            repository.getProceduresForPet(petId).collect { procedures ->
                 _proceduresUiState.value = procedures
             }
         }

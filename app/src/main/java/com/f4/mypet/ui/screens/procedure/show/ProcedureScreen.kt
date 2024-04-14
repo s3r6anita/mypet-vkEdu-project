@@ -52,8 +52,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
-import com.f4.mypet.data.db.entities.ProcedureTitle
-import com.f4.mypet.data.db.entities.ProcedureType
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.profile.show.TextComponent
@@ -67,7 +65,6 @@ import java.time.LocalDateTime
 @Composable
 fun ProcedureScreen(
     navController: NavHostController,
-    profileId: Int,
     procedureId: Int
 ) {
     val scope = rememberCoroutineScope()
@@ -79,11 +76,8 @@ fun ProcedureScreen(
         }
     }
     val procedure by viewModel.procedureUiState.collectAsState()
-    val title = viewModel.titles.find { title -> title.id == procedure.title } // TODO change logic of retrieval
-        ?: ProcedureTitle("Unknown", -1, -1)
-    val type =
-        viewModel.types.find { type -> type.id == title.type } // TODO change logic of retrieval
-            ?: ProcedureType("Unknown", -1)
+    val title = viewModel.title
+    val type = viewModel.type
 
     var openAlertDialog by remember { mutableStateOf(false) }
 
@@ -251,7 +245,8 @@ fun ProcedureScreen(
                     border = BorderStroke(1.dp, GreenButton),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
                     onClick = {
-                        navController.navigate(Routes.UpdateProcedure.route + "/" + profileId + "/" + procedureId) {
+                        navController.navigate(Routes.UpdateProcedure.route + "/" + procedureId) {
+                            // TODO (optional) Convert to string template
                             launchSingleTop = true
                         }
                     },
