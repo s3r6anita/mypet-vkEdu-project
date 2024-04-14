@@ -1,6 +1,5 @@
 package com.f4.mypet.ui.screens.procedure.createUpdate.success
 
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,7 +36,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
@@ -67,7 +65,6 @@ import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.LightGrayTint
-import com.f4.mypet.ui.theme.RedButton
 import com.f4.mypet.ui.theme.White
 import com.f4.mypet.validate
 import java.time.Instant
@@ -86,7 +83,7 @@ fun SuccessCUProcedureScreen(
     val types = viewModel.types
     val procedureDB by viewModel.procedureUiState.collectAsState()
 
-    var type by remember {
+    val type by remember {
         mutableStateOf(viewModel.type)
     }
     var title by remember {
@@ -118,24 +115,7 @@ fun SuccessCUProcedureScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            val outLinedTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = LightBlueBackground,
-                unfocusedBorderColor = LightGrayTint,
-                containerColor = MaterialTheme.colorScheme.onSecondary,
-                errorBorderColor = RedButton
-            )
-
-            val outLinedTextFieldModifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 15.dp)
-
-            val dropdownMenuColors = ExposedDropdownMenuDefaults.textFieldColors(
-                unfocusedIndicatorColor = LightBlueBackground,
-                focusedIndicatorColor = BlueCheckbox,
-                unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary,
-                focusedContainerColor = LightBlueBackground
-            )
-
+            
             // выбор типа процедуры в отдельной функции, по аналогии нужно другие выборы вынести
             var selectedType by remember {
                 mutableStateOf(
@@ -146,7 +126,7 @@ fun SuccessCUProcedureScreen(
             SelectProcedureType(
                 types = types,
                 selectedType = selectedType,
-                dropdownMenuColors = dropdownMenuColors,
+                dropdownMenuColors = getDropdownMenuColors(),
                 changeSelectedType = { newType ->
                     selectedType = newType
                 },
@@ -213,7 +193,7 @@ fun SuccessCUProcedureScreen(
                     value = title.name,
                     onValueChange = {
                         titleIsCorrect = validate(it)
-                        title = title.copy(name = it)
+                        title = title.copy(name = it) // TODO: не уверен, но тут нужно заменить в procedure, а не сам title
                     },
                     label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
                     modifier = Modifier
@@ -246,7 +226,7 @@ fun SuccessCUProcedureScreen(
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = frequencyExpanded)
                     },
-                    colors = dropdownMenuColors,
+                    colors = getDropdownMenuColors(),
                 )
                 ExposedDropdownMenu(
                     expanded = frequencyExpanded,
@@ -270,8 +250,8 @@ fun SuccessCUProcedureScreen(
                     value = frequencyString,
                     onValueChange = {
                         frequencyString = it
-                        if (it != "") {
-                            procedure = procedure.copy(
+                        procedure = if (it != "") {
+                            procedure.copy(
                                 frequency = when (selectedFrequency) {
                                     FrequencyOptions.Hours -> frequencyString.toInt()
                                     FrequencyOptions.Days -> frequencyString.toInt() * 24
@@ -280,7 +260,7 @@ fun SuccessCUProcedureScreen(
                                 }
                             )
                         } else {
-                            procedure = procedure.copy(frequency = 0)
+                            procedure.copy(frequency = 0)
                         }
                     },
                     keyboardOptions = KeyboardOptions(
@@ -298,9 +278,11 @@ fun SuccessCUProcedureScreen(
                             )
                         }
                     },
-                    modifier = outLinedTextFieldModifier,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = outLinedTextFieldColors
+                    colors = getOutLinedTextFieldColors()
                 )
             }
 
@@ -326,9 +308,11 @@ fun SuccessCUProcedureScreen(
                     }
                 },
                 isError = !timeIsCorrect,
-                modifier = outLinedTextFieldModifier,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = outLinedTextFieldColors
+                colors = getOutLinedTextFieldColors()
             )
             if (openTimeDialog) {
                 AlertDialog(
@@ -384,9 +368,11 @@ fun SuccessCUProcedureScreen(
                     }
                 },
                 isError = !dateIsCorrect,
-                modifier = outLinedTextFieldModifier,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = outLinedTextFieldColors
+                colors = getOutLinedTextFieldColors()
             )
             if (openDateDialog) {
                 DatePickerDialog(
@@ -484,9 +470,11 @@ fun SuccessCUProcedureScreen(
                             Icon(Icons.Default.Clear, contentDescription = null)
                         }
                     },
-                    modifier = outLinedTextFieldModifier,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = outLinedTextFieldColors
+                    colors = getOutLinedTextFieldColors()
                 )
 
                 // TODO: добавить DatePicker
@@ -506,10 +494,12 @@ fun SuccessCUProcedureScreen(
                         )
                     }
                 },
-                modifier = outLinedTextFieldModifier,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp),
                 singleLine = false,
                 shape = RoundedCornerShape(12.dp),
-                colors = outLinedTextFieldColors
+                colors = getOutLinedTextFieldColors()
             )
 
             // сохранение
