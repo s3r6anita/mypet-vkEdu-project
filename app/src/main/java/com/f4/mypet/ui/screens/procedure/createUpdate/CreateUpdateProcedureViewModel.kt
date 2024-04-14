@@ -39,13 +39,14 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     )
     val procedureUiState = _procedureUiState.asStateFlow()
 
-    var titles = emptyList<ProcedureTitle>()
-    var types = emptyList<ProcedureType>()
-    var title = ProcedureTitle(
+    var titles = emptyList<ProcedureTitle>() // список всех заголовков
+    var types = emptyList<ProcedureType>() // список всех типов
+
+    var title = ProcedureTitle( // заголовок создаваемой (изменяемой) процедуры
         name = "Неизвестно",
         type = 0,
     )
-    var type = ProcedureType(
+    var type = ProcedureType( // тип создаваемой (изменяемой) процедуры
         name = "Неизвестно",
         id = title.id
     )
