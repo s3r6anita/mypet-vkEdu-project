@@ -27,24 +27,27 @@ class ProcedureViewModel @Inject constructor(
             0, 0, 0
         )
     )
+    var title = ProcedureTitle(
+        name = "Неизвестно",
+        type = -1,
+        id = -1
+    )
+    var type = ProcedureType(
+        name = "Неизвестно",
+        id = title.type
+    )
+
     val procedureUiState = _procedureUiState.asStateFlow()
-
-    var titles = emptyList<ProcedureTitle>()
-    var types = emptyList<ProcedureType>()
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            titles = repository.getProcedureTitles()
-            types = repository.getProcedureTypes()
-        }
-    }
 
     fun getProcedure(procedureId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getProcedure(procedureId).collect { procedure ->
                 _procedureUiState.value = procedure
+                title = repository.getProcedureTitles().find { it.id == procedure.title }
+                    ?: title
+                type = repository.getProcedureTypes().find { it.id == title.type }
+                    ?: type
             }
         }
-
     }
 }
