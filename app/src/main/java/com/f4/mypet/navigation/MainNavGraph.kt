@@ -12,7 +12,7 @@ import com.f4.mypet.ui.screens.medcard.show.MedRecordScreen
 import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureScreen
 import com.f4.mypet.ui.screens.procedure.list.ListProcedureScreen
 import com.f4.mypet.ui.screens.procedure.show.ProcedureScreen
-import com.f4.mypet.ui.screens.profile.CreateUpdateProfileScreen
+import com.f4.mypet.ui.screens.profile.createUpdate.CreateUpdateProfileScreen
 import com.f4.mypet.ui.screens.profile.list.ListProfileScreen
 import com.f4.mypet.ui.screens.profile.show.ProfileScreen
 import kotlinx.coroutines.CoroutineScope
@@ -60,14 +60,20 @@ fun NavGraphBuilder.mainNavGraph(
             )
         }
         /** создание профиля */
-        composable(
-            route = Routes.CreateProfile.route
-        ) {
+        composable(route = Routes.CreateProfile.route) {
             CreateUpdateProfileScreen(
-                navController,
-                true,
-                snackbarHostState,
-                globalScope
+                isCreateScreen = true,
+                snackbarHostState = snackbarHostState,
+                globalScope = globalScope,
+                navigateUp = { navController.navigateUp() },
+                navigateListProfile = {
+                    navController.navigate(Routes.ListProfile.route) {
+                        popUpTo(Routes.ListProfile.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
         /** обновление профиля */
@@ -80,11 +86,11 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             CreateUpdateProfileScreen(
-                navController = navController,
                 isCreateScreen = false,
                 snackbarHostState = snackbarHostState,
                 globalScope = globalScope,
-                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                navigateUp = { navController.navigateUp() }
             )
         }
 

@@ -60,7 +60,7 @@ fun MyPetBottomBar(
                 onClick = {
                     navigate("${item.route.route}/$profileId/$canNavigateBack") {
                         popUpTo(if (canNavigateBack) Routes.ListProfile.route else START) {
-                            inclusive = true
+                            inclusive = false
                         }
                         launchSingleTop = true
                     }
