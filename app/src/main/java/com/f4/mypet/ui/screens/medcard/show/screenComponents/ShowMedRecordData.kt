@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.MedRecord
-import com.f4.mypet.ui.screens.profile.show.TextComponent
+import com.f4.mypet.ui.components.TextComponent
 
 @Composable
 fun ShowMedRecordData(medRecord: MedRecord) {

@@ -29,7 +29,13 @@ fun NavGraphBuilder.mainNavGraph(
 
         /** список профилей */
         composable(route = Routes.ListProfile.route) {
-            ListProfileScreen(navController, snackbarHostState, globalScope)
+            ListProfileScreen(
+                snackbarHostState = snackbarHostState,
+                globalScope = globalScope,
+                navigate = { route, builderOptions ->
+                    navController.navigate(route, builderOptions)
+                }
+            )
         }
         /** профиль */
         composable(

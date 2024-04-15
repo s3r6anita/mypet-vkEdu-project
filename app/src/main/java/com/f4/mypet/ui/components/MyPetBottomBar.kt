@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavOptionsBuilder
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.navigation.START
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -43,8 +44,8 @@ data object BottomBarData {
 
 @Composable
 fun MyPetBottomBar(
-    profileId: Int?,
-    canNavigateBack: Boolean?,
+    profileId: Int,
+    canNavigateBack: Boolean,
     items: ImmutableList<BottomNavigationItem>,
     modifier: Modifier = Modifier,
     navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit
@@ -57,12 +58,11 @@ fun MyPetBottomBar(
                 label = { Text(text = stringResource(item.route.title)) },
                 selected = BottomBarData.selectedItemIndex == index,
                 onClick = {
-                    navigate(item.route.route + "/" + profileId + "/" + canNavigateBack) {
-                        popUpTo(Routes.ListProfile.route) {
-                            inclusive = false
+                    navigate("${item.route.route}/$profileId/$canNavigateBack") {
+                        popUpTo(if (canNavigateBack) Routes.ListProfile.route else START) {
+                            inclusive = true
                         }
                         launchSingleTop = true
-                        restoreState = true
                     }
                     BottomBarData.selectedItemIndex = index
                 },
