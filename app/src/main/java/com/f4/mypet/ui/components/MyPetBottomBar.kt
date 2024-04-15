@@ -18,35 +18,39 @@ import com.f4.mypet.navigation.START
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-data class BottomNavigationItem(
+sealed class BottomNavigationItems(
     val route: Routes.BottomBarRoutes,
     @DrawableRes var icon: Int,
     val hasNews: Boolean = false
-)
+){
+    data object Procedures: BottomNavigationItems(
+        route = Routes.BottomBarRoutes.ListProcedures,
+        icon = R.drawable.procedures_icon
+    )
+    data object MedCard: BottomNavigationItems(
+        route = Routes.BottomBarRoutes.ListMedRecords,
+        icon = R.drawable.therapy_icon
+    )
+    data object Profile: BottomNavigationItems(
+        route = Routes.BottomBarRoutes.Profile,
+        icon = R.drawable.pet_icon
+    )
+}
 
 data object BottomBarData {
-    val items = persistentListOf(
-        BottomNavigationItem(
-            route = Routes.BottomBarRoutes.ListProcedures,
-            icon = R.drawable.procedures_icon
-        ),
-        BottomNavigationItem(
-            route = Routes.BottomBarRoutes.ListMedRecords,
-            icon = R.drawable.therapy_icon
-        ),
-        BottomNavigationItem(
-            route = Routes.BottomBarRoutes.Profile,
-            icon = R.drawable.pet_icon
-        )
-    )
     var selectedItemIndex = 0
+    val items = persistentListOf(
+        BottomNavigationItems.Procedures,
+        BottomNavigationItems.MedCard,
+        BottomNavigationItems.Profile,
+    )
 }
 
 @Composable
 fun MyPetBottomBar(
     profileId: Int,
     canNavigateBack: Boolean,
-    items: ImmutableList<BottomNavigationItem>,
+    items: ImmutableList<BottomNavigationItems>,
     modifier: Modifier = Modifier,
     navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit
 ) {
