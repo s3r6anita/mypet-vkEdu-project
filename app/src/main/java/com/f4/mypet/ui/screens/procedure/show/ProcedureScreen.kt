@@ -49,10 +49,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
-import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.TextComponent
 import com.f4.mypet.ui.theme.BlueCheckbox
@@ -64,11 +62,12 @@ import java.time.LocalDateTime
 
 @Composable
 fun ProcedureScreen(
-    navController: NavHostController,
-    procedureId: Int
+    procedureId: Int,
+    navigateUp: () -> Unit,
+    viewModel: ProcedureViewModel = hiltViewModel(),
+    navigateUpdateProcedure: (Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val viewModel: ProcedureViewModel = hiltViewModel()
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -98,7 +97,7 @@ fun ProcedureScreen(
                     colors = ButtonDefaults.textButtonColors(contentColor = BlueCheckbox),
                     onClick = {
                         openAlertDialog = false
-                        navController.navigateUp()
+                        navigateUp()
                         // TODO: вставить вызов функции removeProcedure(id) внутри scope.launch { delay(100), ...}
                     }
                 ) {
@@ -128,7 +127,7 @@ fun ProcedureScreen(
             MyPetTopBar(
                 text = stringResource(R.string.procedure_screen_title),
                 canNavigateBack = true,
-                navigateUp = { navController.navigateUp() },
+                navigateUp = { navigateUp() },
             )
         }
     ) { innerPadding ->
@@ -230,7 +229,6 @@ fun ProcedureScreen(
                             .background(LightBlueBackground)
                     )
                 }
-
             }
             Row(
                 modifier = Modifier
@@ -244,12 +242,7 @@ fun ProcedureScreen(
                     contentPadding = PaddingValues(start = 1.dp, end = 1.dp),
                     border = BorderStroke(1.dp, GreenButton),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
-                    onClick = {
-                        navController.navigate(Routes.UpdateProcedure.route + "/" + procedureId) {
-                            // TODO (optional) Convert to string template
-                            launchSingleTop = true
-                        }
-                    },
+                    onClick = { navigateUpdateProcedure(procedureId) },
                     modifier = Modifier
                         .padding(bottom = 40.dp)
                         .weight(1f)

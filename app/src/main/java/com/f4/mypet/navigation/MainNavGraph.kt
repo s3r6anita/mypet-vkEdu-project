@@ -126,8 +126,13 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             ProcedureScreen(
-                navController,
-                backStackEntry.arguments?.getInt("procedureId") ?: -1
+                procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1,
+                navigateUp = { navController.navigateUp() },
+                navigateUpdateProcedure = { procedureId ->
+                    navController.navigate("${Routes.UpdateProcedure.route}/$procedureId") {
+                        launchSingleTop = true
+                    }
+                }
             )
         }
         /** создание процедуры */
