@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import kotlinx.collections.immutable.ImmutableList
@@ -30,7 +30,7 @@ data object BottomBarData {
             icon = R.drawable.procedures_icon
         ),
         BottomNavigationItem(
-            route = Routes.BottomBarRoutes.MedCard,
+            route = Routes.BottomBarRoutes.ListMedRecords,
             icon = R.drawable.therapy_icon
         ),
         BottomNavigationItem(
@@ -43,11 +43,11 @@ data object BottomBarData {
 
 @Composable
 fun MyPetBottomBar(
-    navController: NavHostController,
     profileId: Int?,
     canNavigateBack: Boolean?,
     items: ImmutableList<BottomNavigationItem>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit
 ) {
     NavigationBar(
         modifier = modifier
@@ -57,7 +57,7 @@ fun MyPetBottomBar(
                 label = { Text(text = stringResource(item.route.title)) },
                 selected = BottomBarData.selectedItemIndex == index,
                 onClick = {
-                    navController.navigate(item.route.route + "/" + profileId + "/" + canNavigateBack) {
+                    navigate(item.route.route + "/" + profileId + "/" + canNavigateBack) {
                         popUpTo(Routes.ListProfile.route) {
                             inclusive = false
                         }

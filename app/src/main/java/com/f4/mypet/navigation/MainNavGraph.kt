@@ -7,7 +7,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.f4.mypet.ui.screens.medcard.MedCardScreen
+import com.f4.mypet.ui.screens.medcard.list.ListMedRecords
+import com.f4.mypet.ui.screens.medcard.show.MedRecordScreen
 import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureScreen
 import com.f4.mypet.ui.screens.procedure.list.ListProcedureScreen
 import com.f4.mypet.ui.screens.procedure.show.ProcedureScreen
@@ -15,7 +16,6 @@ import com.f4.mypet.ui.screens.profile.CreateUpdateProfileScreen
 import com.f4.mypet.ui.screens.profile.list.ListProfileScreen
 import com.f4.mypet.ui.screens.profile.show.ProfileScreen
 import kotlinx.coroutines.CoroutineScope
-
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
@@ -33,7 +33,7 @@ fun NavGraphBuilder.mainNavGraph(
         }
         /** профиль */
         composable(
-            route = Routes.BottomBarRoutes.Profile.route + "/{profileId}" + "/{canNavigateBack}",
+            route = "${Routes.BottomBarRoutes.Profile.route}/{profileId}/{canNavigateBack}",
             arguments = listOf(
                 navArgument(name = "profileId") {
                     type = NavType.IntType
@@ -44,14 +44,19 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             ProfileScreen(
-                navController,
-                snackbarHostState,
-                backStackEntry.arguments?.getInt("profileId") ?: -1,
-                backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
+                snackbarHostState = snackbarHostState,
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true,
+                navigateUp = { navController.navigateUp() },
+                navigate = { route, builderOptions ->
+                    navController.navigate(route, builderOptions)
+                }
             )
         }
         /** создание профиля */
-        composable(route = Routes.CreateProfile.route) {
+        composable(
+            route = Routes.CreateProfile.route
+        ) {
             CreateUpdateProfileScreen(
                 navController,
                 true,
@@ -61,7 +66,7 @@ fun NavGraphBuilder.mainNavGraph(
         }
         /** обновление профиля */
         composable(
-            route = Routes.UpdateProfile.route + "/{profileId}",
+            route = "${Routes.UpdateProfile.route}/{profileId}",
             arguments = listOf(
                 navArgument(name = "profileId") {
                     type = NavType.IntType
@@ -69,18 +74,18 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             CreateUpdateProfileScreen(
-                navController,
-                false,
-                snackbarHostState,
-                globalScope,
-                backStackEntry.arguments?.getInt("profileId") ?: -1
+                navController = navController,
+                isCreateScreen = false,
+                snackbarHostState = snackbarHostState,
+                globalScope = globalScope,
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1
             )
         }
 
 
         /** список процедур */
         composable(
-            route = Routes.BottomBarRoutes.ListProcedures.route + "/{profileId}" + "/{canNavigateBack}",
+            route = "${Routes.BottomBarRoutes.ListProcedures.route}/{profileId}/{canNavigateBack}",
             arguments = listOf(
                 navArgument(name = "profileId") {
                     type = NavType.IntType
@@ -91,71 +96,135 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             ListProcedureScreen(
-                navController = navController,
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
-                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
+                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true,
+                navigateUp = { navController.navigateUp() },
+                navigate = { route, builderOptions ->
+                    navController.navigate(route, builderOptions)
+                }
             )
         }
-    }
-    /** создание процедуры */
-    composable(route = Routes.CreateProcedure.route + "/{profileId}",
-        arguments = listOf(
-            navArgument(name = "profileId") {
-                type = NavType.IntType
-            }
-        )
-    ) { backStackEntry ->
-        CreateUpdateProcedureScreen(
-            navController,
-            true,
-            backStackEntry.arguments?.getInt("profileId") ?: -1
-        )
-    }
-    /** процедура */
-    composable(route = Routes.Procedure.route + "/{procedureId}",
-        arguments = listOf(
-            navArgument(name = "procedureId") {
-                type = NavType.IntType
-            }
-        )
-    ) { backStackEntry ->
-        ProcedureScreen(
-            navController,
-            backStackEntry.arguments?.getInt("procedureId") ?: -1
-        )
-    }
-    /** изменение процедуры */
-    composable(route = Routes.UpdateProcedure.route + "/{procedureId}",
-        arguments = listOf(
-            navArgument(name = "procedureId") {
-                type = NavType.IntType
-            }
-        )
-    ) { backStackEntry ->
-        CreateUpdateProcedureScreen(
-            navController,
-            false,
-            backStackEntry.arguments?.getInt("procedureId") ?: -1
-        )
-    }
+        /** процедура */
+        composable(
+            route = "${Routes.Procedure.route}/{procedureId}",
+            arguments = listOf(
+                navArgument(name = "procedureId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            ProcedureScreen(
+                navController,
+                backStackEntry.arguments?.getInt("procedureId") ?: -1
+            )
+        }
+        /** создание процедуры */
+        composable(
+            route = "${Routes.CreateProcedure.route}/{profileId}",
+            arguments = listOf(
+                navArgument(name = "profileId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            CreateUpdateProcedureScreen(
+                navController,
+                true,
+                backStackEntry.arguments?.getInt("profileId") ?: -1
+            )
+        }
+        /** изменение процедуры */
+        composable(
+            route = "${Routes.UpdateProcedure.route}/{procedureId}",
+            arguments = listOf(
+                navArgument(name = "procedureId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            CreateUpdateProcedureScreen(
+                navController,
+                false,
+                backStackEntry.arguments?.getInt("procedureId") ?: -1
+            )
+        }
 
 
-    /** медкарта */
-    composable(
-        route = Routes.BottomBarRoutes.MedCard.route + "/{profileId}" + "/{canNavigateBack}",
-        arguments = listOf(
-            navArgument(name = "profileId") {
-                type = NavType.IntType
-            },
-            navArgument(name = "canNavigateBack") {
-                type = NavType.BoolType
-            }
-        )
-    ) { backStackEntry ->
-        MedCardScreen(
-            navController = navController,
-            profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
-            canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
-        )
+        /** список медицинких записей (медкарта) */
+        composable(
+            route = "${Routes.BottomBarRoutes.ListMedRecords.route}/{profileId}/{canNavigateBack}",
+            arguments = listOf(
+                navArgument(name = "profileId") {
+                    type = NavType.IntType
+                },
+                navArgument(name = "canNavigateBack") {
+                    type = NavType.BoolType
+                }
+            )
+        ) { backStackEntry ->
+            ListMedRecords(
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true,
+                navigateUp = { navController.navigateUp() },
+                navigate = { route, builderOptions ->
+                    navController.navigate(route, builderOptions)
+                }
+            )
+        }
+        /** медицинская запись */
+        composable(
+            route = "${Routes.MedRecord.route}/{medRecordId}",
+            arguments = listOf(
+                navArgument(name = "medRecordId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            MedRecordScreen(
+                medRecordId = backStackEntry.arguments?.getInt("medRecordId") ?: -1,
+                navigateUp = { navController.navigateUp() },
+                navigateUpdateMedRecord = { medRecordId ->
+                    navController.navigate("${Routes.UpdateMedRecord.route}/$medRecordId") {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+        /** создание медицинской записи */
+        composable(
+            route = "${Routes.CreateMedRecord.route}/{profileId}",
+            arguments = listOf(
+                navArgument(name = "profileId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+//            CreateUpdateMedRecordScreen(
+//                isCreateScreen = true,
+//                backStackEntry.arguments?.getInt("profileId") ?: -1,
+//                navigateUp = { navController.navigateUp() },
+//                navigate = { route, builderOptions ->
+//                    navController.navigate(route, builderOptions)
+//                }
+//            )
+        }
+        /** изменение медицинской записи */
+        composable(
+            route = "${Routes.UpdateMedRecord.route}/{medRecordId}",
+            arguments = listOf(
+                navArgument(name = "medRecordId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+//            CreateUpdateMedRecordScreen(
+//                isCreateScreen = false,
+//                procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1,
+//                navigateUp = { navController.navigateUp() },
+//                navigate = { route, builderOptions ->
+//                    navController.navigate(route, builderOptions)
+//                }
+//            )
+        }
     }
 }

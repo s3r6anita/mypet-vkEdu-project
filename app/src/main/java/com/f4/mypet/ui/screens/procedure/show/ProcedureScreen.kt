@@ -261,6 +261,7 @@ fun ProcedureScreen(
                     )
                 }
                 Spacer(modifier = Modifier.width(24.dp))
+
                 // кнопка удаления
                 Button(
                     modifier = Modifier

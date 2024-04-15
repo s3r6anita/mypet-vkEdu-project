@@ -16,7 +16,7 @@ import java.time.LocalDateTime
         )]
 )
 data class MedRecord(
-    val title: Int, // название
+    val title: Int, // название TODO: поменять на String
     val date: LocalDateTime, // дата
     val notes: String, // заметки
     val pet: Int, // питомец
