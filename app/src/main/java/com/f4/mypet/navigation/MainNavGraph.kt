@@ -145,9 +145,17 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             CreateUpdateProcedureScreen(
-                navController,
-                true,
-                backStackEntry.arguments?.getInt("profileId") ?: -1
+                isCreateScreen = true,
+                procedureId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                navigateUp = { navController.navigateUp() },
+                navigateListProcedures = {
+                    navController.navigate(Routes.BottomBarRoutes.ListProcedures.route) {
+                        popUpTo(Routes.BottomBarRoutes.ListProcedures.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
         /** изменение процедуры */
@@ -160,9 +168,9 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             CreateUpdateProcedureScreen(
-                navController,
-                false,
-                backStackEntry.arguments?.getInt("procedureId") ?: -1
+                isCreateScreen = false,
+                procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1,
+                navigateUp = { navController.navigateUp() }
             )
         }
 

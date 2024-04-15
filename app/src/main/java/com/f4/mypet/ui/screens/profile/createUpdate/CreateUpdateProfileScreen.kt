@@ -72,7 +72,7 @@ import java.time.ZoneId
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-@Suppress("CyclomaticComplexMethod", "LongMethod")
+@Suppress("CyclomaticComplexMethod", "LongMethod", "LongParameterList")
 fun CreateUpdateProfileScreen(
     isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
