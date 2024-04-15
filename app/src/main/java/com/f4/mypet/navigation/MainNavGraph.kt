@@ -20,7 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope
+    globalScope: CoroutineScope
 ) {
     navigation(
         route = START,
@@ -29,7 +29,7 @@ fun NavGraphBuilder.mainNavGraph(
 
         /** список профилей */
         composable(route = Routes.ListProfile.route) {
-            ListProfileScreen(navController, snackbarHostState, scope)
+            ListProfileScreen(navController, snackbarHostState, globalScope)
         }
         /** профиль */
         composable(
@@ -46,22 +46,19 @@ fun NavGraphBuilder.mainNavGraph(
             ProfileScreen(
                 navController,
                 snackbarHostState,
-                scope,
                 backStackEntry.arguments?.getInt("profileId") ?: -1,
                 backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
         }
-
         /** создание профиля */
         composable(route = Routes.CreateProfile.route) {
             CreateUpdateProfileScreen(
                 navController,
                 true,
                 snackbarHostState,
-                scope
+                globalScope
             )
         }
-
         /** обновление профиля */
         composable(
             route = Routes.UpdateProfile.route + "/{profileId}",
@@ -75,7 +72,7 @@ fun NavGraphBuilder.mainNavGraph(
                 navController,
                 false,
                 snackbarHostState,
-                scope,
+                globalScope,
                 backStackEntry.arguments?.getInt("profileId") ?: -1
             )
         }
@@ -110,16 +107,13 @@ fun NavGraphBuilder.mainNavGraph(
     ) { backStackEntry ->
         CreateUpdateProcedureScreen(
             navController,
+            true,
             backStackEntry.arguments?.getInt("profileId") ?: -1
         )
     }
-
     /** процедура */
-    composable(route = Routes.Procedure.route + "/{profileId}" + "/{procedureId}",
+    composable(route = Routes.Procedure.route + "/{procedureId}",
         arguments = listOf(
-            navArgument(name = "profileId") {
-                type = NavType.IntType
-            },
             navArgument(name = "procedureId") {
                 type = NavType.IntType
             }
@@ -127,17 +121,12 @@ fun NavGraphBuilder.mainNavGraph(
     ) { backStackEntry ->
         ProcedureScreen(
             navController,
-            backStackEntry.arguments?.getInt("profileId") ?: -1,
             backStackEntry.arguments?.getInt("procedureId") ?: -1
         )
     }
-
     /** изменение процедуры */
-    composable(route = Routes.UpdateProcedure.route + "/{profileId}" + "/{procedureId}",
+    composable(route = Routes.UpdateProcedure.route + "/{procedureId}",
         arguments = listOf(
-            navArgument(name = "profileId") {
-                type = NavType.IntType
-            },
             navArgument(name = "procedureId") {
                 type = NavType.IntType
             }
@@ -145,7 +134,7 @@ fun NavGraphBuilder.mainNavGraph(
     ) { backStackEntry ->
         CreateUpdateProcedureScreen(
             navController,
-            backStackEntry.arguments?.getInt("profileId") ?: -1,
+            false,
             backStackEntry.arguments?.getInt("procedureId") ?: -1
         )
     }

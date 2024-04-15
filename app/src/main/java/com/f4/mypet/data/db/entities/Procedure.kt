@@ -1,5 +1,6 @@
 package com.f4.mypet.data.db.entities
 
+import androidx.compose.runtime.Stable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -20,7 +21,8 @@ import javax.annotation.Nullable
             childColumns = ["title"]
         )]
 )
-// TODO @Stable or correct to get StabilityInferred
+
+@Stable
 data class Procedure(
     val title: Int, // название
     val isDone: Int, // выполнена ли: 0 - нет, 1 - да

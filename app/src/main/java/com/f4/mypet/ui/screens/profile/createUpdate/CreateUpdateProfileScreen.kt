@@ -40,6 +40,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,15 +80,19 @@ fun CreateUpdateProfileScreen(
     navController: NavHostController,
     isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope, //TODO get scope inside function
+    globalScope: CoroutineScope,
     profileId: Int = -1
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val viewModel: CreateUpdateProfileViewModel = hiltViewModel()
 
-    scope.launch {// TODO LaunchedEffect
-        viewModel.getPetProfile(profileId)
+    LaunchedEffect(Unit) {
+        scope.launch {
+            viewModel.getPetProfile(profileId)
+        }
     }
+
     val petDB by viewModel.petUiState.collectAsState()
     var pet by remember { mutableStateOf(petDB) }
     LaunchedEffect(petDB) {
@@ -336,7 +341,7 @@ fun CreateUpdateProfileScreen(
                                     dateIsCorrect =
                                         validateBirthday(pet.birthday)
                                 } catch (e: IllegalArgumentException) {
-                                    scope.launch {
+                                    globalScope.launch {
                                         snackbarHostState.showSnackbar(
                                             e.message
                                                 ?: context.resources.getString(R.string.incorrect_date)
@@ -396,32 +401,20 @@ fun CreateUpdateProfileScreen(
                         coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                 onClick = {
-                    //TODO: добавление в питомца в БД
+                    globalScope.launch {
+                        val job = launch {
+                            snackbarHostState.showSnackbar(
+                                if (isCreateScreen)
+                                    context.resources.getString(R.string.create_profile_successful_pet_creation)
+                                else
+                                    context.resources.getString(R.string.create_profile_successful_pet_update)
+                            )
+                        }
+                        delay(SHOWSNACKDURATION)
+                        job.cancel()
+                    }
                     if (isCreateScreen) {
                         viewModel.createPet(pet)
-                        scope.launch {
-                            val job = launch {
-                                snackbarHostState.showSnackbar(
-                                    context.resources.getString(R.string.create_profile_successful_pet_creation)
-                                )
-                            }
-                            delay(SHOWSNACKDURATION)
-                            job.cancel()
-                        }
-                    } else {
-                        viewModel.updatePet(pet)
-                        scope.launch {
-                            val job = launch {
-                                snackbarHostState.showSnackbar(
-                                    context.resources.getString(R.string.create_profile_successful_pet_update)
-                                )
-                            }
-                            delay(SHOWSNACKDURATION)
-                            job.cancel()
-                        }
-                    }
-
-                    if (isCreateScreen) {
                         navController.navigate(Routes.ListProfile.route) {
                             popUpTo(Routes.ListProfile.route) {
                                 inclusive = true
@@ -429,6 +422,7 @@ fun CreateUpdateProfileScreen(
                             launchSingleTop = true
                         }
                     } else {
+                        viewModel.updatePet(pet)
                         navController.navigateUp()
                     }
                 }
