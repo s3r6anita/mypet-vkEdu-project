@@ -116,7 +116,7 @@ fun SuccessCUProcedureScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            
+
             // выбор типа процедуры в отдельной функции, по аналогии нужно другие выборы вынести
             var selectedType by remember {
                 mutableStateOf(
@@ -537,4 +537,3 @@ fun SuccessCUProcedureScreen(
         }
     }
 }
-

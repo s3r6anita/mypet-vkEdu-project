@@ -9,7 +9,6 @@ import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -64,7 +63,6 @@ class ProcedureViewModel @Inject constructor(
 
     fun deleteProcedure(procedure: Procedure) {
         viewModelScope.launch(Dispatchers.IO) {
-            delay(500)
             repository.deleteProcedure(procedure)
         }
     }

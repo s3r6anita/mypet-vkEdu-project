@@ -45,6 +45,7 @@ import com.f4.mypet.ui.theme.GreenButton
 import kotlinx.coroutines.launch
 
 @Composable
+@Suppress("LongParameterList")
 fun ProfileScreen(
     snackbarHostState: SnackbarHostState,
     profileId: Int,

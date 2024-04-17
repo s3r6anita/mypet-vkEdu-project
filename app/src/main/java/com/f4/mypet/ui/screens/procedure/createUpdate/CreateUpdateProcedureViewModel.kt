@@ -55,6 +55,7 @@ class CreateUpdateProcedureViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             titles = repository.getProcedureTitles()
             types = repository.getProcedureTypes()
+            _uiState.update { UiState.Success }
         }
     }
 
