@@ -13,7 +13,7 @@ fun MyPetApp() {
     MyPetTheme {
         SetupNavGraph(
             navController = rememberNavController(),
-            snackbarHostState = remember { SnackbarHostState() }
+            snackbarHostState = remember { SnackbarHostState() },
         )
     }
 }

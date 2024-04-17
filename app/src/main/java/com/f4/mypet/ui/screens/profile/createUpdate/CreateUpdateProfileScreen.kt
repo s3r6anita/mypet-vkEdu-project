@@ -118,7 +118,6 @@ fun CreateUpdateProfileScreen(
             }
         }
     ) { innerPadding ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()

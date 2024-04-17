@@ -2,18 +2,17 @@ package com.f4.mypet.data.db.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
 
 @Entity(
-    foreignKeys = [
-        ForeignKey(
-            entity = Pet::class,
-            parentColumns = ["id"],
-            childColumns = ["pet"]
-        )]
+//    foreignKeys = [
+//        ForeignKey(
+//            entity = Pet::class,
+//            parentColumns = ["id"],
+//            childColumns = ["pet"]
+//        )]
 )
 data class MedRecord(
     val title: Int, // название TODO: поменять на String

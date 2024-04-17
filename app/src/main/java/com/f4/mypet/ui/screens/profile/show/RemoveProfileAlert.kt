@@ -5,13 +5,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavOptionsBuilder
 import com.f4.mypet.R
+import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
 
 @Composable
 fun RemoveProfileALert(
+    pet: Pet,
+    viewModel: ProfileViewModel = hiltViewModel(),
     navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit,
     closeAlertDialog: () -> Unit
 ) {
@@ -34,7 +38,7 @@ fun RemoveProfileALert(
                     }
                     launchSingleTop = true
                 }
-                //TODO: вставить вызов функции removePet(id) внутри globalScope.launch { delay(100), ...}
+                viewModel.removePet(pet)
             }) {
                 Text(text = stringResource(id = R.string.confirm_button_description))
             }

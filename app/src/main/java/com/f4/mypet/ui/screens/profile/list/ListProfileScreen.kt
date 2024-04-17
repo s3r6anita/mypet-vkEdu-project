@@ -113,6 +113,7 @@ fun ListProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 //              чек бокс "Запомнить мой выбор"
+                val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
                 Row(
                     Modifier
                         .fillMaxWidth()

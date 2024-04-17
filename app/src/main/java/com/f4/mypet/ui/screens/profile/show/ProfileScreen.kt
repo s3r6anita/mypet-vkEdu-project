@@ -45,15 +45,15 @@ import com.f4.mypet.ui.theme.GreenButton
 import kotlinx.coroutines.launch
 
 @Composable
+@Suppress("LongParameterList")
 fun ProfileScreen(
     snackbarHostState: SnackbarHostState,
     profileId: Int,
     canNavigateBack: Boolean,
+    viewModel: ProfileViewModel = hiltViewModel(),
     navigateUp: () -> Unit,
     navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit
 ) {
-
-    val viewModel: ProfileViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
@@ -67,7 +67,10 @@ fun ProfileScreen(
     var openAlertDialog by remember { mutableStateOf(false) }
 
     if (openAlertDialog) {
-        RemoveProfileALert(navigate) {
+        RemoveProfileALert(
+            pet = pet,
+            navigate = navigate
+        ) {
             openAlertDialog = !openAlertDialog
         }
     }
@@ -106,7 +109,6 @@ fun ProfileScreen(
                             launchSingleTop = true
                         }
                     }
-
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ExitToApp,
@@ -173,7 +175,3 @@ fun ProfileScreen(
         }
     }
 }
-
-// TODO: function formatPet(pet: Pet): String
-
-// TODO: function removePet(id: Int)

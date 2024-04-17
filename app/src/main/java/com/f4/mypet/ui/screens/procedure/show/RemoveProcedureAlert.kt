@@ -11,11 +11,15 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.f4.mypet.R
+import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.ui.theme.BlueCheckbox
 
 @Composable
 fun RemoveProcedureAlert(
+    procedure: Procedure,
+    viewModel: ProcedureViewModel = hiltViewModel(),
     navigateUp: () -> Unit,
     closeAlertDialog: () -> Unit
 ) {
@@ -36,7 +40,7 @@ fun RemoveProcedureAlert(
                 onClick = {
                     closeAlertDialog()
                     navigateUp()
-                    // TODO: вставить вызов функции removeProcedure(id) внутри scope.launch { delay(100), ...}
+                    viewModel.deleteProcedure(procedure)
                 }
             ) {
                 Text(stringResource(R.string.procedure_screen_delete))

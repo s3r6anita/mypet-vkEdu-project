@@ -75,7 +75,10 @@ fun ProcedureScreen(
     var openAlertDialog by remember { mutableStateOf(false) }
 
     if (openAlertDialog) {
-        RemoveProcedureAlert(navigateUp) {
+        RemoveProcedureAlert(
+            procedure = procedure,
+            navigateUp = navigateUp
+        ) {
             openAlertDialog = !openAlertDialog
         }
     }

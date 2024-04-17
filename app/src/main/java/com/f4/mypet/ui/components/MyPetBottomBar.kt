@@ -67,6 +67,7 @@ fun MyPetBottomBar(
                             inclusive = false
                         }
                         launchSingleTop = true
+                        restoreState = true
                     }
                     BottomBarData.selectedItemIndex = index
                 },
