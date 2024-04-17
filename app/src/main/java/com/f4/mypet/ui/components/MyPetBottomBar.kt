@@ -11,43 +11,48 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.navigation.START
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-data class BottomNavigationItem(
+sealed class BottomNavigationItems(
     val route: Routes.BottomBarRoutes,
     @DrawableRes var icon: Int,
     val hasNews: Boolean = false
-)
+){
+    data object Procedures: BottomNavigationItems(
+        route = Routes.BottomBarRoutes.ListProcedures,
+        icon = R.drawable.procedures_icon
+    )
+    data object MedCard: BottomNavigationItems(
+        route = Routes.BottomBarRoutes.ListMedRecords,
+        icon = R.drawable.therapy_icon
+    )
+    data object Profile: BottomNavigationItems(
+        route = Routes.BottomBarRoutes.Profile,
+        icon = R.drawable.pet_icon
+    )
+}
 
 data object BottomBarData {
-    val items = persistentListOf(
-        BottomNavigationItem(
-            route = Routes.BottomBarRoutes.ListProcedures,
-            icon = R.drawable.procedures_icon
-        ),
-        BottomNavigationItem(
-            route = Routes.BottomBarRoutes.MedCard,
-            icon = R.drawable.therapy_icon
-        ),
-        BottomNavigationItem(
-            route = Routes.BottomBarRoutes.Profile,
-            icon = R.drawable.pet_icon
-        )
-    )
     var selectedItemIndex = 0
+    val items = persistentListOf(
+        BottomNavigationItems.Procedures,
+        BottomNavigationItems.MedCard,
+        BottomNavigationItems.Profile,
+    )
 }
 
 @Composable
 fun MyPetBottomBar(
-    navController: NavHostController,
-    profileId: Int?,
-    canNavigateBack: Boolean?,
-    items: ImmutableList<BottomNavigationItem>,
-    modifier: Modifier = Modifier
+    profileId: Int,
+    canNavigateBack: Boolean,
+    items: ImmutableList<BottomNavigationItems>,
+    modifier: Modifier = Modifier,
+    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit
 ) {
     NavigationBar(
         modifier = modifier
@@ -57,12 +62,11 @@ fun MyPetBottomBar(
                 label = { Text(text = stringResource(item.route.title)) },
                 selected = BottomBarData.selectedItemIndex == index,
                 onClick = {
-                    navController.navigate(item.route.route + "/" + profileId + "/" + canNavigateBack) {
-                        popUpTo(Routes.ListProfile.route) {
+                    navigate("${item.route.route}/$profileId/$canNavigateBack") {
+                        popUpTo(if (canNavigateBack) Routes.ListProfile.route else START) {
                             inclusive = false
                         }
                         launchSingleTop = true
-                        restoreState = true
                     }
                     BottomBarData.selectedItemIndex = index
                 },

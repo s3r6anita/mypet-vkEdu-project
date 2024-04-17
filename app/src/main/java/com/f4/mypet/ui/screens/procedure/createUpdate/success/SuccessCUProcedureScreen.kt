@@ -53,7 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.PresentOrFutureSelectableDates
 import com.f4.mypet.R
@@ -75,9 +75,10 @@ import java.time.ZoneId
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuccessCUProcedureScreen(
-    navController: NavHostController,
     isCreateScreen: Boolean,
-    viewModel: CreateUpdateProcedureViewModel
+    viewModel: CreateUpdateProcedureViewModel = hiltViewModel(),
+    navigateUp: () -> Unit,
+    navigateListProcedures: () -> Unit
 ) {
     val titles = viewModel.titles
     val types = viewModel.types
@@ -101,7 +102,7 @@ fun SuccessCUProcedureScreen(
             MyPetTopBar(
                 text = stringResource(Routes.CreateProcedure.title),
                 canNavigateBack = true,
-                navigateUp = { navController.navigateUp() },
+                navigateUp = { navigateUp() },
                 actions = {}
             )
         },
@@ -514,16 +515,11 @@ fun SuccessCUProcedureScreen(
                         //TODO добавление в список процедур
 
                         if (isCreateScreen) {
-//                                    viewModel.createProcedure(procedure)
-                            navController.navigate(Routes.BottomBarRoutes.ListProcedures.route) {
-                                popUpTo(Routes.BottomBarRoutes.ListProcedures.route) {
-                                    inclusive = true
-                                }
-                                launchSingleTop = true
-                            }
+//                            viewModel.createProcedure(procedure)
+                            navigateListProcedures()
                         } else {
-//                                    viewModel.updateProcedure(procedure)
-                            navController.navigateUp()
+//                            viewModel.updateProcedure(procedure)
+                            navigateUp()
                         }
                     } catch (e: IllegalArgumentException) {
                         // TODO: вывод сообщения об ошибке
