@@ -18,7 +18,7 @@ import androidx.room.Relation
     ]
 )
 data class ProcedureTitle(
-    val name: String,
+    var name: String,
     val type: Int,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0

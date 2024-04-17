@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile
+package com.f4.mypet.ui.screens.profile.createUpdate
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +40,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +52,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.f4.mypet.PastOrPresentSelectableDates
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
@@ -59,7 +59,6 @@ import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.SHOWSNACKDURATION
-import com.f4.mypet.ui.screens.profile.createUpdate.CreateUpdateProfileViewModel
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.validate
 import com.f4.mypet.validateBirthday
@@ -71,19 +70,20 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-@Suppress("CyclomaticComplexMethod", "LongMethod")
+@Suppress("CyclomaticComplexMethod", "LongMethod", "LongParameterList")
 fun CreateUpdateProfileScreen(
-    navController: NavHostController,
     isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope, //TODO get scope inside function -??
-    profileId: Int = -1
+    globalScope: CoroutineScope,
+    profileId: Int = -1,
+    viewModel: CreateUpdateProfileViewModel = hiltViewModel(),
+    navigateUp: () -> Unit,
+    navigateListProfile: () -> Unit = { }
 ) {
     val context = LocalContext.current
-    val viewModel: CreateUpdateProfileViewModel = hiltViewModel()
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -106,8 +106,8 @@ fun CreateUpdateProfileScreen(
                     else
                         Routes.UpdateProfile.title
                 ),
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
+                canNavigateBack = false,
+                navigateUp = { navigateUp() }
             )
         },
         snackbarHost = {
@@ -118,7 +118,6 @@ fun CreateUpdateProfileScreen(
             }
         }
     ) { innerPadding ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -339,7 +338,7 @@ fun CreateUpdateProfileScreen(
                                     dateIsCorrect =
                                         validateBirthday(pet.birthday)
                                 } catch (e: IllegalArgumentException) {
-                                    scope.launch {
+                                    globalScope.launch {
                                         snackbarHostState.showSnackbar(
                                             e.message
                                                 ?: context.resources.getString(R.string.incorrect_date)
@@ -399,7 +398,7 @@ fun CreateUpdateProfileScreen(
                         coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                 onClick = {
-                    scope.launch {
+                    globalScope.launch {
                         val job = launch {
                             snackbarHostState.showSnackbar(
                                 if (isCreateScreen)
@@ -413,15 +412,10 @@ fun CreateUpdateProfileScreen(
                     }
                     if (isCreateScreen) {
                         viewModel.createPet(pet)
-                        navController.navigate(Routes.ListProfile.route) {
-                            popUpTo(Routes.ListProfile.route) {
-                                inclusive = true
-                            }
-                            launchSingleTop = true
-                        }
+                        navigateListProfile()
                     } else {
                         viewModel.updatePet(pet)
-                        navController.navigateUp()
+                        navigateUp()
                     }
                 }
             ) {

@@ -46,17 +46,11 @@ class ProcedureViewModel @Inject constructor(
                 if (procedure != null) {
                     _procedureUiState.value = procedure
                     title = repository.getProcedureTitles().find { it.id == procedure.title }
-                        ?: ProcedureTitle(
-                            name = "Неизвестно",
-                            type = -1,
-                            id = -1
-                        )
+                        ?: title
                     type = repository.getProcedureTypes().find { it.id == title.type }
-                        ?: ProcedureType(
-                            name = "Неизвестно",
-                            id = title.type
-                        )
-                } else {
+                        ?: type
+                }
+                else {
                     _procedureUiState.value = Procedure(
                         0, 0, 0,
                         LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),

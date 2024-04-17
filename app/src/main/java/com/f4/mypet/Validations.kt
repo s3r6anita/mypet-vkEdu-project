@@ -45,3 +45,14 @@ object PastOrPresentSelectableDates: SelectableDates {
         return year <= LocalDate.now().year
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+object PresentOrFutureSelectableDates: SelectableDates {
+    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+        return utcTimeMillis >= System.currentTimeMillis()
+    }
+
+    override fun isSelectableYear(year: Int): Boolean {
+        return year >= LocalDate.now().year
+    }
+}

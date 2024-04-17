@@ -1,6 +1,5 @@
-package com.f4.mypet.ui.screens.procedure.list
+package com.f4.mypet.ui.screens.medcard.list
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,34 +33,32 @@ import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.PetCardHeader
 import com.f4.mypet.ui.theme.GreenButton
-import com.f4.mypet.ui.theme.LightGreenBackground
+import com.f4.mypet.ui.theme.LightBlueBackground
 import kotlinx.coroutines.launch
 
 @Composable
-fun ListProcedureScreen(
+fun ListMedRecords(
     profileId: Int,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit,
-    viewModel: ListProcedureViewModel = hiltViewModel()
+    viewModel: ListMedRecordsViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
-    val viewModel: ListProcedureViewModel = hiltViewModel()
 
     LaunchedEffect(Unit) {
         scope.launch {
-            viewModel.getPetsProcedures(profileId)
+            viewModel.getPetsMedRecords(profileId)
         }
     }
 
-    val procedures by viewModel.proceduresUiState.collectAsState()
+    val medRecords by viewModel.medRecordsUiState.collectAsState()
     val pet = viewModel.pet
-    val titles = viewModel.titles
 
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(id = R.string.list_procedure_screen_title),
+                text = stringResource(id = R.string.medcard_screen_title),
                 canNavigateBack = canNavigateBack,
                 navigateUp = { navigateUp() },
                 actions = { }
@@ -76,43 +73,40 @@ fun ListProcedureScreen(
                     navigate(route, builderOptions)
                 }
             )
-        },
+        }
     ) { innerPadding ->
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
+            PetCardHeader(petName = pet.name, backgroundColor = LightBlueBackground)
 
-            // список процедур
+            // список медзаписей
             Column(
                 modifier = Modifier
                     .height(400.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                procedures.forEach { procedure ->
-                    ProcedureItem(
-                        procedure = procedure,
-                        title = titles.find { title -> title.id == procedure.title }?.name
-                            ?: stringResource(id = R.string.unknown),
+                medRecords.forEach { medRecord ->
+                    MedRecordItem(
+                        medRecord = medRecord,
                         navigate = navigate
                     )
                 }
             }
 
-            // кнопка ADD
+            // кнопка добавления
             Button(
-                modifier = Modifier.padding(vertical = 20.dp),
+                modifier = Modifier.padding(bottom = 20.dp),
                 onClick = {
-                    navigate(Routes.CreateProcedure.route + "/" + profileId) {
+                    navigate(Routes.CreateMedRecord.route) {
                         launchSingleTop = true
                     }
                 },
-                border = BorderStroke(1.dp, GreenButton),
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
             ) {
                 Icon(
@@ -121,7 +115,7 @@ fun ListProcedureScreen(
                 )
                 Text(
                     text = stringResource(id = R.string.add_button_description),
-                    Modifier.padding(start = 10.dp),
+                    modifier = Modifier.padding(start = 10.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
             }

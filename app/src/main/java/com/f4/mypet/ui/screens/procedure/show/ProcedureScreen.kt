@@ -17,12 +17,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -30,7 +28,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -42,20 +39,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
-import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
-import com.f4.mypet.ui.screens.profile.show.TextComponent
-import com.f4.mypet.ui.theme.BlueCheckbox
+import com.f4.mypet.ui.components.TextComponent
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.RedButton
@@ -64,11 +56,12 @@ import java.time.LocalDateTime
 
 @Composable
 fun ProcedureScreen(
-    navController: NavHostController,
-    procedureId: Int
+    procedureId: Int,
+    viewModel: ProcedureViewModel = hiltViewModel(),
+    navigateUp: () -> Unit,
+    navigateUpdateProcedure: (Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val viewModel: ProcedureViewModel = hiltViewModel()
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -82,45 +75,12 @@ fun ProcedureScreen(
     var openAlertDialog by remember { mutableStateOf(false) }
 
     if (openAlertDialog) {
-        AlertDialog(
-            shape = RoundedCornerShape(12.dp),
-            title = {
-                Text(text = stringResource(R.string.procedure_screen_delete_title_alert))
-            },
-            text = {
-                Text(text = stringResource(R.string.procedure_screen_question_delete_procedure))
-            },
-            onDismissRequest = {
-                openAlertDialog = false
-            },
-            confirmButton = {
-                TextButton(
-                    colors = ButtonDefaults.textButtonColors(contentColor = BlueCheckbox),
-                    onClick = {
-                        openAlertDialog = false
-                        viewModel.deleteProcedure(procedure)
-                        navController.navigateUp()
-                    }
-                ) {
-                    Text(stringResource(R.string.procedure_screen_delete))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    colors = ButtonDefaults.textButtonColors(contentColor = BlueCheckbox),
-                    onClick = {
-                        openAlertDialog = false
-                    }
-                ) {
-                    Text(stringResource(R.string.procedure_screen_cancel))
-                }
-            },
-            containerColor = Color.White,
-            modifier = Modifier.shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(12.dp)
-            )
-        )
+        RemoveProcedureAlert(
+            procedure = procedure,
+            navigateUp = navigateUp
+        ) {
+            openAlertDialog = !openAlertDialog
+        }
     }
 
     Scaffold(
@@ -128,7 +88,7 @@ fun ProcedureScreen(
             MyPetTopBar(
                 text = stringResource(R.string.procedure_screen_title),
                 canNavigateBack = true,
-                navigateUp = { navController.navigateUp() },
+                navigateUp = { navigateUp() },
             )
         }
     ) { innerPadding ->
@@ -230,7 +190,6 @@ fun ProcedureScreen(
                             .background(LightBlueBackground)
                     )
                 }
-
             }
             Row(
                 modifier = Modifier
@@ -244,12 +203,7 @@ fun ProcedureScreen(
                     contentPadding = PaddingValues(start = 1.dp, end = 1.dp),
                     border = BorderStroke(1.dp, GreenButton),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
-                    onClick = {
-                        navController.navigate(Routes.UpdateProcedure.route + "/" + procedureId) {
-                            // TODO (optional) Convert to string template
-                            launchSingleTop = true
-                        }
-                    },
+                    onClick = { navigateUpdateProcedure(procedureId) },
                     modifier = Modifier
                         .padding(bottom = 40.dp)
                         .weight(1f)
@@ -261,6 +215,7 @@ fun ProcedureScreen(
                     )
                 }
                 Spacer(modifier = Modifier.width(24.dp))
+
                 // кнопка удаления
                 Button(
                     modifier = Modifier

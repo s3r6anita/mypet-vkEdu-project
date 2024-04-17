@@ -65,18 +65,11 @@
     <string name="procedure_screen_reminder">"Напоминание"</string>
     <string name="procedure_screen_turned_off">"выключено"</string>
     <string name="procedure_screen_notice">"Заметки"</string>
-    <string name="procedure_screen_tmp_name">Стрижка</string>
-    <string name="procedure_screen_tmp_type">Стрижка</string>
-    <string name="procedure_screen_tmp_time">"10:00"</string>
-    <string name="procedure_screen_tmp_date">"01.01.2024"</string>
-    <string name="procedure_screen_tmp_time_for_proc">"за 5 минут"</string>
-    <string name="procedure_screen_tmp_notice">…</string>
     <string name="procedure_screen_delete_title_alert">Удаление процедуры</string>
     <string name="procedure_screen_type">Тип</string>
     <string name="procedure_screen_date_of_event">Дата проведения</string>
     <string name="procedure_screen_time_of_event">Время</string>
     <string name="procedure_screen_frequency">Периодичность</string>
-    <string name="procedure_screen_tmp_frequency">Раз в год</string>
     <string name="procedure_screen_icon_procedure_desc">Иконка процедуры</string>
 
     <string name="list_procedure_screen_title">Процедуры</string>
@@ -92,14 +85,9 @@
     <string name="therapy_question_to_delete">Вы уверены, что хотите удалить терапию?</string>
     <string name="therapy_cancel_button">Отмена</string>
     <string name="therapy_title">Терапия</string>
-    <string name="therapy_tmp_name">Терапия</string>
     <string name="therapy_type">Тип</string>
-    <string name="therapy_tmp_type">Болезнь</string>
     <string name="therapy_date">Дата</string>
-    <string name="therapy_tmp_date">01.01.2024</string>
     <string name="therapy_notice">Заметки</string>
-    <string name="therapy_tmp_notice">Болел 3 дня.\nЛечение: таблетки, т.д.</string>
-    <string name="therapy_tmp_icon">Иконка терапии</string>
 
     <string name="creation_procedure_screen_title">Создание процедуры</string>
     <string name="creation_procedure_screen_period">Период</string>
@@ -119,5 +107,11 @@
     <string name="procedure_screen_unknown_procedure_title">Неизвестное название</string>
 
     <string name="unknown">Неизвестно</string>
+    <string name="cu_screen_notifications">Уведомления</string>
 
+    <string name="creation_procedure_screen_choose_date">Выберите дату</string>
+    <string name="medrecord_screen_title">Запись</string>
+    <string name="create_medrecord_screen_title">Создание записи</string>
+    <string name="update_medrecord_screen_title">Обновление записи</string>
+    <string name="medrecord_screen_notes">Заметки</string>
 </resources>

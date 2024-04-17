@@ -6,14 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope = rememberCoroutineScope()
+    snackbarHostState: SnackbarHostState
 ) {
+    val scope = rememberCoroutineScope()
+
     NavHost(
         navController = navController,
         startDestination = START,
@@ -23,7 +23,7 @@ fun SetupNavGraph(
 *       exitTransition = { ExitTransition.None },
 *       popEnterTransition = { EnterTransition.None },
 *       popExitTransition = { ExitTransition.None },
- */
+*/
     ) {
         mainNavGraph(navController, snackbarHostState, scope)
     }

@@ -39,19 +39,22 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     )
     val procedureUiState = _procedureUiState.asStateFlow()
 
-    var titles = emptyList<ProcedureTitle>()
-    var types = emptyList<ProcedureType>()
-    var title = titles.find { title -> title.id == procedureUiState.value.title }
-        ?: ProcedureTitle(
-            name = "Неизвестно",
-            type = 0,
-        )
+    var titles = emptyList<ProcedureTitle>() // список всех заголовков
+    var types = emptyList<ProcedureType>() // список всех типов
+
+    var title = ProcedureTitle( // заголовок создаваемой (изменяемой) процедуры
+        name = "Неизвестно",
+        type = 0,
+    )
+    var type = ProcedureType( // тип создаваемой (изменяемой) процедуры
+        name = "Неизвестно",
+        id = title.id
+    )
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             titles = repository.getProcedureTitles()
             types = repository.getProcedureTypes()
-            _uiState.update { UiState.Success }
         }
     }
 
@@ -60,7 +63,12 @@ class CreateUpdateProcedureViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getProcedure(procedureId).collect { procedure ->
                     _procedureUiState.value = procedure
+                    title = titles.find { title -> title.id == procedure.title }
+                        ?: title
+                    type = types.find { type -> type.id == title.type }
+                        ?:  type
                 }
+                _uiState.update { UiState.Success }
             }
         }
     }
