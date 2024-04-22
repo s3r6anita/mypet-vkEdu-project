@@ -42,12 +42,28 @@ class ProcedureViewModel @Inject constructor(
     fun getProcedure(procedureId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getProcedure(procedureId).collect { procedure ->
-                _procedureUiState.value = procedure
-                title = repository.getProcedureTitles().find { it.id == procedure.title }
-                    ?: title
-                type = repository.getProcedureTypes().find { it.id == title.type }
-                    ?: type
+                if (procedure != null) {
+                    _procedureUiState.value = procedure
+                    title = repository.getProcedureTitles().find { it.id == procedure.title }
+                        ?: title
+                    type = repository.getProcedureTypes().find { it.id == title.type }
+                        ?: type
+                }
+                else {
+                    _procedureUiState.value = Procedure(
+                        0, 0, 0,
+                        LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
+                        "", LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
+                        0, 0, 0
+                    )
+                }
             }
+        }
+    }
+
+    fun deleteProcedure(procedure: Procedure) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteProcedure(procedure)
         }
     }
 }

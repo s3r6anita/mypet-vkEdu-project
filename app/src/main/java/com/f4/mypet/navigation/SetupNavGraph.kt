@@ -10,7 +10,7 @@ import androidx.navigation.compose.NavHost
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    snackbarHostState: SnackbarHostState,
+    snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
 
@@ -18,12 +18,12 @@ fun SetupNavGraph(
         navController = navController,
         startDestination = START,
         enterTransition = { EnterTransition.None },
-        /**
-         *    Отключение анимаций перехода между экранами
-         *       exitTransition = { ExitTransition.None },
-         *       popEnterTransition = { EnterTransition.None },
-         *       popExitTransition = { ExitTransition.None },
-         */
+/**
+*    Отключение анимаций перехода между экранами
+*       exitTransition = { ExitTransition.None },
+*       popEnterTransition = { EnterTransition.None },
+*       popExitTransition = { ExitTransition.None },
+*/
     ) {
         mainNavGraph(navController, snackbarHostState, scope)
     }

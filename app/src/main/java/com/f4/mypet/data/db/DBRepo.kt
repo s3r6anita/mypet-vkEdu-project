@@ -4,6 +4,7 @@ import com.f4.mypet.data.db.daos.MedRecordDAO
 import com.f4.mypet.data.db.daos.PetDAO
 import com.f4.mypet.data.db.daos.PrTitleDAO
 import com.f4.mypet.data.db.daos.ProcedureDAO
+import com.f4.mypet.data.db.entities.MedRecord
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
@@ -14,13 +15,21 @@ import javax.inject.Inject
 interface Repository {
     suspend fun insertPet(pet: Pet)
     suspend fun updatePet(pet: Pet)
+    suspend fun removePet(pet: Pet)
+    suspend fun removeProceduresForPet(petId: Int)
+    suspend fun removeMedRecordsForPet(petId: Int)
     suspend fun getPets(): Flow<List<Pet>>
     suspend fun getPet(petId: Int): Flow<Pet>
     suspend fun getPetForCU(petId: Int): Pet
+
     suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>>
     suspend fun getProcedureTitles(): List<ProcedureTitle>
     suspend fun getProcedure(procedureId: Int): Flow<Procedure>
+    suspend fun deleteProcedure(procedure: Procedure)
     suspend fun getProcedureTypes(): List<ProcedureType>
+
+    suspend fun getMedRecordsForPet(petId: Int): Flow<List<MedRecord>>
+    suspend fun getMedRecord(medRecord: Int): Flow<MedRecord>
 }
 
 class DBRepository @Inject constructor(
@@ -37,6 +46,18 @@ class DBRepository @Inject constructor(
         petDAO.update(pet)
     }
 
+    override suspend fun removePet(pet: Pet) {
+        petDAO.delete(pet)
+    }
+
+    override suspend fun removeProceduresForPet(petId: Int) {
+        procedureDAO.deleteProceduresForPet(petId)
+    }
+
+    override suspend fun removeMedRecordsForPet(petId: Int) {
+        medRecordDAO.deleteMedRecordsForPet(petId)
+    }
+
     override suspend fun getPets(): Flow<List<Pet>> {
         return petDAO.getPets()
     }
@@ -48,6 +69,7 @@ class DBRepository @Inject constructor(
     override suspend fun getPetForCU(petId: Int): Pet {
         return petDAO.getPetForCU(petId)
     }
+
 
     override suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>> {
         return procedureDAO.getProceduresForPet(petId)
@@ -61,7 +83,20 @@ class DBRepository @Inject constructor(
         return procedureDAO.getProcedure(procedureId)
     }
 
+    override suspend fun deleteProcedure(procedure: Procedure) {
+        procedureDAO.delete(procedure)
+    }
+
     override suspend fun getProcedureTypes(): List<ProcedureType> {
         return prTitleDAO.getProcedureTypes()
+    }
+
+
+    override suspend fun getMedRecordsForPet(petId: Int): Flow<List<MedRecord>> {
+        return medRecordDAO.getMedRecords(petId)
+    }
+
+    override suspend fun getMedRecord(medRecord: Int): Flow<MedRecord> {
+        return medRecordDAO.getMedRecord(medRecord)
     }
 }
