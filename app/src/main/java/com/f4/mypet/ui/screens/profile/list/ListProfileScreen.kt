@@ -1,6 +1,7 @@
 package com.f4.mypet.ui.screens.profile.list
 
 import android.content.Context
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -108,7 +109,7 @@ fun ListProfileScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(650.dp),
+                    .weight(8f),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -160,26 +161,36 @@ fun ListProfileScreen(
                 }
             }
 
-//            кнопка добавления нового питомца в список
-            Button(
-                modifier = Modifier.padding(20.dp),
-                onClick = {
-                    globalScope.coroutineContext.cancelChildren()
-                    navigate(Routes.CreateProfile.route) { launchSingleTop = true }
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.list_profile_screen_add_button_icon_description)
-                )
-                Text(
-                    text = stringResource(id = R.string.add_button_description),
-                    Modifier.padding(start = 10.dp),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
+            // кнопка ADD
+            Row (
+                modifier = Modifier
+                    .padding(vertical = 20.dp)
+                    .fillMaxWidth()
+                    .weight(2f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ){
+                Button(
+                    modifier = Modifier.padding(vertical = 20.dp),
+                    onClick = {
+                        globalScope.coroutineContext.cancelChildren()
+                        navigate(Routes.CreateProfile.route) { launchSingleTop = true }
+                    },
+                    border = BorderStroke(1.dp, GreenButton),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(id = R.string.list_profile_screen_add_button_icon_description)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.add_button_description),
+                        Modifier.padding(start = 10.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
+
         }
     }
 }

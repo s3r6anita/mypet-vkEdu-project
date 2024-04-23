@@ -4,7 +4,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
@@ -42,6 +44,7 @@ import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.theme.GreenButton
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 
 @Composable
@@ -146,31 +149,38 @@ fun ProfileScreen(
         ) {
             Box(
                 modifier = Modifier
-                    .padding(vertical = 50.dp)
+                    .weight(6f),
             ) {
                 ProfileItem(pet)
             }
 
-            // кнопка редактирования
-            Button(
-                modifier = Modifier.padding(bottom = 40.dp),
-                onClick = {
-                    navigate("${Routes.UpdateProfile.route}/$profileId") {
-                        launchSingleTop = true
-                    }
-                },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton)
-            ) {
-                Icon(
-                    Icons.Rounded.Edit,
-                    stringResource(id = R.string.update_profile_button_description)
-                )
-                Text(
-                    text = stringResource(id = R.string.edit_button_description),
-                    modifier = Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
+            Row (
+                modifier = Modifier
+                    .padding(vertical = 20.dp)
+                    .fillMaxWidth()
+                    .weight(2f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ){
+                Button(
+                    onClick = {
+                        navigate("${Routes.UpdateProfile.route}/$profileId") {
+                            launchSingleTop = true
+                        }
+                    },
+                    border = BorderStroke(1.dp, GreenButton),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton)
+                ) {
+                    Icon(
+                        Icons.Rounded.Edit,
+                        stringResource(id = R.string.update_profile_button_description)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.edit_button_description),
+                        modifier = Modifier.padding(start = 10.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
         }
     }

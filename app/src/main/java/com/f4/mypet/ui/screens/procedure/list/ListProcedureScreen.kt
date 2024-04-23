@@ -3,8 +3,9 @@ package com.f4.mypet.ui.screens.procedure.list
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -91,7 +92,7 @@ fun ListProcedureScreen(
             // список процедур
             Column(
                 modifier = Modifier
-                    .height(400.dp)
+                    .weight(6f)
                     .verticalScroll(rememberScrollState())
             ) {
                 procedures.forEach { procedure ->
@@ -104,26 +105,34 @@ fun ListProcedureScreen(
                 }
             }
 
-            // кнопка ADD
-            Button(
-                modifier = Modifier.padding(vertical = 20.dp),
-                onClick = {
-                    navigate(Routes.CreateProcedure.route + "/" + profileId) {
-                        launchSingleTop = true
-                    }
-                },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.add_button_icon_description)
-                )
-                Text(
-                    text = stringResource(id = R.string.add_button_description),
-                    Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
+            // кнопка добавления
+            Row (
+                modifier = Modifier
+                    .padding(vertical = 20.dp)
+                    .fillMaxWidth()
+                    .weight(2f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ){
+                Button(
+                    onClick = {
+                        navigate(Routes.CreateProcedure.route + "/" + profileId) {
+                            launchSingleTop = true
+                        }
+                    },
+                    border = BorderStroke(1.dp, GreenButton),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(id = R.string.add_button_icon_description)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.add_button_description),
+                        Modifier.padding(start = 10.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
         }
     }
