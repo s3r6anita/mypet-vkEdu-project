@@ -31,7 +31,6 @@ fun CreateTherapyScreen(
     isCreateScreen: Boolean
 ) {
     val isCreateScreen = true //TODO убрать
-    val id = profileId?.toInt() ?: 0
     Scaffold(
         topBar = {
             MyPetTopBar(
@@ -71,22 +70,28 @@ fun CreateTherapyScreen(
                     // название
                     TherapyNameField(
                         isCreateScreen = isCreateScreen,
+                        onNameChange = { name ->
+                            // Обработка изменений в названии терапии
+                        },
                         modifier = modifier
                             .padding(bottom = 10.dp),
-                    ) { name ->
-                        // Обработка изменений в названии терапии
-                    }
+                    )
                     // дата
                     TherapyDateField(
                         isCreateScreen = isCreateScreen,
-                        modifier = modifier, // передаем модификатор
-                    ) { selectedDate ->
-                        // Обработка выбранной даты
-                    }
+                        modifier = modifier,
+                        onDateSelected = { selectedDate ->
+                            // Обработка выбранной даты
+                        }
+                    )
                     // заметки
-                    TherapyNotesField(isCreateScreen = isCreateScreen, modifier = modifier) { notes ->
-                        // Обработка изменений в заметках
-                    }
+                    TherapyNotesField(
+                        isCreateScreen = isCreateScreen,
+                        onNotesChange = { notes ->
+                            // Обработка изменений в заметках
+                        },
+                        modifier = modifier
+                    )
                 }
             }
             // сохранение

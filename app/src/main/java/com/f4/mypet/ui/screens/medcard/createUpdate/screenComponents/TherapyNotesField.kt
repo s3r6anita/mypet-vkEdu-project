@@ -15,8 +15,8 @@ import com.f4.mypet.ui.theme.OutlinedTextFieldColor
 @Composable
 fun TherapyNotesField(
     isCreateScreen: Boolean,
-    modifier: Modifier = Modifier,
-    onNotesChange: (String) -> Unit
+    onNotesChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
         value = "",

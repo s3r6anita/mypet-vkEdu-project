@@ -19,8 +19,8 @@ import com.f4.mypet.ui.theme.OutlinedTextFieldColor
 @Composable
 fun TherapyNameField(
     isCreateScreen: Boolean,
-    modifier: Modifier = Modifier,
-    onNameChange: (String) -> Unit
+    onNameChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var selectedName by remember { mutableStateOf("") }
     OutlinedTextField(

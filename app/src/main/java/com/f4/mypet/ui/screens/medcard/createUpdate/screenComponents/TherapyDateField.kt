@@ -33,8 +33,8 @@ import java.time.ZoneId
 @Composable
 fun TherapyDateField(
     isCreateScreen: Boolean,
-    modifier: Modifier = Modifier,
-    onDateSelected: (LocalDateTime) -> Unit
+    onDateSelected: (LocalDateTime) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var openDialog by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(selectableDates = PastOrPresentSelectableDates)
@@ -49,7 +49,7 @@ fun TherapyDateField(
         },
         label = {
             if (isCreateScreen) Text(
-                "Дата",
+                stringResource(R.string.cu_therapy_date),
                 style = TextStyle(color = OutlinedTextFieldColor)
             ) else {
                 Text(stringResource(R.string.cu_therapy_date)) //TODO подтягивание данных из БД
