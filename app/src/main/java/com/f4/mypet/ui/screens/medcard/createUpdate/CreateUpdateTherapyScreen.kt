@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.medcard
+package com.f4.mypet.ui.screens.medcard.createUpdate
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.ui.components.MyPetTopBar
-import com.f4.mypet.ui.screens.medcard.components.SaveButton
-import com.f4.mypet.ui.screens.medcard.components.TherapyDateField
-import com.f4.mypet.ui.screens.medcard.components.TherapyNameField
-import com.f4.mypet.ui.screens.medcard.components.TherapyNotesField
+import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.SaveButton
+import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.TherapyDateField
+import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.TherapyNameField
+import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.TherapyNotesField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
