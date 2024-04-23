@@ -27,22 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
-import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGrayTint
 
 @Composable
-fun HelloScreen(){
-    Scaffold(
-        topBar = {
-            MyPetTopBar(
-                text = "",
-                canNavigateBack = false,
-                navigateUp = {  },
-                actions = {}
-            )
-        },
-    ) { innerPadding ->
+fun LoginScreen(){
+    Scaffold() { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -105,6 +95,8 @@ fun HelloScreen(){
                 singleLine = false,
                 shape = RoundedCornerShape(12.dp)
             )
+
+            // Кнопка "Войти"
             Button(
                 onClick = {  },
                 modifier = Modifier.fillMaxWidth(),
@@ -117,6 +109,7 @@ fun HelloScreen(){
                 )
             }
 
+            // Кнопка "Зарегистрироваться"
             TextButton(
                 onClick = {  },
                 modifier = Modifier.fillMaxWidth(),

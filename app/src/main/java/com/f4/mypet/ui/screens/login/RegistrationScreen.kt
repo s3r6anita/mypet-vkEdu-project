@@ -27,22 +27,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
-import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.Purple40
 
 @Composable
 fun RegistrationScreen(){
-    Scaffold(
-        topBar = {
-            MyPetTopBar(
-                text = "",
-                canNavigateBack = false,
-                navigateUp = {  },
-                actions = {}
-            )
-        },
-    ) { innerPadding ->
+    Scaffold() { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -63,6 +53,7 @@ fun RegistrationScreen(){
                     style = MaterialTheme.typography.displayMedium
                 )
             }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -161,7 +152,7 @@ fun RegistrationScreen(){
                 shape = RoundedCornerShape(12.dp)
             )
 
-            //
+            // Кнопка "Зарегистрироваться"
             Button(
                 onClick = {  },
                 modifier = Modifier.fillMaxWidth(),
