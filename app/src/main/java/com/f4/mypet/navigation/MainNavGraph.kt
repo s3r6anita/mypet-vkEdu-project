@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.f4.mypet.ui.screens.login.LoginScreen
 import com.f4.mypet.ui.screens.medcard.list.ListMedRecords
 import com.f4.mypet.ui.screens.medcard.show.MedRecordScreen
 import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureScreen
@@ -26,6 +27,13 @@ fun NavGraphBuilder.mainNavGraph(
         route = START,
         startDestination = Routes.ListProfile.route
     ) {
+
+        /** вход в аккаунт */
+        composable(route = Routes.Login.route) {
+            LoginScreen(
+                navigateUp = { navController.navigateUp() },
+                )
+        }
 
         /** список профилей */
         composable(route = Routes.ListProfile.route) {

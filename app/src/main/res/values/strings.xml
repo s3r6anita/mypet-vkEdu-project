@@ -117,7 +117,7 @@
 
     <string name="login_title">Добро пожаловать в MyPet!</string>
     <string name="login_enter">Введите E-mail</string>
-    <string name="login_placeholder">user@gmail.ru</string>
+    <string name="login_placeholder">user@mail.ru</string>
     <string name="login_password_enter">Введите пароль</string>
     <string name="login_password_placeholder">********</string>
     <string name="login_password_confirm">Введите пароль повторно</string>

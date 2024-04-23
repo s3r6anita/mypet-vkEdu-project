@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile.show
+package com.f4.mypet.ui.screens.profile.show.screencomponents
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -11,6 +11,7 @@ import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
+import com.f4.mypet.ui.screens.profile.show.ProfileViewModel
 
 @Composable
 fun RemoveProfileALert(

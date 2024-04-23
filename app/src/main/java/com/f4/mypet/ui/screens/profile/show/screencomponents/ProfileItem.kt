@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile.show
+package com.f4.mypet.ui.screens.profile.show.screencomponents
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

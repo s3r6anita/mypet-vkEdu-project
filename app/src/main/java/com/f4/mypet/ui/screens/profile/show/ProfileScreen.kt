@@ -41,6 +41,8 @@ import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.screens.profile.show.screencomponents.ProfileItem
+import com.f4.mypet.ui.screens.profile.show.screencomponents.RemoveProfileALert
 import com.f4.mypet.ui.theme.GreenButton
 import kotlinx.coroutines.launch
 

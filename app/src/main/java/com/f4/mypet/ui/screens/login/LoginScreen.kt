@@ -18,21 +18,38 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.f4.mypet.R
 import com.f4.mypet.ui.theme.GreenButton
-import com.f4.mypet.ui.theme.LightGrayTint
+import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(){
-    Scaffold() { innerPadding ->
+fun LoginScreen(
+    navigateUp: () -> Unit,
+    viewModel: LoginViewModel = hiltViewModel()
+) {
+    val scope = rememberCoroutineScope()
+
+    var email by remember {
+      mutableStateOf("")
+    }
+    var password by remember {
+        mutableStateOf("")
+    }
+
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -56,8 +73,8 @@ fun LoginScreen(){
 
             // email
             OutlinedTextField(
-                value = "",
-                onValueChange = {  },
+                value = email,
+                onValueChange = { email = it },
                 label = { Text(stringResource(id = R.string.login_enter)) },
                 placeholder = { Text(stringResource(id = R.string.login_placeholder)) },
                 trailingIcon = {
@@ -77,8 +94,8 @@ fun LoginScreen(){
 
             // password
             OutlinedTextField(
-                value = "",
-                onValueChange = {  },
+                value = password,
+                onValueChange = { password = it },
                 label = { Text(stringResource(id = R.string.login_password_enter)) },
                 placeholder = { Text(stringResource(id = R.string.login_password_enter)) },
                 trailingIcon = {
@@ -98,7 +115,12 @@ fun LoginScreen(){
 
             // Кнопка "Войти"
             Button(
-                onClick = {  },
+                onClick = {
+                    scope.launch {
+                        viewModel.login(email, password)
+                    }
+                    navigateUp()
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
             ) {
@@ -109,17 +131,17 @@ fun LoginScreen(){
                 )
             }
 
-            // Кнопка "Зарегистрироваться"
-            TextButton(
-                onClick = {  },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = stringResource(id = R.string.login_registration_button),
-                    textAlign = TextAlign.Center,
-                    color = LightGrayTint
-                )
-            }
+//            // Кнопка "Зарегистрироваться"
+//            TextButton(
+//                onClick = {  },
+//                modifier = Modifier.fillMaxWidth(),
+//            ) {
+//                Text(
+//                    text = stringResource(id = R.string.login_registration_button),
+//                    textAlign = TextAlign.Center,
+//                    color = LightGrayTint
+//                )
+//            }
         }
     }
 }

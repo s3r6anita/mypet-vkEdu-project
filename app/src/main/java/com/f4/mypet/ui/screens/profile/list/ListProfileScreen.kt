@@ -13,12 +13,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -86,6 +88,17 @@ fun ListProfileScreen(
                 navigateUp = { },
                 actions = {
                     // TODO: кнопка обратной связи
+                    // кнопка входа
+                    IconButton(onClick = {
+                        navigate(Routes.Login.route) {
+                            launchSingleTop = true
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = stringResource(id = R.string.login_button)
+                        )
+                    }
                 }
             )
         },
@@ -95,7 +108,7 @@ fun ListProfileScreen(
             ) {
                 MyPetSnackBar(it.visuals.message)
             }
-        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
