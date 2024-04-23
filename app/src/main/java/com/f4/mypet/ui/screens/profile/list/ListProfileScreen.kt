@@ -106,7 +106,7 @@ fun ListProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
+            @Suppress("MagicNumber") Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(8f),

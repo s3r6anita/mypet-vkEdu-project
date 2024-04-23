@@ -87,7 +87,7 @@ fun ListMedRecords(
             PetCardHeader(petName = pet.name, backgroundColor = LightBlueBackground)
 
             // список медзаписей
-            Column(
+            @Suppress("MagicNumber") Column(
                 modifier = Modifier
                     .weight(6f)
                     .verticalScroll(rememberScrollState())

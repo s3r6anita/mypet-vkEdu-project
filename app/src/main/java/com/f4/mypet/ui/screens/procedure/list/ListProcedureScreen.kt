@@ -90,7 +90,7 @@ fun ListProcedureScreen(
             PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
 
             // список процедур
-            Column(
+            @Suppress("MagicNumber") Column(
                 modifier = Modifier
                     .weight(6f)
                     .verticalScroll(rememberScrollState())

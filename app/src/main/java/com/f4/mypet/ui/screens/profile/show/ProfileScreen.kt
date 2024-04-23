@@ -147,7 +147,7 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(
+            @Suppress("MagicNumber") Box(
                 modifier = Modifier
                     .weight(6f),
             ) {
