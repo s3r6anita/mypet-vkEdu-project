@@ -37,6 +37,8 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+const val STANDART_COLUMN_WEIGHT = 6f
+
 @Composable
 fun MyPetTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

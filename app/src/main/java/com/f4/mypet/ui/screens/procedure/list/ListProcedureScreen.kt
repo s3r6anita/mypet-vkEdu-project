@@ -36,6 +36,7 @@ import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.PetCardHeader
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGreenBackground
+import com.f4.mypet.ui.theme.STANDART_COLUMN_WEIGHT
 import kotlinx.coroutines.launch
 
 @Composable
@@ -90,9 +91,9 @@ fun ListProcedureScreen(
             PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
 
             // список процедур
-            @Suppress("MagicNumber") Column(
+            Column(
                 modifier = Modifier
-                    .weight(6f)
+                    .weight(STANDART_COLUMN_WEIGHT)
                     .verticalScroll(rememberScrollState())
             ) {
                 procedures.forEach { procedure ->

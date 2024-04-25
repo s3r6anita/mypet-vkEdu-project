@@ -44,7 +44,7 @@ import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.theme.GreenButton
-import kotlinx.coroutines.cancelChildren
+import com.f4.mypet.ui.theme.STANDART_COLUMN_WEIGHT
 import kotlinx.coroutines.launch
 
 @Composable
@@ -147,9 +147,9 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            @Suppress("MagicNumber") Box(
+            Box(
                 modifier = Modifier
-                    .weight(6f),
+                    .weight(STANDART_COLUMN_WEIGHT),
             ) {
                 ProfileItem(pet)
             }
