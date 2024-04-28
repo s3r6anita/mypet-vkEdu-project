@@ -38,7 +38,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.medcard.show.screenComponents.RemoveMedRecordAlert
 import com.f4.mypet.ui.screens.medcard.show.screenComponents.ShowMedRecordData
@@ -50,9 +52,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MedRecordScreen(
     medRecordId: Int,
-    viewModel: MedRecordViewModel = hiltViewModel(),
-    navigateUp: () -> Unit,
-    navigateUpdateMedRecord: (Int) -> Unit
+    navController: NavHostController,
+    viewModel: MedRecordViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
 
@@ -65,9 +66,10 @@ fun MedRecordScreen(
 
     var openAlertDialog by remember { mutableStateOf(false) }
     if (openAlertDialog) {
-        RemoveMedRecordAlert(navigateUp) {
-            openAlertDialog = !openAlertDialog
-        }
+        RemoveMedRecordAlert(
+            navigateUp = { navController.navigateUp() },
+            closeAlertDialog = { openAlertDialog = !openAlertDialog }
+        )
     }
 
     Scaffold(
@@ -75,7 +77,7 @@ fun MedRecordScreen(
             MyPetTopBar(
                 text = stringResource(R.string.therapy_title),
                 canNavigateBack = true,
-                navigateUp = navigateUp
+                navigateUp = { navController.navigateUp() }
             )
         }
     ) { innerPadding ->
@@ -125,7 +127,9 @@ fun MedRecordScreen(
                     border = BorderStroke(1.dp, GreenButton),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
                     onClick = {
-                        navigateUpdateMedRecord(medRecordId)
+                        navController.navigate("${Routes.UpdateMedRecord.route}/$medRecordId") {
+                            launchSingleTop = true
+                        }
                     },
                 ) {
                     Text(

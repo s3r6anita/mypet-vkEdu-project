@@ -19,9 +19,9 @@ import com.f4.mypet.ui.theme.BlueCheckbox
 @Composable
 fun RemoveProcedureAlert(
     procedure: Procedure,
-    viewModel: ProcedureViewModel = hiltViewModel(),
     navigateUp: () -> Unit,
-    closeAlertDialog: () -> Unit
+    closeAlertDialog: () -> Unit,
+    viewModel: ProcedureViewModel = hiltViewModel()
 ) {
     AlertDialog(
         shape = RoundedCornerShape(12.dp),

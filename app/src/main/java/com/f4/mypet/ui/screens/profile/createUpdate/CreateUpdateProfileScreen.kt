@@ -52,6 +52,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.f4.mypet.PastOrPresentSelectableDates
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
@@ -77,10 +78,9 @@ fun CreateUpdateProfileScreen(
     isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
     globalScope: CoroutineScope,
+    navController: NavHostController,
     profileId: Int = -1,
-    viewModel: CreateUpdateProfileViewModel = hiltViewModel(),
-    navigateUp: () -> Unit,
-    navigateListProfile: () -> Unit = { }
+    viewModel: CreateUpdateProfileViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -106,8 +106,8 @@ fun CreateUpdateProfileScreen(
                     else
                         Routes.UpdateProfile.title
                 ),
-                canNavigateBack = false,
-                navigateUp = { navigateUp() }
+                canNavigateBack = true,
+                navigateUp = { navController.navigateUp() }
             )
         },
         snackbarHost = {
@@ -412,10 +412,16 @@ fun CreateUpdateProfileScreen(
                     }
                     if (isCreateScreen) {
                         viewModel.createPet(pet)
-                        navigateListProfile()
+
+                        navController.navigate(Routes.ListProfile.route) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
                     } else {
                         viewModel.updatePet(pet)
-                        navigateUp()
+                        navController.navigateUp()
                     }
                 }
             ) {
