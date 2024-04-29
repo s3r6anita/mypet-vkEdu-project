@@ -31,8 +31,9 @@ fun NavGraphBuilder.mainNavGraph(
         /** вход в аккаунт */
         composable(route = Routes.Login.route) {
             LoginScreen(
-                navigateUp = { navController.navigateUp() },
-                )
+                navController = navController,
+                snackbarHostState = snackbarHostState
+            )
         }
 
         /** список профилей */

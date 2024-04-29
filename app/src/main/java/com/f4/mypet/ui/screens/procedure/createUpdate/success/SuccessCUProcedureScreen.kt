@@ -54,8 +54,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.f4.mypet.PetDateTimeFormatter
-import com.f4.mypet.PresentOrFutureSelectableDates
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
@@ -66,7 +64,9 @@ import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.ui.theme.White
-import com.f4.mypet.validate
+import com.f4.mypet.util.PetDateTimeFormatter
+import com.f4.mypet.util.PresentOrFutureSelectableDates
+import com.f4.mypet.util.validate
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId

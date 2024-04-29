@@ -17,6 +17,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,13 +34,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.theme.GreenButton
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
-    navigateUp: () -> Unit,
+    navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
@@ -49,7 +55,15 @@ fun LoginScreen(
         mutableStateOf("")
     }
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
+            ) {
+                MyPetSnackBar(it.visuals.message)
+            }
+        }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -116,10 +130,21 @@ fun LoginScreen(
             // Кнопка "Войти"
             Button(
                 onClick = {
+                    var msg: String? = null
                     scope.launch {
-                        viewModel.login(email, password)
+                        msg = viewModel.login(email, password)
                     }
-                    navigateUp()
+//                    if (msg != null)
+                        scope.launch {
+                            snackbarHostState.showSnackbar(message = msg ?: "Error", duration = SnackbarDuration.Short)
+                        }
+//                    else
+//                        navController.navigate(Routes.ListProfile.route) {
+//                            popUpTo(Routes.ListProfile.route) {
+//                                inclusive = true
+//                            }
+//                            launchSingleTop = true
+//                        }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton)

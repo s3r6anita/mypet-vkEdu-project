@@ -46,7 +46,6 @@ fun ListProcedureScreen(
     viewModel: ListProcedureViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
-    val viewModel: ListProcedureViewModel = hiltViewModel()
 
     LaunchedEffect(Unit) {
         scope.launch {

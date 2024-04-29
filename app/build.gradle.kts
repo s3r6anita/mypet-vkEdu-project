@@ -54,6 +54,11 @@ android {
 dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("androidx.datastore:datastore-preferences-core:1.1.0")
+    implementation("androidx.datastore:datastore-core:1.1.0")
+
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -71,7 +76,7 @@ dependencies {
 
     // Room
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.5")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.6")
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
@@ -80,7 +85,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Dagger
-    implementation("com.google.dagger:hilt-android:2.48")
+    implementation("com.google.dagger:hilt-android:2.49")
     ksp("com.google.dagger:dagger-compiler:2.49") // Dagger compiler
     ksp("com.google.dagger:hilt-compiler:2.49")   // Hilt compiler
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
