@@ -17,6 +17,8 @@ class ListProfileViewModel @Inject constructor(
 ) : ViewModel() {
     private val _petsUiState = MutableStateFlow(emptyList<Pet>())
     val petsUiState = _petsUiState.asStateFlow()
+//    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+//    val uiState = _uiState.asStateFlow()
 
     fun getPetsProfiles() {
         viewModelScope.launch(IO) {

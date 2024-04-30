@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -22,6 +23,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,13 +34,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.theme.GreenButton
+import com.f4.mypet.util.UiState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -48,12 +55,35 @@ fun LoginScreen(
 ) {
     val scope = rememberCoroutineScope()
 
+    val msg by viewModel.msg.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+
     var email by remember {
-      mutableStateOf("")
+        mutableStateOf("")
     }
     var password by remember {
         mutableStateOf("")
     }
+
+    LaunchedEffect(uiState) {
+        if (uiState == UiState.Success) {
+            if (msg == null) {
+                navController.navigate(Routes.ListProfile.route) {
+                    popUpTo(Routes.ListProfile.route) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            }
+        }
+        if (uiState == UiState.Error) {
+            snackbarHostState.showSnackbar(
+                message = msg ?: "Null",
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
+
 
     Scaffold(
         snackbarHost = {
@@ -91,8 +121,10 @@ fun LoginScreen(
                 onValueChange = { email = it },
                 label = { Text(stringResource(id = R.string.login_enter)) },
                 placeholder = { Text(stringResource(id = R.string.login_placeholder)) },
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
                 trailingIcon = {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = { email = "" }) {
                         Icon(
                             Icons.Default.Clear,
                             contentDescription = stringResource(id = R.string.clear)
@@ -102,8 +134,6 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 15.dp),
-                singleLine = false,
-                shape = RoundedCornerShape(12.dp)
             )
 
             // password
@@ -112,8 +142,12 @@ fun LoginScreen(
                 onValueChange = { password = it },
                 label = { Text(stringResource(id = R.string.login_password_enter)) },
                 placeholder = { Text(stringResource(id = R.string.login_password_enter)) },
+                visualTransformation = VisualTransformation.None,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
                 trailingIcon = {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = { password = "" }) {
                         Icon(
                             Icons.Default.Clear,
                             contentDescription = stringResource(id = R.string.clear)
@@ -123,28 +157,14 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 20.dp),
-                singleLine = false,
-                shape = RoundedCornerShape(12.dp)
             )
 
             // Кнопка "Войти"
             Button(
                 onClick = {
-                    var msg: String? = null
                     scope.launch {
-                        msg = viewModel.login(email, password)
+                        viewModel.login(email, password)
                     }
-//                    if (msg != null)
-                        scope.launch {
-                            snackbarHostState.showSnackbar(message = msg ?: "Error", duration = SnackbarDuration.Short)
-                        }
-//                    else
-//                        navController.navigate(Routes.ListProfile.route) {
-//                            popUpTo(Routes.ListProfile.route) {
-//                                inclusive = true
-//                            }
-//                            launchSingleTop = true
-//                        }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton)

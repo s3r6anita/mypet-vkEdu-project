@@ -7,6 +7,7 @@ import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
 import com.f4.mypet.util.PetDateTimeFormatter
+import com.f4.mypet.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,12 +16,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
-
-sealed class UiState {
-    data object Loading : UiState()
-    data class Error(val e: Exception) : UiState()
-    data object Success : UiState()
-}
 
 @HiltViewModel
 class CreateUpdateProcedureViewModel @Inject constructor(

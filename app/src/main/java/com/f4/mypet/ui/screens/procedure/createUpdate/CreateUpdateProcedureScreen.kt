@@ -9,6 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.f4.mypet.ui.screens.ErrorScreen
 import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.procedure.createUpdate.success.SuccessCUProcedureScreen
+import com.f4.mypet.util.UiState
 import kotlinx.coroutines.launch
 
 @Composable

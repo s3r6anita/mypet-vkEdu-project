@@ -30,10 +30,16 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+private const val AUTH_PREFERENCES = "auth_preferences.preferences_pb"
+
+fun Context.preferencesDataStoreFile(name: String): File {
+    return File(filesDir, name)
+}
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
@@ -75,6 +81,8 @@ object AppModule {
         )
     }
 
+
+
     @[Provides Singleton]
     fun provideJwtTokenManager(dataStore: DataStore<Preferences>): JwtTokenManager {
         return JwtTokenDataStore(dataStore = dataStore)
@@ -87,8 +95,7 @@ object AppModule {
                 produceNewData = { emptyPreferences() }
             ),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.cacheDir }
-//            produceFile = { appContext.preferencesDataStoreFile(AUTH_PREFERENCES) } TODO: как добавить?
+            produceFile = { appContext.preferencesDataStoreFile(AUTH_PREFERENCES) }
         )
     }
 
@@ -131,9 +138,9 @@ object AppModule {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+//            .connectTimeout(30, TimeUnit.SECONDS)
+//            .readTimeout(30, TimeUnit.SECONDS)
+//            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
     }
 
