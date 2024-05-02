@@ -3,10 +3,8 @@ package com.f4.mypet
 import android.app.Application
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.f4.mypet.data.db.DBRepository
 import com.f4.mypet.data.db.PetDatabase
 import com.f4.mypet.data.db.Repository
@@ -18,28 +16,24 @@ import com.f4.mypet.data.network.authentication.JwtTokenDataStore
 import com.f4.mypet.data.network.authentication.JwtTokenManager
 import com.f4.mypet.data.network.service.AuthService
 import com.f4.mypet.data.network.service.PetService
+import com.f4.mypet.util.LocalDateAdapter
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.File
+import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-private const val AUTH_PREFERENCES = "auth_preferences.preferences_pb"
-
-fun Context.preferencesDataStoreFile(name: String): File {
-    return File(filesDir, name)
-}
+private const val AUTH_PREFERENCES = "my_preferences"
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = AUTH_PREFERENCES)
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
@@ -77,10 +71,15 @@ object AppModule {
     fun getNetworkRepository(@ApplicationContext appContext: Context): NetworkRepository {
         return NetworkRepositoryImpl(
             authService = provideNoAuthenticationApi(provideUnauthenticatedOkHttpClient()),
-            jwtTokenManager = provideJwtTokenManager(provideDataStore(appContext))
+            petService = provideAuthenticationApi(
+                provideAccessOkHttpClient(
+                    provideAccessTokenInterceptor(appContext),
+                    providesAuthAuthenticator(appContext)
+                )
+            ),
+            jwtTokenManager = provideJwtTokenManager(appContext.dataStore)
         )
     }
-
 
 
     @[Provides Singleton]
@@ -88,17 +87,27 @@ object AppModule {
         return JwtTokenDataStore(dataStore = dataStore)
     }
 
+    // использование приводит к  java.lang.IllegalStateException: There are multiple DataStores active for the same file
+//    @[Provides Singleton]
+//    fun provideDataStore(@ApplicationContext appContext: Context): DataStore<Preferences> {
+//        return PreferenceDataStoreFactory.create(
+//            corruptionHandler = ReplaceFileCorruptionHandler(
+//                produceNewData = { emptyPreferences() }
+//            ),
+//            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+//            produceFile = { appContext.preferencesDataStoreFile(AUTH_PREFERENCES) }
+//        )
+//    }
+
     @[Provides Singleton]
-    fun provideDataStore(@ApplicationContext appContext: Context): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create(
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { emptyPreferences() }
-            ),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.preferencesDataStoreFile(AUTH_PREFERENCES) }
-        )
+    fun provideAccessTokenInterceptor(@ApplicationContext appContext: Context): AccessTokenInterceptor {
+        return AccessTokenInterceptor(provideJwtTokenManager(appContext.dataStore))
     }
 
+    @[Provides Singleton]
+    fun providesAuthAuthenticator(@ApplicationContext appContext: Context): AuthAuthenticator {
+        return AuthAuthenticator(provideJwtTokenManager(appContext.dataStore))
+    }
 
     /** For requests requiring the access token  */
     @[Provides Singleton AuthenticatedClient]
@@ -122,9 +131,13 @@ object AppModule {
     @[Provides Singleton]
     fun provideAuthenticationApi(@AuthenticatedClient okHttpClient: OkHttpClient): PetService {
         val baseUrl = "https://mypet-backend-s3r6.amvera.io/"
+        val gsonBuilder = GsonBuilder()
+            .registerTypeAdapter(LocalDateTime::class.java, LocalDateAdapter())
+//            .setDateFormat("dd.MM.yyyy")
+            .create()
         return Retrofit.Builder()
             .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
             .client(okHttpClient)
             .build()
             .create(PetService::class.java)

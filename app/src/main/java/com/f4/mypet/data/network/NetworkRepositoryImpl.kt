@@ -1,15 +1,18 @@
 package com.f4.mypet.data.network
 
+import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.network.authentication.JwtTokenManager
 import com.f4.mypet.data.network.model.request.LoginRequest
 import com.f4.mypet.data.network.model.response.Response
 import com.f4.mypet.data.network.service.AuthService
+import com.f4.mypet.data.network.service.PetService
 import com.google.gson.Gson
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class NetworkRepositoryImpl @Inject constructor(
     private val authService: AuthService,
+    private val petService: PetService,
     private val jwtTokenManager: JwtTokenManager
 ) : NetworkRepository {
 
@@ -32,5 +35,13 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getPets(): List<Pet> {
+        try {
+            val response = petService.getPets()
+            return response.data ?: emptyList()
+        } catch (e: HttpException) {
+            return emptyList()
+        }
+    }
 }
 

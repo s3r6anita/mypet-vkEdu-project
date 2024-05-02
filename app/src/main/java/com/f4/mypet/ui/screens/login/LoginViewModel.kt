@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val repository: NetworkRepository
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
 
     private val _msg = MutableStateFlow<String?>("")
@@ -25,7 +25,7 @@ class LoginViewModel @Inject constructor(
     fun login(email: String, password: String) {
         val loginRequest = LoginRequest(email, password)
         viewModelScope.launch {
-            _msg.value = repository.login(loginRequest)
+            _msg.value = networkRepository.login(loginRequest)
             if (_msg.value == null )
                 _uiState.update { UiState.Success }
             else

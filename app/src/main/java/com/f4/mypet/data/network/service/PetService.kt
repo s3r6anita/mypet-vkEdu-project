@@ -5,6 +5,6 @@ import com.f4.mypet.data.network.model.response.Response
 import retrofit2.http.GET
 
 interface PetService {
-    @GET("pet/")
+    @GET("pet")
     suspend fun getPets(): Response<List<Pet>>
 }

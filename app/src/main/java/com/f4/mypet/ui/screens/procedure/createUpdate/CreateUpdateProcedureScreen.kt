@@ -16,9 +16,9 @@ import kotlinx.coroutines.launch
 fun CreateUpdateProcedureScreen(
     isCreateScreen: Boolean,
     procedureId: Int = -1,
-    viewModel: CreateUpdateProcedureViewModel = hiltViewModel(),
     navigateUp: () -> Unit,
-    navigateListProcedures: () -> Unit = { }
+    navigateListProcedures: () -> Unit = { },
+    viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsState()
@@ -35,6 +35,11 @@ fun CreateUpdateProcedureScreen(
             navigateUp = navigateUp,
             navigateListProcedures = navigateListProcedures
         )
-        else -> ErrorScreen(retryAction = viewModel::getPetProcedure, procedureId)
+
+        else -> ErrorScreen(retryAction = {
+            scope.launch {
+                viewModel.getPetProcedure(procedureId)
+            }
+        })
     }
 }

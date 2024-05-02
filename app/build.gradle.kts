@@ -56,8 +56,8 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
-    implementation("androidx.datastore:datastore-preferences-core:1.1.0")
-    implementation("androidx.datastore:datastore:1.1.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore:1.1.1")
 
 
     implementation("androidx.core:core-ktx:1.12.0")

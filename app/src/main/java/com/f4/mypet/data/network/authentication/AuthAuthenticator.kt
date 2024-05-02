@@ -19,6 +19,9 @@ class AuthAuthenticator @Inject constructor(
         val currentToken = runBlocking {
             tokenManager.getAccessJwt()
         }
+
+        // TODO: можно добавить обработку response.code == 401, чтобы выполнялся поход за новым токеном как в https://notificare.com/blog/2023/04/21/android-retrofit-refresh-authentication/
+
         return if (currentToken != null) response.request.newBuilder()
             .header(HEADER_AUTHORIZATION, "$TOKEN_TYPE $currentToken")
             .build()

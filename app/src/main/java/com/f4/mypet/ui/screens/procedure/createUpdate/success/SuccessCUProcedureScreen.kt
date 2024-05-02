@@ -76,9 +76,9 @@ import java.time.ZoneId
 @Composable
 fun SuccessCUProcedureScreen(
     isCreateScreen: Boolean,
-    viewModel: CreateUpdateProcedureViewModel = hiltViewModel(),
     navigateUp: () -> Unit,
-    navigateListProcedures: () -> Unit
+    navigateListProcedures: () -> Unit,
+    viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 ) {
     val titles = viewModel.titles
     val types = viewModel.types

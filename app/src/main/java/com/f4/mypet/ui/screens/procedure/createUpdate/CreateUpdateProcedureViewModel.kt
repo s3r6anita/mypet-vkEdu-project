@@ -47,15 +47,17 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     )
 
     init {
+        _uiState.update { UiState.Loading }
         viewModelScope.launch(Dispatchers.IO) {
             titles = repository.getProcedureTitles()
             types = repository.getProcedureTypes()
-            _uiState.update { UiState.Success }
         }
+        _uiState.update { UiState.Success }
     }
 
     fun getPetProcedure(procedureId: Int) {
         if (procedureId != -1) {
+            _uiState.update { UiState.Loading }
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getProcedure(procedureId).collect { procedure ->
                     _procedureUiState.value = procedure
@@ -64,8 +66,8 @@ class CreateUpdateProcedureViewModel @Inject constructor(
                     type = types.find { type -> type.id == title.type }
                         ?:  type
                 }
-                _uiState.update { UiState.Success }
             }
+            _uiState.update { UiState.Success }
         }
     }
 }

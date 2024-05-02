@@ -27,7 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.navigation.Routes
@@ -40,8 +40,8 @@ import com.f4.mypet.ui.theme.LightGrayTint
 fun PetItem(
     pet: Pet,
     canNavigateBack: Boolean,
-    closeSnackbar: () -> Unit,
-    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit
+    navController: NavHostController,
+    closeSnackbar: () -> Unit
 ) {
     BottomBarData.selectedItemIndex = 0
     Card(
@@ -49,7 +49,7 @@ fun PetItem(
             .fillMaxWidth()
             .clickable {
                 closeSnackbar()
-                navigate(
+                navController.navigate(
                     "${Routes.BottomBarRoutes.ListProcedures.route}/${pet.id}/$canNavigateBack"
                 ) {
                     launchSingleTop = true

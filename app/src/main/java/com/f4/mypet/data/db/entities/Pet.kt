@@ -3,7 +3,7 @@ package com.f4.mypet.data.db.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @Entity
 data class Pet(
@@ -11,7 +11,7 @@ data class Pet(
     val kind: String, // кошка собака морж
     val breed: String, // порода
     val sex: String, // "Самка" | "Самец"
-    val birthday: LocalDateTime,
+    val birthday: LocalDate,
     val color: String, // окрас
     val coat: String, // вид шерсти
     val microchipNumber: String, // 15 цифр

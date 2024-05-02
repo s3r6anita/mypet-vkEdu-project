@@ -25,7 +25,7 @@ fun NavGraphBuilder.mainNavGraph(
 ) {
     navigation(
         route = START,
-        startDestination = Routes.ListProfile.route
+        startDestination = Routes.Login.route
     ) {
 
         /** вход в аккаунт */
@@ -41,9 +41,7 @@ fun NavGraphBuilder.mainNavGraph(
             ListProfileScreen(
                 snackbarHostState = snackbarHostState,
                 globalScope = globalScope,
-                navigate = { route, builderOptions ->
-                    navController.navigate(route, builderOptions)
-                }
+                navController = navController
             )
         }
         /** профиль */
