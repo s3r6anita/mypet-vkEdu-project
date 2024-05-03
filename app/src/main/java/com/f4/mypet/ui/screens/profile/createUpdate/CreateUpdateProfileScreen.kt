@@ -67,7 +67,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Composable
@@ -327,12 +326,10 @@ fun CreateUpdateProfileScreen(
                             onClick = {
                                 openDialog = false
                                 pet = pet.copy(
-                                    birthday = LocalDateTime.ofInstant(
-                                        Instant.ofEpochMilli(
-                                            datePickerState.selectedDateMillis ?: 0
-                                        ),
-                                        ZoneId.of("UTC")
-                                    )
+                                    birthday =
+                                    Instant.ofEpochMilli(
+                                        datePickerState.selectedDateMillis ?: 0
+                                    ).atZone(ZoneId.systemDefault()).toLocalDate()
                                 )
                                 try {
                                     dateIsCorrect =

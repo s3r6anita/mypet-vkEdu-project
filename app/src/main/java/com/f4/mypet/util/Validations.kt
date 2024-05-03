@@ -3,7 +3,6 @@ package com.f4.mypet.util
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
 
@@ -17,13 +16,13 @@ fun validateMicrochipNumber(chipNumber: String): Boolean = chipNumber.matches(ch
 
 fun validateDate(dateString: String): Boolean = dateString.matches(dateRegex)
 
-fun validateBirthday(date: LocalDateTime): Boolean {
+fun validateBirthday(date: LocalDate): Boolean {
 //    throw IllegalArgumentException("Ошибка парсинга введенной даты")
     if (date > Date().toInstant()
             .atZone(ZoneId.systemDefault())
-            .toLocalDateTime()
+            .toLocalDate()
     ) {
-        throw IllegalArgumentException("Дата больше сегодняшней")
+        throw IllegalArgumentException("Дата больше текущей")
     }
     return validateDate(date.format(PetDateTimeFormatter.date))
 }
