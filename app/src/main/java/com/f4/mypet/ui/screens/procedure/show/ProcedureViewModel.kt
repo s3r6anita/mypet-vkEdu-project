@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.data.db.Repository
+import com.f4.mypet.data.db.entities.Frequency
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
+import com.f4.mypet.ui.screens.procedure.FrequencyOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +38,11 @@ class ProcedureViewModel @Inject constructor(
         name = "Неизвестно",
         id = title.type
     )
+    var frequency = Frequency(
+        "Никогда",
+        "0",
+        0
+    )
 
     val procedureUiState = _procedureUiState.asStateFlow()
 
@@ -44,10 +51,19 @@ class ProcedureViewModel @Inject constructor(
             repository.getProcedure(procedureId).collect { procedure ->
                 if (procedure != null) {
                     _procedureUiState.value = procedure
-                    title = repository.getProcedureTitles().find { it.id == procedure.title }
+                    title = repository.getProcedureTitlesForCU().find { it.id == procedure.title }
                         ?: title
                     type = repository.getProcedureTypes().find { it.id == title.type }
                         ?: type
+                    val frequencyDB = repository.getFrequency(procedureId)
+                    frequency = frequencyDB
+                    when (frequency.option) {
+                        FrequencyOptions.Minutes.period -> frequency.frequency += FrequencyOptions.Minutes.abbreviation
+                        FrequencyOptions.Hours.period -> frequency.frequency += FrequencyOptions.Hours.abbreviation
+                        FrequencyOptions.Days.period -> frequency.frequency += FrequencyOptions.Days.abbreviation
+                        FrequencyOptions.Weeks.period -> frequency.frequency += FrequencyOptions.Weeks.abbreviation
+                        else -> frequency.frequency = FrequencyOptions.Never.abbreviation
+                    }
                 }
                 else {
                     _procedureUiState.value = Procedure(
@@ -63,6 +79,7 @@ class ProcedureViewModel @Inject constructor(
 
     fun deleteProcedure(procedure: Procedure) {
         viewModelScope.launch(Dispatchers.IO) {
+            //TODO add delete of frequency
             repository.deleteProcedure(procedure)
         }
     }

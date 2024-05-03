@@ -59,7 +59,7 @@ fun ProcedureScreen(
     procedureId: Int,
     viewModel: ProcedureViewModel = hiltViewModel(),
     navigateUp: () -> Unit,
-    navigateUpdateProcedure: (Int) -> Unit
+    navigateUpdateProcedure: (Int, Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
@@ -71,6 +71,7 @@ fun ProcedureScreen(
     val procedure by viewModel.procedureUiState.collectAsState()
     val title = viewModel.title
     val type = viewModel.type
+    var frequency = viewModel.frequency
 
     var openAlertDialog by remember { mutableStateOf(false) }
 
@@ -161,7 +162,7 @@ fun ProcedureScreen(
                         )
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_frequency),
-                            value = procedure.frequency.toString()
+                            value = frequency.frequency
                         )
                         procedure.reminder?.format(PetDateTimeFormatter.dateTime)?.let {
                             TextComponent(
@@ -203,7 +204,7 @@ fun ProcedureScreen(
                     contentPadding = PaddingValues(start = 1.dp, end = 1.dp),
                     border = BorderStroke(1.dp, GreenButton),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
-                    onClick = { navigateUpdateProcedure(procedureId) },
+                    onClick = { navigateUpdateProcedure(procedureId, procedure.pet) },
                     modifier = Modifier
                         .padding(bottom = 40.dp)
                         .weight(1f)

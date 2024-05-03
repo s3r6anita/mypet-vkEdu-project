@@ -2,8 +2,8 @@ package com.f4.mypet.ui.screens.procedure.createUpdate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.data.db.Repository
+import com.f4.mypet.data.db.entities.Frequency
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
@@ -32,8 +32,8 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     private val _procedureUiState = MutableStateFlow(
         Procedure(
             0, 0, 0,
-            LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
-            "", LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
+            LocalDateTime.now().withMinute(0),
+            "", null,
             0, 0, 0
         )
     )
@@ -41,9 +41,11 @@ class CreateUpdateProcedureViewModel @Inject constructor(
 
     var titles = emptyList<ProcedureTitle>() // список всех заголовков
     var types = emptyList<ProcedureType>() // список всех типов
+    var options = emptyList<String>() // список вариантов частоты
 
-    var title = ProcedureTitle( // заголовок создаваемой (изменяемой) процедуры
-        name = "Неизвестно",
+    var title = ProcedureTitle(
+        // заголовок создаваемой (изменяемой) процедуры
+        name = "",
         type = 0,
     )
     var type = ProcedureType( // тип создаваемой (изменяемой) процедуры
@@ -51,10 +53,17 @@ class CreateUpdateProcedureViewModel @Inject constructor(
         id = title.id
     )
 
+    var frequency = Frequency( // частота создаваемой (изменяемой) процедуры
+        option = "никогда",
+        frequency = "0",
+        id = 0
+    )
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            titles = repository.getProcedureTitles()
+            titles = repository.getProcedureTitlesForCU()
             types = repository.getProcedureTypes()
+            options = repository.getFrequencyOptions()
             _uiState.update { UiState.Success }
         }
     }
@@ -63,14 +72,34 @@ class CreateUpdateProcedureViewModel @Inject constructor(
         if (procedureId != -1) {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getProcedure(procedureId).collect { procedure ->
-                    _procedureUiState.value = procedure
-                    title = titles.find { title -> title.id == procedure.title }
-                        ?: title
-                    type = types.find { type -> type.id == title.type }
-                        ?:  type
+                    if (procedure != null) {
+                        _procedureUiState.value = procedure
+                        title = titles.find { title -> title.id == procedure.title }
+                            ?: title
+                        type = types.find { type -> type.id == title.type }
+                            ?: type
+                        frequency = repository.getFrequency(procedure.frequency)
+                    }
                 }
-                _uiState.update { UiState.Success }
+//                _uiState.update { UiState.Success }
             }
+        }
+    }
+
+    fun updateProcedure(procedure: Procedure, title: ProcedureTitle, frequency: Frequency) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateProcedure(procedure)
+            repository.updateTitle(title)
+            repository.updateFrequency(frequency)
+        }
+    }
+
+    fun createProcedure(procedure: Procedure, title: ProcedureTitle, frequency: Frequency) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val titleId = repository.insertTitle(title)
+            val frequencyId = repository.insertFrequency(frequency)
+            val procedureto = procedure.copy(title = titleId, frequency = frequencyId)
+            repository.insertProcedure(procedureto)
         }
     }
 }

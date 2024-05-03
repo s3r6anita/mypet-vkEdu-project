@@ -78,7 +78,7 @@ fun MedRecordItem(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = medRecord.title.toString(), // TODO: убрать toString() после того, как изменим Entity
+                        text = medRecord.title,
                         color = Color.Black,
                         style = MaterialTheme.typography.titleLarge
                     )

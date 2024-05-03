@@ -6,16 +6,9 @@ import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
 
-@Entity(
-//    foreignKeys = [
-//        ForeignKey(
-//            entity = Pet::class,
-//            parentColumns = ["id"],
-//            childColumns = ["pet"]
-//        )]
-)
+@Entity
 data class MedRecord(
-    val title: Int, // название TODO: поменять на String
+    val title: String, // название
     val date: LocalDateTime, // дата
     val notes: String, // заметки
     val pet: Int, // питомец

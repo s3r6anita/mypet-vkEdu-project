@@ -23,7 +23,8 @@ object AppModule {
             myDB.petDAO(),
             myDB.medRecordDAO(),
             myDB.procedureDAO(),
-            myDB.prTitleDAO()
+            myDB.prTitleDAO(),
+            myDB.frequencyDAO()
         )
     }
 

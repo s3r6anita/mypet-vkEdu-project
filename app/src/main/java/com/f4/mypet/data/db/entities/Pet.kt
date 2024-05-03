@@ -18,21 +18,3 @@ data class Pet(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int
 )
-
-//data class PetWithProcedures(
-//    @Embedded val pet: Pet,
-//    @Relation(
-//        parentColumn = "id",
-//        entityColumn = "pet"
-//    )
-//    val procedures: List<Procedure>
-//)
-
-//data class PetWithMedRecords(
-//    @Embedded val pet: Pet,
-//    @Relation(
-//        parentColumn = "id",
-//        entityColumn = "pet"
-//    )
-//    val medRecords: List<MedRecord>
-//)

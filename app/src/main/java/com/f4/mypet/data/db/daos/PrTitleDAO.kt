@@ -4,16 +4,24 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PrTitleDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(title: ProcedureTitle)
+    suspend fun insert(title: ProcedureTitle): Long
+
+    @Update
+    suspend fun update(title: ProcedureTitle)
 
     @Query("SELECT * from procedureTitle")
-    fun getProcedureTitles(): List<ProcedureTitle>
+    fun getProcedureTitles(): Flow<List<ProcedureTitle>>
+
+    @Query("SELECT * from procedureTitle")
+    fun getProcedureTitlesForCU(): List<ProcedureTitle>
 
     @Query("SELECT * from procedureType")
     fun getProcedureTypes(): List<ProcedureType>

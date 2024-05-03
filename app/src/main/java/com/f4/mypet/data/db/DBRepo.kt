@@ -1,9 +1,11 @@
 package com.f4.mypet.data.db
 
+import com.f4.mypet.data.db.daos.FrequencyDAO
 import com.f4.mypet.data.db.daos.MedRecordDAO
 import com.f4.mypet.data.db.daos.PetDAO
 import com.f4.mypet.data.db.daos.PrTitleDAO
 import com.f4.mypet.data.db.daos.ProcedureDAO
+import com.f4.mypet.data.db.entities.Frequency
 import com.f4.mypet.data.db.entities.MedRecord
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.db.entities.Procedure
@@ -21,13 +23,20 @@ interface Repository {
     suspend fun getPets(): Flow<List<Pet>>
     suspend fun getPet(petId: Int): Flow<Pet>
     suspend fun getPetForCU(petId: Int): Pet
-
     suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>>
-    suspend fun getProcedureTitles(): List<ProcedureTitle>
-    suspend fun getProcedure(procedureId: Int): Flow<Procedure>
-    suspend fun deleteProcedure(procedure: Procedure)
+    suspend fun getProcedureTitles(): Flow<List<ProcedureTitle>>
+    suspend fun getProcedureTitlesForCU(): List<ProcedureTitle>
     suspend fun getProcedureTypes(): List<ProcedureType>
-
+    suspend fun getFrequencyOptions(): List<String>
+    suspend fun getProcedure(procedureId: Int): Flow<Procedure>
+    suspend fun insertProcedure(procedure: Procedure)
+    suspend fun updateProcedure(procedure: Procedure)
+    suspend fun updateTitle(title: ProcedureTitle)
+    suspend fun insertTitle(title: ProcedureTitle): Int
+    suspend fun updateFrequency(frequency: Frequency)
+    suspend fun insertFrequency(frequency: Frequency): Int
+    suspend fun deleteProcedure(procedure: Procedure)
+    suspend fun getFrequency(frequencyId: Int): Frequency
     suspend fun getMedRecordsForPet(petId: Int): Flow<List<MedRecord>>
     suspend fun getMedRecord(medRecord: Int): Flow<MedRecord>
 }
@@ -36,7 +45,8 @@ class DBRepository @Inject constructor(
     private val petDAO: PetDAO,
     private val medRecordDAO: MedRecordDAO,
     private val procedureDAO: ProcedureDAO,
-    private val prTitleDAO: PrTitleDAO
+    private val prTitleDAO: PrTitleDAO,
+    private val frequencyDAO: FrequencyDAO
 ) : Repository {
     override suspend fun insertPet(pet: Pet) {
         petDAO.insert(pet)
@@ -70,27 +80,61 @@ class DBRepository @Inject constructor(
         return petDAO.getPetForCU(petId)
     }
 
-
     override suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>> {
         return procedureDAO.getProceduresForPet(petId)
     }
 
-    override suspend fun getProcedureTitles(): List<ProcedureTitle> {
+    override suspend fun getProcedureTitles(): Flow<List<ProcedureTitle>> {
         return prTitleDAO.getProcedureTitles()
     }
 
-    override suspend fun getProcedure(procedureId: Int): Flow<Procedure> {
-        return procedureDAO.getProcedure(procedureId)
-    }
-
-    override suspend fun deleteProcedure(procedure: Procedure) {
-        procedureDAO.delete(procedure)
+    override suspend fun getProcedureTitlesForCU(): List<ProcedureTitle> {
+        return prTitleDAO.getProcedureTitlesForCU()
     }
 
     override suspend fun getProcedureTypes(): List<ProcedureType> {
         return prTitleDAO.getProcedureTypes()
     }
 
+    override suspend fun getFrequencyOptions(): List<String> {
+        return frequencyDAO.getOptions()
+    }
+
+    override suspend fun getProcedure(procedureId: Int): Flow<Procedure> {
+        return procedureDAO.getProcedure(procedureId)
+    }
+
+    override suspend fun getFrequency(frequencyId: Int): Frequency {
+        return frequencyDAO.getFrequency(frequencyId)
+    }
+
+    override suspend fun updateProcedure(procedure: Procedure) {
+        procedureDAO.update(procedure)
+    }
+
+    override suspend fun updateTitle(title: ProcedureTitle) {
+        prTitleDAO.update(title)
+    }
+
+    override suspend fun updateFrequency(frequency: Frequency) {
+        frequencyDAO.update(frequency)
+    }
+
+    override suspend fun deleteProcedure(procedure: Procedure) {
+        procedureDAO.delete(procedure)
+    }
+
+    override suspend fun insertProcedure(procedure: Procedure) {
+        procedureDAO.insert(procedure)
+    }
+
+    override suspend fun insertTitle(title: ProcedureTitle): Int {
+        return prTitleDAO.insert(title).toInt()
+    }
+
+    override suspend fun insertFrequency(frequency: Frequency): Int {
+        return frequencyDAO.insert(frequency).toInt()
+    }
 
     override suspend fun getMedRecordsForPet(petId: Int): Flow<List<MedRecord>> {
         return medRecordDAO.getMedRecords(petId)

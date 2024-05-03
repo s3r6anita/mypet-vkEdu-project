@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.f4.mypet.data.db.entities.Procedure
 import kotlinx.coroutines.flow.Flow
 
@@ -15,6 +16,9 @@ interface ProcedureDAO {
 
     @Delete
     suspend fun delete(procedure: Procedure)
+
+    @Update
+    suspend fun update(procedure: Procedure)
 
     @Query("DELETE FROM procedure WHERE pet = :petId")
     suspend fun deleteProceduresForPet(petId: Int)

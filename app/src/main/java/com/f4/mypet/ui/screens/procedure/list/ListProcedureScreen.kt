@@ -52,11 +52,14 @@ fun ListProcedureScreen(
         scope.launch {
             viewModel.getPetsProcedures(profileId)
         }
+        scope.launch {
+            viewModel.getTitles()
+        }
     }
 
     val procedures by viewModel.proceduresUiState.collectAsState()
     val pet = viewModel.pet
-    val titles = viewModel.titles
+    val titles by viewModel.titlesUiState.collectAsState()
 
     Scaffold(
         topBar = {

@@ -128,7 +128,7 @@ fun NavGraphBuilder.mainNavGraph(
             ProcedureScreen(
                 procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1,
                 navigateUp = { navController.navigateUp() },
-                navigateUpdateProcedure = { procedureId ->
+                navigateUpdateProcedure = { procedureId, _ ->
                     navController.navigate("${Routes.UpdateProcedure.route}/$procedureId") {
                         launchSingleTop = true
                     }
@@ -146,16 +146,16 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             CreateUpdateProcedureScreen(
                 isCreateScreen = true,
-                procedureId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
                 navigateUp = { navController.navigateUp() },
-                navigateListProcedures = {
-                    navController.navigate(Routes.BottomBarRoutes.ListProcedures.route) {
-                        popUpTo(Routes.BottomBarRoutes.ListProcedures.route) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                }
+//                navigateListProcedures = {
+//                    navController.navigate("${Routes.BottomBarRoutes.ListProcedures.route}/$profile") {
+//                        popUpTo(Routes.BottomBarRoutes.ListProcedures.route) {
+//                            inclusive = true
+//                        }
+//                        launchSingleTop = true
+//                    }
+//                }
             )
         }
         /** изменение процедуры */
@@ -169,8 +169,10 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             CreateUpdateProcedureScreen(
                 isCreateScreen = false,
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
                 procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1,
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
+//                navigateListProcedures = {}
             )
         }
 
