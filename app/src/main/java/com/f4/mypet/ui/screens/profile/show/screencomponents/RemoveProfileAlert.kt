@@ -6,7 +6,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.navigation.Routes
@@ -16,9 +16,9 @@ import com.f4.mypet.ui.screens.profile.show.ProfileViewModel
 @Composable
 fun RemoveProfileALert(
     pet: Pet,
-    viewModel: ProfileViewModel = hiltViewModel(),
-    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit,
-    closeAlertDialog: () -> Unit
+    navController: NavHostController,
+    closeAlertDialog: () -> Unit,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
     AlertDialog(
         title = {
@@ -33,7 +33,7 @@ fun RemoveProfileALert(
         confirmButton = {
             TextButton(onClick = {
                 closeAlertDialog()
-                navigate(START) {
+                navController.navigate(START) {
                     popUpTo(Routes.ListProfile.route) {
                         inclusive = true
                     }

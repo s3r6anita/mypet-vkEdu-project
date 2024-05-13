@@ -44,7 +44,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.TextComponent
 import com.f4.mypet.ui.theme.GreenButton
@@ -56,10 +58,9 @@ import java.time.LocalDateTime
 
 @Composable
 fun ProcedureScreen(
+    navController: NavHostController,
     procedureId: Int,
-    viewModel: ProcedureViewModel = hiltViewModel(),
-    navigateUp: () -> Unit,
-    navigateUpdateProcedure: (Int) -> Unit
+    viewModel: ProcedureViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
 
@@ -77,10 +78,11 @@ fun ProcedureScreen(
     if (openAlertDialog) {
         RemoveProcedureAlert(
             procedure = procedure,
-            navigateUp = navigateUp
-        ) {
-            openAlertDialog = !openAlertDialog
-        }
+            navigateUp = { navController.navigateUp() },
+            closeAlertDialog = {
+                openAlertDialog = !openAlertDialog
+            }
+        )
     }
 
     Scaffold(
@@ -88,7 +90,7 @@ fun ProcedureScreen(
             MyPetTopBar(
                 text = stringResource(R.string.procedure_screen_title),
                 canNavigateBack = true,
-                navigateUp = { navigateUp() },
+                navigateUp = { navController.navigateUp() },
             )
         }
     ) { innerPadding ->
@@ -203,7 +205,11 @@ fun ProcedureScreen(
                     contentPadding = PaddingValues(start = 1.dp, end = 1.dp),
                     border = BorderStroke(1.dp, GreenButton),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
-                    onClick = { navigateUpdateProcedure(procedureId) },
+                    onClick = {
+                        navController.navigate("${Routes.UpdateProcedure.route}/$procedureId") {
+                            launchSingleTop = true
+                        }
+                    },
                     modifier = Modifier
                         .padding(bottom = 40.dp)
                         .weight(1f)

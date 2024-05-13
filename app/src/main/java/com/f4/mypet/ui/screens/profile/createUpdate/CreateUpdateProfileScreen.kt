@@ -52,6 +52,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.f4.mypet.PastOrPresentSelectableDates
+import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
@@ -73,11 +76,10 @@ import java.time.ZoneId
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("CyclomaticComplexMethod", "LongMethod", "LongParameterList")
 fun CreateUpdateProfileScreen(
+    navController: NavHostController,
     isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
     globalScope: () -> CoroutineScope,
-    navigateUp: () -> Unit,
-    navigateListProfile: () -> Unit = { },
     profileId: Int = -1,
     viewModel: CreateUpdateProfileViewModel = hiltViewModel()
 ) {
@@ -105,8 +107,8 @@ fun CreateUpdateProfileScreen(
                     else
                         Routes.UpdateProfile.title
                 ),
-                canNavigateBack = false,
-                navigateUp = { navigateUp() }
+                canNavigateBack = true,
+                navigateUp = { navController.navigateUp() }
             )
         },
         snackbarHost = {
@@ -409,10 +411,16 @@ fun CreateUpdateProfileScreen(
                     }
                     if (isCreateScreen) {
                         viewModel.createPet(pet)
-                        navigateListProfile()
+
+                        navController.navigate(Routes.ListProfile.route) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
                     } else {
                         viewModel.updatePet(pet)
-                        navigateUp()
+                        navController.navigateUp()
                     }
                 }
             ) {

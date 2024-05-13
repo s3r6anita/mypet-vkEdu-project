@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.BottomBarData
@@ -41,8 +41,7 @@ import kotlinx.coroutines.launch
 fun ListProcedureScreen(
     profileId: Int,
     canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
-    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit,
+    navController: NavHostController,
     viewModel: ListProcedureViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
@@ -62,7 +61,7 @@ fun ListProcedureScreen(
             MyPetTopBar(
                 text = stringResource(id = R.string.list_procedure_screen_title),
                 canNavigateBack = canNavigateBack,
-                navigateUp = { navigateUp() },
+                navigateUp = { navController.navigateUp() },
                 actions = { }
             )
         },
@@ -71,9 +70,7 @@ fun ListProcedureScreen(
                 profileId = profileId,
                 canNavigateBack = canNavigateBack,
                 items = BottomBarData.items,
-                navigate = { route, builderOptions ->
-                    navigate(route, builderOptions)
-                }
+                navController = navController
             )
         },
     ) { innerPadding ->
@@ -96,9 +93,9 @@ fun ListProcedureScreen(
                 procedures.forEach { procedure ->
                     ProcedureItem(
                         procedure = procedure,
+                        navController = navController,
                         title = titles.find { title -> title.id == procedure.title }?.name
-                            ?: stringResource(id = R.string.unknown),
-                        navigate = navigate
+                            ?: stringResource(id = R.string.unknown)
                     )
                 }
             }
@@ -107,7 +104,7 @@ fun ListProcedureScreen(
             Button(
                 modifier = Modifier.padding(vertical = 20.dp),
                 onClick = {
-                    navigate(Routes.CreateProcedure.route + "/" + profileId) {
+                    navController.navigate(Routes.CreateProcedure.route + "/" + profileId) {
                         launchSingleTop = true
                     }
                 },

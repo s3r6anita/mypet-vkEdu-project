@@ -27,7 +27,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavHostController
+import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.navigation.Routes
@@ -39,7 +40,7 @@ import com.f4.mypet.util.PetDateTimeFormatter
 fun ProcedureItem(
     procedure: Procedure,
     title: String,
-    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit
+    navController: NavHostController
 ) {
     Card(
         elevation = CardDefaults.cardElevation(
@@ -51,7 +52,7 @@ fun ProcedureItem(
         modifier = Modifier
             .padding(bottom = 15.dp)
             .clickable {
-                navigate(Routes.Procedure.route + "/" + procedure.id) {
+                navController.navigate(Routes.Procedure.route + "/" + procedure.id) {
                     launchSingleTop = true
                 }
             }

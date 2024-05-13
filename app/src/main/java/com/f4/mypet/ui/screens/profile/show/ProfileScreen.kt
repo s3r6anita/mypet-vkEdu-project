@@ -33,7 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
@@ -52,8 +52,7 @@ fun ProfileScreen(
     snackbarHostState: SnackbarHostState,
     profileId: Int,
     canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
-    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit,
+    navController: NavHostController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
@@ -71,16 +70,17 @@ fun ProfileScreen(
     if (openAlertDialog) {
         RemoveProfileALert(
             pet = pet,
-            navigate = navigate
-        ) {
-            openAlertDialog = !openAlertDialog
-        }
+            navController = navController,
+            closeAlertDialog = {
+                openAlertDialog = !openAlertDialog
+            }
+        )
     }
 
     Scaffold(
         topBar = {
             MyPetTopBar(text = stringResource(Routes.BottomBarRoutes.Profile.title),
-                navigateUp = { navigateUp() },
+                navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка удалить
                     IconButton(onClick = {
@@ -104,7 +104,7 @@ fun ProfileScreen(
 
                     // кнопка выхода
                     IconButton(onClick = {
-                        navigate(START) {
+                        navController.navigate(START) {
                             popUpTo(if (canNavigateBack) Routes.ListProfile.route else START) {
                                 inclusive = true
                             }
@@ -124,9 +124,7 @@ fun ProfileScreen(
                 profileId = profileId,
                 canNavigateBack = canNavigateBack,
                 items = BottomBarData.items,
-                navigate = { route, builderOptions ->
-                    navigate(route, builderOptions)
-                }
+                navController = navController
             )
         },
         snackbarHost = {
@@ -157,7 +155,7 @@ fun ProfileScreen(
             Button(
                 modifier = Modifier.padding(bottom = 40.dp),
                 onClick = {
-                    navigate("${Routes.UpdateProfile.route}/$profileId") {
+                    navController.navigate("${Routes.UpdateProfile.route}/$profileId") {
                         launchSingleTop = true
                     }
                 },

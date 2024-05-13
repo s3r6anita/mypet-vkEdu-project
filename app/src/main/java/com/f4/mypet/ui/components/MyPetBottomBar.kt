@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
@@ -53,8 +53,8 @@ fun MyPetBottomBar(
     profileId: Int,
     canNavigateBack: Boolean,
     items: ImmutableList<BottomNavigationItems>,
-    modifier: Modifier = Modifier,
-    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit
+    navController: NavHostController,
+    modifier: Modifier = Modifier
 ) {
     NavigationBar(
         modifier = modifier
@@ -64,7 +64,7 @@ fun MyPetBottomBar(
                 label = { Text(text = stringResource(item.route.title)) },
                 selected = BottomBarData.selectedItemIndex == index,
                 onClick = {
-                    navigate("${item.route.route}/$profileId/$canNavigateBack") {
+                    navController.navigate("${item.route.route}/$profileId/$canNavigateBack") {
                         popUpTo(if (canNavigateBack) Routes.ListProfile.route else START) {
                             inclusive = false
                         }

@@ -26,7 +26,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavHostController
+import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.MedRecord
 import com.f4.mypet.navigation.Routes
@@ -37,8 +38,8 @@ import com.f4.mypet.util.PetDateTimeFormatter
 @Composable
 fun MedRecordItem(
     medRecord: MedRecord,
-    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit
-) {
+    navController: NavHostController,
+    ) {
     Card(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
@@ -50,7 +51,7 @@ fun MedRecordItem(
             .fillMaxWidth()
             .padding(bottom = 15.dp)
             .clickable {
-                navigate("${Routes.MedRecord.route}/${medRecord.id}") {
+                navController.navigate("${Routes.MedRecord.route}/${medRecord.id}") {
                     launchSingleTop = true
                 }
             }

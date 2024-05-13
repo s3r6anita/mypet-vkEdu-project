@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.BottomBarData
@@ -40,8 +40,7 @@ import kotlinx.coroutines.launch
 fun ListMedRecords(
     profileId: Int,
     canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
-    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit,
+    navController: NavHostController,
     viewModel: ListMedRecordsViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
@@ -60,7 +59,7 @@ fun ListMedRecords(
             MyPetTopBar(
                 text = stringResource(id = R.string.medcard_screen_title),
                 canNavigateBack = canNavigateBack,
-                navigateUp = { navigateUp() },
+                navigateUp = { navController.navigateUp() },
                 actions = { }
             )
         },
@@ -69,9 +68,7 @@ fun ListMedRecords(
                 profileId = profileId,
                 canNavigateBack = canNavigateBack,
                 items = BottomBarData.items,
-                navigate = { route, builderOptions ->
-                    navigate(route, builderOptions)
-                }
+                navController = navController
             )
         }
     ) { innerPadding ->
@@ -94,7 +91,7 @@ fun ListMedRecords(
                 medRecords.forEach { medRecord ->
                     MedRecordItem(
                         medRecord = medRecord,
-                        navigate = navigate
+                        navController = navController
                     )
                 }
             }
@@ -103,7 +100,7 @@ fun ListMedRecords(
             Button(
                 modifier = Modifier.padding(bottom = 20.dp),
                 onClick = {
-                    navigate(Routes.CreateMedRecord.route) {
+                    navController.navigate(Routes.CreateMedRecord.route) {
                         launchSingleTop = true
                     }
                 },

@@ -38,11 +38,11 @@ import com.f4.mypet.ui.theme.LightGrayTint
 
 @Composable
 fun PetItem(
-    pet: Pet,
-    canNavigateBack: Boolean,
     navController: NavHostController,
+    canNavigateBack: Boolean,
+    pet: Pet,
     closeSnackbar: () -> Unit
-) {
+    ) {
     BottomBarData.selectedItemIndex = 0
     Card(
         modifier = Modifier

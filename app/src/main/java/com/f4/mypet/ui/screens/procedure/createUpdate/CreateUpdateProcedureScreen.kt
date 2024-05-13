@@ -6,6 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.f4.mypet.ui.screens.ErrorScreen
 import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.procedure.createUpdate.success.SuccessCUProcedureScreen
@@ -17,8 +18,8 @@ fun CreateUpdateProcedureScreen(
     isCreateScreen: Boolean,
     navigateUp: () -> Unit,
     procedureId: Int = -1,
-    viewModel: CreateUpdateProcedureViewModel = hiltViewModel(),
-    navigateListProcedures: () -> Unit = { }
+    navController: NavHostController,
+    viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsState()
@@ -32,8 +33,7 @@ fun CreateUpdateProcedureScreen(
         UiState.Loading -> LoadingScreen()
         UiState.Success -> SuccessCUProcedureScreen(
             isCreateScreen = isCreateScreen,
-            navigateUp = navigateUp,
-            navigateListProcedures = navigateListProcedures
+            navController = navController
         )
 
         else -> ErrorScreen(retryAction = {
