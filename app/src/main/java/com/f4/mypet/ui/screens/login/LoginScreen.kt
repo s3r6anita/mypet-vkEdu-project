@@ -46,7 +46,7 @@ import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGrayTint
-import com.f4.mypet.util.UiState
+import com.f4.mypet.util.UIState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,7 +68,7 @@ fun LoginScreen(
     }
 
     LaunchedEffect(uiState) {
-        if (uiState == UiState.Success) {
+        if (uiState == UIState.Success) {
             if (msg == null) {
                 navController.navigate(Routes.ListProfile.route) {
                     popUpTo(Routes.ListProfile.route) {
@@ -78,7 +78,7 @@ fun LoginScreen(
                 }
             }
         }
-        if (uiState == UiState.Error) {
+        if (uiState == UIState.Error) {
             snackbarHostState.showSnackbar(
                 message = msg ?: "Null",
                 duration = SnackbarDuration.Short

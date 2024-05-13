@@ -11,7 +11,7 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.ui.screens.ErrorScreen
 import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.profile.list.success.SuccessListProfileScreen
-import com.f4.mypet.util.UiState
+import com.f4.mypet.util.UIState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -33,8 +33,8 @@ fun ListProfileScreen(
     }
 
     when (uiState) {
-        UiState.Loading -> LoadingScreen()
-        UiState.Success -> SuccessListProfileScreen(
+        UIState.Loading -> LoadingScreen()
+        UIState.Success -> SuccessListProfileScreen(
             snackbarHostState = snackbarHostState,
             globalScope = globalScope(),
             navController = navController

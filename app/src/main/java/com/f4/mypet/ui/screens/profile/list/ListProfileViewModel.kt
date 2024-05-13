@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.f4.mypet.data.db.Repository
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.network.NetworkRepository
-import com.f4.mypet.util.UiState
+import com.f4.mypet.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ class ListProfileViewModel @Inject constructor(
     private val _petsUiState = MutableStateFlow(emptyList<Pet>())
     val petsUiState = _petsUiState.asStateFlow()
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UIState>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
 
     fun getPetsProfiles() {
@@ -31,7 +31,7 @@ class ListProfileViewModel @Inject constructor(
                 _petsUiState.value = pets
             }
         }
-        _uiState.update { UiState.Success }
+        _uiState.update { UIState.Success }
     }
 
     fun getPetsProfilesFromNetwork() {
@@ -40,6 +40,6 @@ class ListProfileViewModel @Inject constructor(
             _petsUiState.value = networkRepository.getPets()
             // TODO: вывод ошибки + взятие данных из локальной БД
         }
-        _uiState.update { UiState.Success }
+        _uiState.update { UIState.Success }
     }
 }

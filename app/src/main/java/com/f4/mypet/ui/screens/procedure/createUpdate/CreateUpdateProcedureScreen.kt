@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.ui.screens.ErrorScreen
 import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.procedure.createUpdate.success.SuccessCUProcedureScreen
-import com.f4.mypet.util.UiState
+import com.f4.mypet.util.UIState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -29,8 +29,8 @@ fun CreateUpdateProcedureScreen(
         }
     }
     when (uiState) {
-        UiState.Loading -> LoadingScreen()
-        UiState.Success -> SuccessCUProcedureScreen(
+        UIState.Loading -> LoadingScreen()
+        UIState.Success -> SuccessCUProcedureScreen(
             isCreateScreen = isCreateScreen,
             navController = navController
         )

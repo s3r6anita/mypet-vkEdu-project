@@ -27,24 +27,26 @@ class NetworkRepositoryImpl @Inject constructor(
                 response.msg
             }
         } catch (e: HttpException) {
-            if (e.code() != 503) {
+            return if (e.code() != serverError) {
                 val errorResponseBody = e.response()?.errorBody()?.string()
                 val errorResponse = Gson().fromJson(errorResponseBody, Response::class.java)
-                return errorResponse.msg
+                errorResponse.msg
             } else
-                return "Сервер не доступен"
-        } catch (e: Throwable) {
-            return e.message
+                "Сервер не доступен"
         }
     }
 
     override suspend fun getPets(): List<Pet> {
-        try {
+        return try {
             val response = petService.getPets()
-            return response.data ?: emptyList()
+            response.data ?: emptyList()
         } catch (e: HttpException) {
-            return emptyList()
+            emptyList()
         }
+    }
+
+    companion object{
+        const val serverError = 503
     }
 }
 
