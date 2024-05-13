@@ -6,8 +6,6 @@ import java.time.LocalDate
 
 import java.time.LocalDateTime
 
-
-
 class Converters {
     @TypeConverter
     fun stringToDate(dateStr: String): LocalDate {

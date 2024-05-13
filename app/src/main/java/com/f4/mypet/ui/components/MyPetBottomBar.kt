@@ -20,7 +20,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 sealed class BottomNavigationItems(
     val route: Routes.BottomBarRoutes,
-    @DrawableRes var icon: Int,
+    @DrawableRes val icon: Int,
     val hasNews: Boolean = false
 ){
     data object Procedures: BottomNavigationItems(
@@ -46,6 +46,8 @@ data object BottomBarData {
     )
 }
 
+
+//zalmek NON_STABLE
 @Composable
 fun MyPetBottomBar(
     profileId: Int,

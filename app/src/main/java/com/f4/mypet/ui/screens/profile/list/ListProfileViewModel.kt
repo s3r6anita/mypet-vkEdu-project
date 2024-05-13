@@ -38,5 +38,6 @@ class ListProfileViewModel @Inject constructor(
         viewModelScope.launch(IO) {
             _petsUiState.value = networkRepository.getPets()
         }
+        _uiState.update { UiState.Success }
     }
 }

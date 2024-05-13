@@ -52,9 +52,9 @@ fun ProfileScreen(
     snackbarHostState: SnackbarHostState,
     profileId: Int,
     canNavigateBack: Boolean,
-    viewModel: ProfileViewModel = hiltViewModel(),
     navigateUp: () -> Unit,
-    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit
+    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
 

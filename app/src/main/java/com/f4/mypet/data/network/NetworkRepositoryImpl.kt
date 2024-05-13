@@ -27,9 +27,12 @@ class NetworkRepositoryImpl @Inject constructor(
                 response.msg
             }
         } catch (e: HttpException) {
-            val errorResponseBody = e.response()?.errorBody()?.string()
-            val errorResponse = Gson().fromJson(errorResponseBody, Response::class.java)
-            return errorResponse.msg
+            if (e.code() != 503) {
+                val errorResponseBody = e.response()?.errorBody()?.string()
+                val errorResponse = Gson().fromJson(errorResponseBody, Response::class.java)
+                return errorResponse.msg
+            } else
+                return "Сервер не доступен"
         } catch (e: Throwable) {
             return e.message
         }

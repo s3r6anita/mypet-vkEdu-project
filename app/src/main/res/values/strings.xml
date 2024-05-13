@@ -127,5 +127,6 @@
     <string name="reg_title">Регистрация</string>
     <string name="reg_name_label">Введите ваше имя</string>
     <string name="reg_name_placeholder">Введите ваше имя</string>
+    <string name="login_offline_button">Офлайн режим</string>
 
 </resources>

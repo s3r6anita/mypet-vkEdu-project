@@ -32,7 +32,7 @@ import com.f4.mypet.ui.theme.Purple40
 
 @Composable
 fun RegistrationScreen(){
-    Scaffold() { innerPadding ->
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()

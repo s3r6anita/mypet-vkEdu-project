@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ListProfileScreen(
     snackbarHostState: SnackbarHostState,
-    globalScope: CoroutineScope,
     navController: NavHostController,
+    globalScope: () -> CoroutineScope,
     viewModel: ListProfileViewModel = hiltViewModel()
 ) {
     val localScope = rememberCoroutineScope()
@@ -36,7 +36,7 @@ fun ListProfileScreen(
         UiState.Loading -> LoadingScreen()
         UiState.Success -> SuccessListProfileScreen(
             snackbarHostState = snackbarHostState,
-            globalScope = globalScope,
+            globalScope = globalScope(),
             navController = navController
         )
         else -> ErrorScreen(retryAction = {

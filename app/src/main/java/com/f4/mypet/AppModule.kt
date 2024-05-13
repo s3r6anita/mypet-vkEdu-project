@@ -27,7 +27,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.LocalDateTime
+import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -132,8 +132,7 @@ object AppModule {
     fun provideAuthenticationApi(@AuthenticatedClient okHttpClient: OkHttpClient): PetService {
         val baseUrl = "https://mypet-backend-s3r6.amvera.io/"
         val gsonBuilder = GsonBuilder()
-            .registerTypeAdapter(LocalDateTime::class.java, LocalDateAdapter())
-//            .setDateFormat("dd.MM.yyyy")
+            .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
             .create()
         return Retrofit.Builder()
             .baseUrl(baseUrl)

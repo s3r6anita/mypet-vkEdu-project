@@ -21,7 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    globalScope: CoroutineScope
+    globalScope: () -> CoroutineScope
 ) {
     navigation(
         route = START,

@@ -15,10 +15,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun CreateUpdateProcedureScreen(
     isCreateScreen: Boolean,
-    procedureId: Int = -1,
     navigateUp: () -> Unit,
-    navigateListProcedures: () -> Unit = { },
-    viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
+    procedureId: Int = -1,
+    viewModel: CreateUpdateProcedureViewModel = hiltViewModel(),
+    navigateListProcedures: () -> Unit = { }
 ) {
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsState()

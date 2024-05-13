@@ -23,7 +23,7 @@ import com.f4.mypet.data.db.entities.ProcedureType
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectProcedureType(
-    types: List<ProcedureType>,
+    types: List<ProcedureType>, // zalmek NON-STABLE LIST
     selectedType: ProcedureType,
     dropdownMenuColors: TextFieldColors,
     changeSelectedType: (ProcedureType) -> Unit

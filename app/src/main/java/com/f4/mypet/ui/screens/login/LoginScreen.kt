@@ -59,10 +59,10 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     var email by remember {
-        mutableStateOf("")
+        mutableStateOf("admin@admin.com")
     }
     var password by remember {
-        mutableStateOf("")
+        mutableStateOf("1qazxsw2")
     }
 
     LaunchedEffect(uiState) {
@@ -171,6 +171,26 @@ fun LoginScreen(
             ) {
                 Text(
                     text = stringResource(id = R.string.login_button),
+                    textAlign = TextAlign.Center,
+                    color = Color.White
+                )
+            }
+
+            // Кнопка "Офлайн режим"
+            Button(
+                onClick = {
+                    navController.navigate(Routes.ListProfile.route) {
+                        popUpTo(Routes.ListProfile.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.login_offline_button),
                     textAlign = TextAlign.Center,
                     color = Color.White
                 )

@@ -75,11 +75,11 @@ import java.time.ZoneId
 fun CreateUpdateProfileScreen(
     isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
-    globalScope: CoroutineScope,
-    profileId: Int = -1,
-    viewModel: CreateUpdateProfileViewModel = hiltViewModel(),
+    globalScope: () -> CoroutineScope,
     navigateUp: () -> Unit,
-    navigateListProfile: () -> Unit = { }
+    navigateListProfile: () -> Unit = { },
+    profileId: Int = -1,
+    viewModel: CreateUpdateProfileViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -335,7 +335,7 @@ fun CreateUpdateProfileScreen(
                                     dateIsCorrect =
                                         validateBirthday(pet.birthday)
                                 } catch (e: IllegalArgumentException) {
-                                    globalScope.launch {
+                                    globalScope().launch {
                                         snackbarHostState.showSnackbar(
                                             e.message
                                                 ?: context.resources.getString(R.string.incorrect_date)
@@ -395,7 +395,7 @@ fun CreateUpdateProfileScreen(
                         coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                 onClick = {
-                    globalScope.launch {
+                    globalScope().launch {
                         val job = launch {
                             snackbarHostState.showSnackbar(
                                 if (isCreateScreen)
