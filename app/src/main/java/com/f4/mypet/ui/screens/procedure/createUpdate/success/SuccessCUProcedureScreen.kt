@@ -54,6 +54,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.PresentOrFutureSelectableDates
 import com.f4.mypet.R
@@ -74,10 +75,9 @@ import java.time.ZoneId
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuccessCUProcedureScreen(
+    navController: NavHostController,
     isCreateScreen: Boolean,
-    profileId: Int,
-    viewModel: CreateUpdateProcedureViewModel = hiltViewModel(),
-    navigateUp: () -> Unit
+    viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 ) {
     //TODO сделать update когда меняем тип, то есть с insert в таблицу title
     val titles = viewModel.titles
@@ -108,7 +108,7 @@ fun SuccessCUProcedureScreen(
                     Routes.UpdateProcedure.title
                 ),
                 canNavigateBack = true,
-                navigateUp = { navigateUp() },
+                navigateUp = { navController.navigateUp() },
                 actions = {}
             )
         },
@@ -612,14 +612,16 @@ fun SuccessCUProcedureScreen(
                         //TODO изменение полей на основе полученных значений
 
                         if (isCreateScreen) {
-                            procedure = procedure.copy(pet = profileId)
-                            title = title.copy(type = selectedType.id)
-                            viewModel.createProcedure(procedure, title, frequency)
-//                            navigateListProcedures()
-                            navigateUp()
+//                            viewModel.createProcedure(procedure)
+                            navController.navigate(Routes.BottomBarRoutes.ListProcedures.route) {
+                                popUpTo(Routes.BottomBarRoutes.ListProcedures.route) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
                         } else {
-                            viewModel.updateProcedure(procedure, title, frequency)
-                            navigateUp()
+//                            viewModel.updateProcedure(procedure)
+                            navController.navigateUp()
                         }
                     } catch (e: IllegalArgumentException) {
                         // TODO: вывод сообщения об ошибке
