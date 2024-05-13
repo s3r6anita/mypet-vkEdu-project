@@ -22,6 +22,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,6 +45,7 @@ import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.theme.GreenButton
+import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.util.UiState
 import kotlinx.coroutines.launch
 
@@ -176,6 +178,27 @@ fun LoginScreen(
                 )
             }
 
+            // Кнопка "Зарегистрироваться"
+            TextButton(
+                onClick = {
+                    navController.navigate(Routes.Register.route) {
+                        popUpTo(Routes.ListProfile.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = stringResource(id = R.string.login_registration_button),
+                    textAlign = TextAlign.Center,
+                    color = LightGrayTint
+                )
+            }
+
+
+
             // Кнопка "Офлайн режим"
             Button(
                 onClick = {
@@ -195,18 +218,6 @@ fun LoginScreen(
                     color = Color.White
                 )
             }
-
-//            // Кнопка "Зарегистрироваться"
-//            TextButton(
-//                onClick = {  },
-//                modifier = Modifier.fillMaxWidth(),
-//            ) {
-//                Text(
-//                    text = stringResource(id = R.string.login_registration_button),
-//                    textAlign = TextAlign.Center,
-//                    color = LightGrayTint
-//                )
-//            }
         }
     }
 }

@@ -36,7 +36,9 @@ class ListProfileViewModel @Inject constructor(
 
     fun getPetsProfilesFromNetwork() {
         viewModelScope.launch(IO) {
+            // TODO: предварительная отправка данных из локальной БД на сервер
             _petsUiState.value = networkRepository.getPets()
+            // TODO: вывод ошибки + взятие данных из локальной БД
         }
         _uiState.update { UiState.Success }
     }

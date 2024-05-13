@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.f4.mypet.ui.screens.login.LoginScreen
+import com.f4.mypet.ui.screens.login.registration.RegistrationScreen
 import com.f4.mypet.ui.screens.medcard.createUpdate.CreateUpdateMedRecordScreen
 import com.f4.mypet.ui.screens.medcard.list.ListMedRecords
 import com.f4.mypet.ui.screens.medcard.show.MedRecordScreen
@@ -34,6 +35,13 @@ fun NavGraphBuilder.mainNavGraph(
             LoginScreen(
                 navController = navController,
                 snackbarHostState = snackbarHostState
+            )
+        }
+
+        /** создание аккаунта */
+        composable(route = Routes.Register.route) {
+            RegistrationScreen(
+                navController = navController,
             )
         }
 

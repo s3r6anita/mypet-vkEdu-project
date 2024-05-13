@@ -26,12 +26,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.Purple40
 
 @Composable
-fun RegistrationScreen(){
+fun RegistrationScreen(
+    navController: NavHostController
+) {
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
