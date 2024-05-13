@@ -53,8 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.f4.mypet.PastOrPresentSelectableDates
-import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
@@ -77,8 +75,8 @@ import java.time.ZoneId
 @Suppress("CyclomaticComplexMethod", "LongMethod", "LongParameterList")
 fun CreateUpdateProfileScreen(
     navController: NavHostController,
-    isCreateScreen: Boolean,
     snackbarHostState: SnackbarHostState,
+    isCreateScreen: Boolean,
     globalScope: () -> CoroutineScope,
     profileId: Int = -1,
     viewModel: CreateUpdateProfileViewModel = hiltViewModel()

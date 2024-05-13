@@ -39,9 +39,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ListProcedureScreen(
+    navController: NavHostController,
     profileId: Int,
     canNavigateBack: Boolean,
-    navController: NavHostController,
     viewModel: ListProcedureViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()

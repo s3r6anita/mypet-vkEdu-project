@@ -49,10 +49,10 @@ import kotlinx.coroutines.launch
 @Composable
 @Suppress("LongParameterList")
 fun ProfileScreen(
+    navController: NavHostController,
     snackbarHostState: SnackbarHostState,
     profileId: Int,
     canNavigateBack: Boolean,
-    navController: NavHostController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
