@@ -41,7 +41,7 @@ class NetworkRepositoryImpl @Inject constructor(
             val response = petService.getPets()
             response.data ?: emptyList()
         } catch (e: HttpException) {
-            emptyList()
+            throw e
         }
     }
 

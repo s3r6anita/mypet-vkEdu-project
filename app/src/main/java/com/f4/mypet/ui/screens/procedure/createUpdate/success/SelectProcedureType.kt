@@ -19,11 +19,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.ProcedureType
+import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectProcedureType(
-    types: List<ProcedureType>, // zalmek NON-STABLE LIST
+    types: ImmutableList<ProcedureType>,
     selectedType: ProcedureType,
     dropdownMenuColors: TextFieldColors,
     changeSelectedType: (ProcedureType) -> Unit

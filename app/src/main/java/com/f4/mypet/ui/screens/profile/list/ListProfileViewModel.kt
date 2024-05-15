@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,17 +28,13 @@ class ListProfileViewModel @Inject constructor(
 
     fun getPetsProfiles() {
         viewModelScope.launch(IO) {
-            repository.getPets().collect { pets ->
-                _petsUiState.value = pets
+            try {
+                _petsUiState.value = networkRepository.getPets()
+            } catch (e: HttpException) {
+                repository.getPets().collect { pets ->
+                    _petsUiState.value = pets
+                }
             }
-        }
-        _uiState.update { UIState.Success }
-    }
-
-    fun getPetsProfilesFromNetwork() {
-        viewModelScope.launch(IO) {
-            _petsUiState.value = networkRepository.getPets()
-            // TODO: вывод ошибки + взятие данных из локальной БД
         }
         _uiState.update { UIState.Success }
     }

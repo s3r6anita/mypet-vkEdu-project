@@ -27,8 +27,7 @@ fun ListProfileScreen(
 
     LaunchedEffect(Unit) {
         localScope.launch {
-//            viewModel.getPetsProfiles()
-            viewModel.getPetsProfilesFromNetwork()
+            viewModel.getPetsProfiles()
         }
     }
 

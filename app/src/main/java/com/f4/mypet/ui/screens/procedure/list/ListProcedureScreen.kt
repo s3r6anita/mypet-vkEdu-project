@@ -70,7 +70,7 @@ fun ListProcedureScreen(
                 profileId = profileId,
                 canNavigateBack = canNavigateBack,
                 items = BottomBarData.items,
-                navController = navController
+                getNavController = { navController }
             )
         },
     ) { innerPadding ->

@@ -68,6 +68,7 @@ import com.f4.mypet.ui.theme.White
 import com.f4.mypet.util.PetDateTimeFormatter
 import com.f4.mypet.util.PresentOrFutureSelectableDates
 import com.f4.mypet.util.validate
+import kotlinx.collections.immutable.toImmutableList
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -125,7 +126,7 @@ fun SuccessCUProcedureScreen(
                 )
             }
             SelectProcedureType(
-                types = types,
+                types = types.toImmutableList(),
                 selectedType = selectedType,
                 dropdownMenuColors = getDropdownMenuColors(),
                 changeSelectedType = { newType ->
