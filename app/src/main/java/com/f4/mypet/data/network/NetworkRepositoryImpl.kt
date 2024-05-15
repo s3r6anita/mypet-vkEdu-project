@@ -32,7 +32,7 @@ class NetworkRepositoryImpl @Inject constructor(
                 val errorResponse = Gson().fromJson(errorResponseBody, Response::class.java)
                 errorResponse.msg
             } else
-                "Сервер не доступен"
+                "Сервер недоступен"
         }
     }
 

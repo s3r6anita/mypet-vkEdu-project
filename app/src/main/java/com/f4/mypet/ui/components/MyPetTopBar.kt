@@ -19,9 +19,9 @@ import com.f4.mypet.R
 fun MyPetTopBar(
     text: String,
     navigateUp: () -> Unit,
-    modifier: Modifier = Modifier, //zalmek
-    canNavigateBack: Boolean = false, //zalmek
-    actions: @Composable() RowScope.() -> Unit = { }, //zalmek
+    modifier: Modifier = Modifier,
+    canNavigateBack: Boolean = false,
+    actions: @Composable() RowScope.() -> Unit = { },
 ) {
     CenterAlignedTopAppBar(
         title = {
