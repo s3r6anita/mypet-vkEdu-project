@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
@@ -58,7 +58,7 @@ import kotlinx.coroutines.launch
 fun ListProfileScreen(
     snackbarHostState: SnackbarHostState,
     globalScope: CoroutineScope,
-    navigate: (String, NavOptionsBuilder.() -> Unit) -> Unit,
+    navController: NavHostController,
     viewModel: ListProfileViewModel = hiltViewModel()
 ) {
     val localScope = rememberCoroutineScope()
@@ -113,7 +113,6 @@ fun ListProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 //              чек бокс "Запомнить мой выбор"
-                val (rememberUserChoice, onStateChange) = remember { mutableStateOf(false) }
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -152,7 +151,7 @@ fun ListProfileScreen(
                         PetItem(
                             pet = pet,
                             canNavigateBack = !rememberUserChoice,
-                            navigate = navigate,
+                            navController = navController,
                             closeSnackbar = { globalScope.coroutineContext.cancelChildren() }
                         )
                         Spacer(modifier = Modifier.height(20.dp))
@@ -165,7 +164,7 @@ fun ListProfileScreen(
                 modifier = Modifier.padding(20.dp),
                 onClick = {
                     globalScope.coroutineContext.cancelChildren()
-                    navigate(Routes.CreateProfile.route) { launchSingleTop = true }
+                    navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
             ) {
