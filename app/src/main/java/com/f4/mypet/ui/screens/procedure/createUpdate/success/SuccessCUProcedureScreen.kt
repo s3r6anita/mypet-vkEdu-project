@@ -148,51 +148,6 @@ fun SuccessCUProcedureScreen(
             var titleExpanded by remember { mutableStateOf(false) }
             var titleIsCorrect by remember { mutableStateOf(!isCreateScreen) }
 
-            // если процедура не "Косметического" типа
-//            if (titleOptions != emptyList<String>()) {
-//                ExposedDropdownMenuBox(
-//                    expanded = titleExpanded,
-//                    onExpandedChange = {
-//                        titleExpanded = it
-//                    },
-//                    modifier = Modifier.padding(bottom = 10.dp)
-//                ) {
-//                    TextField(
-//                        modifier = Modifier
-//                            .menuAnchor()
-//                            .fillMaxWidth()
-//                            .padding(bottom = 15.dp),
-//                        value = selectedTitle.name,
-//                        readOnly = true,
-//                        onValueChange = { },
-//                        label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
-//                        trailingIcon = {
-//                            ExposedDropdownMenuDefaults.TrailingIcon(
-//                                expanded = titleExpanded
-//                            )
-//                        },
-//                    )
-//                    ExposedDropdownMenu(
-//                        expanded = titleExpanded,
-//                        onDismissRequest = {
-//                            titleExpanded = false
-//                        }
-//                    ) {
-//                        titleOptions.forEach { selectionOption ->
-//                            DropdownMenuItem(
-//                                text = { Text(selectionOption.name) },
-//                                onClick = {
-//                                    selectedTitle = selectionOption
-//                                    titleExpanded = false
-//                                }
-//                            )
-//                        }
-//                    }
-//                }
-//            } else {
-//
-//            }
-
             OutlinedTextField(
                 value = title.name,
                 onValueChange = {
