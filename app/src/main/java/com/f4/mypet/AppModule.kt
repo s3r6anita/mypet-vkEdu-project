@@ -32,20 +32,19 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-
-private const val TIMEOUT = 30L
+private const val UNAUTHENTICATED_TIMEOUT = 3L
+private const val TIMEOUT = 10L
 private const val AUTH_PREFERENCES = "my_preferences"
+
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = AUTH_PREFERENCES)
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class PublicClient
 
-
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class AuthenticatedClient
-
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -74,7 +73,7 @@ object AppModule {
         return NetworkRepositoryImpl(
             authService = provideNoAuthenticationApi(provideUnauthenticatedOkHttpClient()),
             petService = provideAuthenticationApi(
-                provideAccessOkHttpClient(
+                provideAuthenticatedOkHttpClient(
                     provideAccessTokenInterceptor(appContext),
                     providesAuthAuthenticator(appContext)
                 )
@@ -89,18 +88,6 @@ object AppModule {
         return JwtTokenDataStore(dataStore = dataStore)
     }
 
-    // использование приводит к  java.lang.IllegalStateException: There are multiple DataStores active for the same file
-//    @[Provides Singleton]
-//    fun provideDataStore(@ApplicationContext appContext: Context): DataStore<Preferences> {
-//        return PreferenceDataStoreFactory.create(
-//            corruptionHandler = ReplaceFileCorruptionHandler(
-//                produceNewData = { emptyPreferences() }
-//            ),
-//            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-//            produceFile = { appContext.preferencesDataStoreFile(AUTH_PREFERENCES) }
-//        )
-//    }
-
     @[Provides Singleton]
     fun provideAccessTokenInterceptor(@ApplicationContext appContext: Context): AccessTokenInterceptor {
         return AccessTokenInterceptor(provideJwtTokenManager(appContext.dataStore))
@@ -113,7 +100,7 @@ object AppModule {
 
     /** For requests requiring the access token  */
     @[Provides Singleton AuthenticatedClient]
-    fun provideAccessOkHttpClient(
+    fun provideAuthenticatedOkHttpClient(
         accessTokenInterceptor: AccessTokenInterceptor,
         authAuthenticator: AuthAuthenticator
     ): OkHttpClient {
@@ -123,9 +110,9 @@ object AppModule {
             .authenticator(authAuthenticator)
             .addInterceptor(accessTokenInterceptor)
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
-            .readTimeout(TIMEOUT, TimeUnit.SECONDS)
-            .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+            .connectTimeout(UNAUTHENTICATED_TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(UNAUTHENTICATED_TIMEOUT, TimeUnit.SECONDS)
+            .writeTimeout(UNAUTHENTICATED_TIMEOUT, TimeUnit.SECONDS)
             .build()
     }
 
@@ -152,9 +139,9 @@ object AppModule {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
-            .readTimeout(TIMEOUT, TimeUnit.SECONDS)
-            .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+            .connectTimeout(UNAUTHENTICATED_TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(UNAUTHENTICATED_TIMEOUT, TimeUnit.SECONDS)
+            .writeTimeout(UNAUTHENTICATED_TIMEOUT, TimeUnit.SECONDS)
             .build()
     }
 

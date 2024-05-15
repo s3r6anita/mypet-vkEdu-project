@@ -116,7 +116,6 @@ fun RegistrationScreen(
                 value = "",
                 onValueChange = {  },
                 label = { Text(stringResource(id = R.string.login_password_enter)) },
-                placeholder = { Text(stringResource(id = R.string.login_password_placeholder)) },
                 trailingIcon = {
                     IconButton(onClick = {  }) {
                         Icon(
@@ -138,7 +137,6 @@ fun RegistrationScreen(
                 value = "",
                 onValueChange = {  },
                 label = { Text(stringResource(id = R.string.login_password_confirm)) },
-                placeholder = { Text(stringResource(id = R.string.login_password_placeholder)) },
                 trailingIcon = {
                     IconButton(onClick = {  }) {
                         Icon(

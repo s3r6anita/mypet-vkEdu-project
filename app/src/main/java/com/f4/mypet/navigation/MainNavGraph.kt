@@ -33,8 +33,7 @@ fun NavGraphBuilder.mainNavGraph(
         /** вход в аккаунт */
         composable(route = Routes.Login.route) {
             LoginScreen(
-                navController = navController,
-                snackbarHostState = snackbarHostState
+                navController = navController
             )
         }
 

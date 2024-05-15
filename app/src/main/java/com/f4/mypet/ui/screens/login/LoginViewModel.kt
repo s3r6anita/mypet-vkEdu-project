@@ -17,12 +17,13 @@ class LoginViewModel @Inject constructor(
     private val networkRepository: NetworkRepository
 ) : ViewModel() {
 
-    private val _msg = MutableStateFlow<String?>("")
+    private val _msg = MutableStateFlow<String?>(null)
     val msg = _msg.asStateFlow()
     private val _uiState = MutableStateFlow<UIState>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
 
     fun login(email: String, password: String) {
+        _uiState.update { UIState.Loading }
         val loginRequest = LoginRequest(email, password)
         viewModelScope.launch {
             _msg.value = networkRepository.login(loginRequest)

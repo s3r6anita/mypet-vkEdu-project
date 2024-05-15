@@ -18,9 +18,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -43,7 +40,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
-import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.util.UIState
@@ -52,14 +48,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    snackbarHostState: SnackbarHostState,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
-
     val msg by viewModel.msg.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
 
+    var openErrorAlert by remember {
+        mutableStateOf(false)
+    }
     var email by remember {
         mutableStateOf("admin@admin.com")
     }
@@ -79,23 +76,24 @@ fun LoginScreen(
             }
         }
         if (uiState == UIState.Error) {
-            snackbarHostState.showSnackbar(
-                message = msg ?: "Null",
-                duration = SnackbarDuration.Short
-            )
+            openErrorAlert = true
         }
     }
 
-
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState
-            ) {
-                MyPetSnackBar(it.visuals.message)
+    if (openErrorAlert) {
+        LoginErrorAlert(
+            msg = msg,
+            closeAlert = { openErrorAlert = !openErrorAlert },
+            getNavController = { navController },
+            retryAction = {
+                scope.launch {
+                    viewModel.login(email, password)
+                }
             }
-        }
-    ) { innerPadding ->
+        )
+    }
+
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -194,28 +192,6 @@ fun LoginScreen(
                     text = stringResource(id = R.string.login_registration_button),
                     textAlign = TextAlign.Center,
                     color = LightGrayTint
-                )
-            }
-
-
-
-            // Кнопка "Офлайн режим"
-            Button(
-                onClick = {
-                    navController.navigate(Routes.ListProfile.route) {
-                        popUpTo(Routes.ListProfile.route) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.login_offline_button),
-                    textAlign = TextAlign.Center,
-                    color = Color.White
                 )
             }
         }

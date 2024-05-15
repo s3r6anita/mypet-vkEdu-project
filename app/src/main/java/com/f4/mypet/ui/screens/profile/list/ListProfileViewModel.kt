@@ -38,4 +38,12 @@ class ListProfileViewModel @Inject constructor(
         }
         _uiState.update { UIState.Success }
     }
+
+    fun getPetsProfilesFromDB() {
+        viewModelScope.launch(IO) {
+            repository.getPets().collect { pets ->
+                _petsUiState.value = pets
+            }
+        }
+    }
 }
