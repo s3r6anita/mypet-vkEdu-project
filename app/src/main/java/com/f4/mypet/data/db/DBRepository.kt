@@ -18,7 +18,7 @@ interface Repository {
     suspend fun removePet(pet: Pet)
     suspend fun removeProceduresForPet(petId: Int)
     suspend fun removeMedRecordsForPet(petId: Int)
-    suspend fun getPets(): Flow<List<Pet>>
+    suspend fun getPets(): List<Pet>
     suspend fun getPet(petId: Int): Flow<Pet>
     suspend fun getPetForCU(petId: Int): Pet
 
@@ -58,7 +58,7 @@ class DBRepository @Inject constructor(
         medRecordDAO.deleteMedRecordsForPet(petId)
     }
 
-    override suspend fun getPets(): Flow<List<Pet>> {
+    override suspend fun getPets(): List<Pet> {
         return petDAO.getPets()
     }
 

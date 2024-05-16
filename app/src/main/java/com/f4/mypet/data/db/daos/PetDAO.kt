@@ -22,7 +22,7 @@ interface PetDAO {
     suspend fun delete(pet: Pet)
 
     @Query("SELECT * from pet")
-    fun getPets(): Flow<List<Pet>>
+    fun getPets(): List<Pet>
 
     @Query("SELECT * from pet where id = :petId")
     fun getPet(petId: Int): Flow<Pet>
