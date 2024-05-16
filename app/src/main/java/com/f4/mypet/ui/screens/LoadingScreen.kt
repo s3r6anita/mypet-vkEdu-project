@@ -1,5 +1,6 @@
 package com.f4.mypet.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,5 +24,6 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
                 .padding(24.dp)
                 .size(48.dp)
         )
+        Log.d("tag", "it is loading")
     }
 }

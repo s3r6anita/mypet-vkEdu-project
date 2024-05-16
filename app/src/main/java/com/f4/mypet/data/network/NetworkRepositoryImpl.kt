@@ -8,6 +8,7 @@ import com.f4.mypet.data.network.service.AuthService
 import com.f4.mypet.data.network.service.PetService
 import com.google.gson.Gson
 import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class NetworkRepositoryImpl @Inject constructor(
@@ -27,12 +28,15 @@ class NetworkRepositoryImpl @Inject constructor(
                 response.msg
             }
         } catch (e: HttpException) {
-            return if (e.code() != serverError) {
+            return if (e.code() == serverError) {
+                "Сервер недоступен"
+            } else {
                 val errorResponseBody = e.response()?.errorBody()?.string()
                 val errorResponse = Gson().fromJson(errorResponseBody, Response::class.java)
                 errorResponse.msg
-            } else
-                "Сервер недоступен"
+            }
+        } catch (e: SocketTimeoutException) {
+            return "Превышено время ожидания. Сервер недоступен"
         }
     }
 
@@ -45,7 +49,7 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    companion object{
+    companion object {
         const val serverError = 503
     }
 }

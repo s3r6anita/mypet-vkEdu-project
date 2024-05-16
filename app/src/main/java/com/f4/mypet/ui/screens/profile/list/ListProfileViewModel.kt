@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,6 +34,10 @@ class ListProfileViewModel @Inject constructor(
                 _petsUiState.value = networkRepository.getPets()
                 // TODO: запись полученных данных в локальную БД + удаление того, что есть
             } catch (e: HttpException) {
+                repository.getPets().collect { pets ->
+                    _petsUiState.value = pets
+                }
+            } catch (e: SocketTimeoutException) {
                 repository.getPets().collect { pets ->
                     _petsUiState.value = pets
                 }
