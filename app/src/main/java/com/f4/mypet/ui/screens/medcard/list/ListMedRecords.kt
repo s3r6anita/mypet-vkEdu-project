@@ -100,7 +100,7 @@ fun ListMedRecords(
             Button(
                 modifier = Modifier.padding(bottom = 20.dp),
                 onClick = {
-                    navController.navigate(Routes.CreateMedRecord.route) {
+                    navController.navigate("${Routes.CreateMedRecord.route}/$profileId") {
                         launchSingleTop = true
                     }
                 },

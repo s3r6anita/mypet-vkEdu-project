@@ -30,6 +30,8 @@ interface Repository {
 
     suspend fun getMedRecordsForPet(petId: Int): Flow<List<MedRecord>>
     suspend fun getMedRecord(medRecord: Int): Flow<MedRecord>
+    suspend fun addMedRecord(medRecord: MedRecord)
+    suspend fun updateMedRecord(medRecord: MedRecord)
 }
 
 class DBRepository @Inject constructor(
@@ -98,5 +100,13 @@ class DBRepository @Inject constructor(
 
     override suspend fun getMedRecord(medRecord: Int): Flow<MedRecord> {
         return medRecordDAO.getMedRecord(medRecord)
+    }
+
+    override suspend fun addMedRecord(medRecord: MedRecord) {
+        medRecordDAO.insert(medRecord)
+    }
+
+    override suspend fun updateMedRecord(medRecord: MedRecord) {
+        medRecordDAO.update(medRecord)
     }
 }

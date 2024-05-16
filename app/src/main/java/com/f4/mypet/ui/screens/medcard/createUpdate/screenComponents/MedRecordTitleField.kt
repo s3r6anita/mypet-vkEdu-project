@@ -20,13 +20,16 @@ import com.f4.mypet.ui.theme.OutlinedTextFieldColor
 fun TherapyNameField(
     isCreateScreen: Boolean,
     onNameChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    givenTitle: String
 ) {
-    var selectedName by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf(givenTitle) }
+    title = givenTitle
+
     OutlinedTextField(
         modifier = modifier.padding(bottom = 10.dp),
-        value = selectedName,
-        onValueChange = { selectedName = it; onNameChange(it) },
+        value = title,
+        onValueChange = { title = it; onNameChange(it) },
         label = {
             if (isCreateScreen) Text(
                 stringResource(R.string.cu_therapy_name),

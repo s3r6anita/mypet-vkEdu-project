@@ -222,7 +222,7 @@ fun NavGraphBuilder.mainNavGraph(
             CreateUpdateMedRecordScreen(
                 navController = navController,
                 isCreateScreen = false,
-                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                medRecordId = backStackEntry.arguments?.getInt("medRecordId") ?: -1,
             )
         }
     }
