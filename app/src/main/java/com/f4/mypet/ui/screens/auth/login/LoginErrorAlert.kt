@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.login
+package com.f4.mypet.ui.screens.auth.login
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

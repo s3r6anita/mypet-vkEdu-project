@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.login
+package com.f4.mypet.ui.screens.auth.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.login.registration
+package com.f4.mypet.ui.screens.auth.registration
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

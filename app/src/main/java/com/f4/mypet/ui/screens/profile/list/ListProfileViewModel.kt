@@ -27,9 +27,11 @@ class ListProfileViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun getPetsProfiles() {
+        _uiState.update { UIState.Loading }
         viewModelScope.launch(IO) {
             try {
                 _petsUiState.value = networkRepository.getPets()
+                // TODO: запись полученных данных в локальную БД + удаление того, что есть
             } catch (e: HttpException) {
                 repository.getPets().collect { pets ->
                     _petsUiState.value = pets
@@ -37,13 +39,5 @@ class ListProfileViewModel @Inject constructor(
             }
         }
         _uiState.update { UIState.Success }
-    }
-
-    fun getPetsProfilesFromDB() {
-        viewModelScope.launch(IO) {
-            repository.getPets().collect { pets ->
-                _petsUiState.value = pets
-            }
-        }
     }
 }
