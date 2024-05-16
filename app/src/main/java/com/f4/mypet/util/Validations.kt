@@ -9,8 +9,14 @@ import java.util.Date
 val regex = "^[а-яА-Я-\\s-]+$".toRegex()
 val dateRegex = "^\\d{2}\\.\\d{2}\\.\\d{4}$".toRegex()
 val chipNumberRegex = "^\\d{15}$".toRegex()
+val emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
+val passwordRegex = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8,}\$".toRegex()
 
 fun validate(name: String): Boolean = name.matches(regex)
+
+fun validateEmail(email: String) = email.matches(emailRegex)
+
+fun validatePassword(password: String) = password.matches(passwordRegex)
 
 fun validateMicrochipNumber(chipNumber: String): Boolean = chipNumber.matches(chipNumberRegex)
 

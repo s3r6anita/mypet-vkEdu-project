@@ -1,6 +1,5 @@
 package com.f4.mypet.ui.screens.profile.list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.f4.mypet.data.db.Repository
@@ -40,7 +39,6 @@ class ListProfileViewModel @Inject constructor(
                 _petsUiState.value = repository.getPets()
             } finally {
                 _uiState.update { UIState.Success }
-                Log.d("tag", "it is success")
             }
         }
     }

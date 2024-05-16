@@ -40,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.util.UIState
@@ -68,9 +69,8 @@ fun LoginScreen(
         if (uiState == UIState.Success) {
             if (msg == null) {
                 navController.navigate(Routes.ListProfile.route) {
-                    popUpTo(Routes.ListProfile.route) {
-                        inclusive = true
-                    }
+                    popUpTo(START)
+                    restoreState = true
                     launchSingleTop = true
                 }
             }

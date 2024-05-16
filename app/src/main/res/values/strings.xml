@@ -131,7 +131,7 @@
     <string name="login_registration_button">Зарегистрироваться</string>
 
     <string name="reg_title">Регистрация</string>
-    <string name="reg_name_label">Введите ваше имя</string>
+    <string name="reg_name_label">Ваше имя</string>
     <string name="reg_name_placeholder">Введите ваше имя</string>
     <string name="login_offline_button">Войти офлайн для просмотра</string>
     <string name="register_title">Регистрация в MyPet</string>
@@ -139,5 +139,6 @@
     <string name="login_error">Ошибка загрузки</string>
     <string name="error">Ошибка</string>
     <string name="login_retry">Повторить попытку</string>
+    <string name="error_password_equality">Введенные пароли не совпадают</string>
 
 </resources>

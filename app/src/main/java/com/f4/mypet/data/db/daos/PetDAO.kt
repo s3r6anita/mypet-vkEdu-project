@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.f4.mypet.data.db.entities.Pet
-import kotlinx.coroutines.flow.Flow
 
 
 @Dao
@@ -25,7 +24,7 @@ interface PetDAO {
     fun getPets(): List<Pet>
 
     @Query("SELECT * from pet where id = :petId")
-    fun getPet(petId: Int): Flow<Pet>
+    fun getPet(petId: Int): Pet
 
     @Query("SELECT * from pet where id = :petId")
     fun getPetForCU(petId: Int): Pet

@@ -19,7 +19,7 @@ interface Repository {
     suspend fun removeProceduresForPet(petId: Int)
     suspend fun removeMedRecordsForPet(petId: Int)
     suspend fun getPets(): List<Pet>
-    suspend fun getPet(petId: Int): Flow<Pet>
+    suspend fun getPet(petId: Int): Pet
     suspend fun getPetForCU(petId: Int): Pet
 
     suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>>
@@ -62,7 +62,7 @@ class DBRepository @Inject constructor(
         return petDAO.getPets()
     }
 
-    override suspend fun getPet(petId: Int): Flow<Pet> {
+    override suspend fun getPet(petId: Int): Pet {
         return petDAO.getPet(petId)
     }
 

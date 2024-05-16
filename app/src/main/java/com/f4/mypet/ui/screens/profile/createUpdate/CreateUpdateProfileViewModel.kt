@@ -28,9 +28,7 @@ class CreateUpdateProfileViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             //TODO: сделать тут try catch на petID
             if (petId != -1) {
-                repository.getPet(petId).collect { pet ->
-                    _petUiState.value = pet
-                }
+                _petUiState.value = repository.getPet(petId)
             }
         }
     }

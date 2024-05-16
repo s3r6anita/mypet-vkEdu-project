@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -20,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -56,6 +58,11 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
+    val msg by viewModel.msg.collectAsState()
+    val pet by viewModel.petUiState.collectAsState()
+
+    var openAlertDialog by remember { mutableStateOf(false) }
+    var showStatusDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -63,16 +70,32 @@ fun ProfileScreen(
         }
     }
 
-    val pet by viewModel.petUiState.collectAsState()
-
-    var openAlertDialog by remember { mutableStateOf(false) }
+    LaunchedEffect(msg) {
+        if (msg != "" && msg != null) {
+            showStatusDialog = true
+        }
+    }
 
     if (openAlertDialog) {
         RemoveProfileALert(
             pet = pet,
-            navController = navController,
+            getNavController = { navController },
             closeAlertDialog = {
                 openAlertDialog = !openAlertDialog
+            }
+        )
+    }
+
+    if (showStatusDialog) {
+        AlertDialog(
+            text = { Text(text = msg ?: stringResource(R.string.error)) },
+            onDismissRequest = { showStatusDialog = !showStatusDialog },
+            confirmButton = {
+                TextButton(onClick = {
+                    showStatusDialog = !showStatusDialog
+                }) {
+                    Text(text = stringResource(id = R.string.confirm_button_description))
+                }
             }
         )
     }
