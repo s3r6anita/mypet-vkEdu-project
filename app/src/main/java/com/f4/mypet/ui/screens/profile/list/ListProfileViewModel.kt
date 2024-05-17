@@ -32,7 +32,8 @@ class ListProfileViewModel @Inject constructor(
         viewModelScope.launch(IO) {
             try {
                 _petsUiState.value = networkRepository.getPets()
-                // TODO: запись полученных данных в локальную БД + удаление того, что есть
+                repository.replaceAllData(_petsUiState.value)
+                // TODO: получать с сервера процедуры и медрекорды и сразу отправлять в локалку
             } catch (e: HttpException) {
                 _petsUiState.value = repository.getPets()
             } catch (e: SocketTimeoutException) {

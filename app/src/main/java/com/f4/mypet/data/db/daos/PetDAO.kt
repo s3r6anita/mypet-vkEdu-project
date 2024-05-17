@@ -14,6 +14,9 @@ interface PetDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(pet: Pet)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(pets: List<Pet>)
+
     @Update
     suspend fun update(pet: Pet)
 
@@ -28,5 +31,8 @@ interface PetDAO {
 
     @Query("SELECT * from pet where id = :petId")
     fun getPetForCU(petId: Int): Pet
+
+    @Query("DELETE from pet")
+    fun deleteAll()
 
 }
