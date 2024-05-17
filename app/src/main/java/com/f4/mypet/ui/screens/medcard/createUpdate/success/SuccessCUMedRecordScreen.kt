@@ -26,10 +26,12 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.medcard.createUpdate.CreateUpdateMedRecordViewModel
+import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordDateField
+import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordNotesField
+import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordTimeField
+import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordTitleField
 import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.SaveButton
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.TherapyDateField
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.TherapyNameField
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.TherapyNotesField
+import java.time.LocalDateTime
 
 @Suppress("CyclomaticComplexMethod", "LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,7 +88,7 @@ fun SuccessCUMedCardScreen(
                     verticalArrangement = Arrangement.Top
                 ) {
                     // название
-                    TherapyNameField(
+                    MedRecordTitleField(
                         isCreateScreen = isCreateScreen,
                         onNameChange = { name ->
                             medRecord = medRecord.copy(title = name)
@@ -96,15 +98,32 @@ fun SuccessCUMedCardScreen(
                         givenTitle = medRecord.title
                     )
                     // дата
-                    TherapyDateField(
+                    MedRecordDateField(
                         isCreateScreen = isCreateScreen,
                         modifier = modifier,
                         onDateSelected = { selectedDate ->
-                            medRecord = medRecord.copy(date = selectedDate)
+                            medRecord = medRecord.copy(
+                                date = LocalDateTime.of(
+                                    selectedDate.toLocalDate(),
+                                    medRecord.date.toLocalTime()
+                                )
+                            )
+                        }
+                    )
+                    MedRecordTimeField(
+                        isCreateScreen = isCreateScreen,
+                        modifier = modifier,
+                        onDateSelected = { selectedTime ->
+                            medRecord = medRecord.copy(
+                                date = LocalDateTime.of(
+                                    medRecord.date.toLocalDate(),
+                                    selectedTime.toLocalTime()
+                                )
+                            )
                         }
                     )
                     // заметки
-                    TherapyNotesField(
+                    MedRecordNotesField(
                         isCreateScreen = isCreateScreen,
                         onNotesChange = { notes ->
                             medRecord = medRecord.copy(notes = notes)

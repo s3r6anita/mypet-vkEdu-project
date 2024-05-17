@@ -35,4 +35,10 @@ class MedRecordViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteMedRecord(medRecord: MedRecord) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository
+        }
+    }
 }

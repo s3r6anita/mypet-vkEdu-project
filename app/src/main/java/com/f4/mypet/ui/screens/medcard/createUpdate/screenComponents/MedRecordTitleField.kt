@@ -17,7 +17,7 @@ import com.f4.mypet.R
 import com.f4.mypet.ui.theme.OutlinedTextFieldColor
 
 @Composable
-fun TherapyNameField(
+fun MedRecordTitleField(
     isCreateScreen: Boolean,
     onNameChange: (String) -> Unit,
     modifier: Modifier = Modifier,

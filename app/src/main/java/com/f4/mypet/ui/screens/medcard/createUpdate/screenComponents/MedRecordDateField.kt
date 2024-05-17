@@ -31,7 +31,7 @@ import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TherapyDateField(
+fun MedRecordDateField(
     isCreateScreen: Boolean,
     onDateSelected: (LocalDateTime) -> Unit,
     modifier: Modifier = Modifier
@@ -41,6 +41,7 @@ fun TherapyDateField(
     var dateIsCorrect by remember { mutableStateOf(true) }
     var selectedDate by remember { mutableStateOf(LocalDateTime.now()) }
     var dateIsChosen by remember { mutableStateOf(false) }
+
     OutlinedTextField(
         //TODO: отформатировать дату
         value = if (dateIsChosen) selectedDate.format(PetDateTimeFormatter.date) else "",

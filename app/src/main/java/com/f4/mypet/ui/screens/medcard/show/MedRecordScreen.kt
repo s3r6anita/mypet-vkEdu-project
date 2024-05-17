@@ -68,7 +68,8 @@ fun MedRecordScreen(
     if (openAlertDialog) {
         RemoveMedRecordAlert(
             navigateUp = { navController.navigateUp() },
-            closeAlertDialog = { openAlertDialog = !openAlertDialog }
+            closeAlertDialog = { openAlertDialog = !openAlertDialog },
+            removeMedRecord = { viewModel.deleteMedRecord(medRecord) }
         )
     }
 

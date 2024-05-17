@@ -1,6 +1,5 @@
 package com.f4.mypet.ui.screens.profile.list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.f4.mypet.data.db.Repository
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import java.net.SocketTimeoutException
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,11 +35,10 @@ class ListProfileViewModel @Inject constructor(
                 // TODO: запись полученных данных в локальную БД + удаление того, что есть
             } catch (e: HttpException) {
                 _petsUiState.value = repository.getPets()
-            } catch (e: SocketTimeoutException) {
+            } catch (e: IOException) {
                 _petsUiState.value = repository.getPets()
             } finally {
                 _uiState.update { UIState.Success }
-                Log.d("tag", "it is success")
             }
         }
     }

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
 
 @Composable
-fun TherapyNotesField(
+fun MedRecordNotesField(
     isCreateScreen: Boolean,
     onNotesChange: (String) -> Unit,
     modifier: Modifier = Modifier,

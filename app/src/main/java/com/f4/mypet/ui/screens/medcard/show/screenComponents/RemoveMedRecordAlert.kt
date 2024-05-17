@@ -18,7 +18,8 @@ import com.f4.mypet.ui.theme.BlueCheckbox
 @Composable
 fun RemoveMedRecordAlert(
     navigateUp: () -> Unit,
-    closeAlertDialog: () -> Unit
+    closeAlertDialog: () -> Unit,
+    removeMedRecord: () -> Unit
 ){
     AlertDialog(
         shape = RoundedCornerShape(12.dp),
@@ -36,9 +37,7 @@ fun RemoveMedRecordAlert(
                 colors = ButtonDefaults.textButtonColors(contentColor = BlueCheckbox),
                 onClick = {
                     closeAlertDialog()
-//                    scope.launch {
-//                        //TODO removeMedRecord(medRecordId)
-//                    }
+                    removeMedRecord()
                     navigateUp()
                 }
             ) {
