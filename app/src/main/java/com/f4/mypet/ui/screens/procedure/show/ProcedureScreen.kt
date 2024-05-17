@@ -213,7 +213,6 @@ fun ProcedureScreen(
                     },
                     modifier = Modifier
                         .padding(bottom = 40.dp)
-                        .weight(1f)
                 ) {
                     Text(
                         text = stringResource(id = R.string.edit_button_description),
@@ -226,8 +225,7 @@ fun ProcedureScreen(
                 // кнопка удаления
                 Button(
                     modifier = Modifier
-                        .padding(bottom = 40.dp)
-                        .weight(1f),
+                        .padding(bottom = 40.dp),
                     onClick = {
                         openAlertDialog = true
                     },

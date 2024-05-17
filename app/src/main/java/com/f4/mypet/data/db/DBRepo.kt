@@ -28,7 +28,7 @@ interface Repository {
     suspend fun getProcedureTitlesForCU(): List<ProcedureTitle>
     suspend fun getProcedureTypes(): List<ProcedureType>
     suspend fun getFrequencyOptions(): List<String>
-    suspend fun getProcedure(procedureId: Int): Flow<Procedure>
+    suspend fun getProcedure(procedureId: Int): Procedure
     suspend fun insertProcedure(procedure: Procedure)
     suspend fun updateProcedure(procedure: Procedure)
     suspend fun updateTitle(title: ProcedureTitle)
@@ -100,7 +100,7 @@ class DBRepository @Inject constructor(
         return frequencyDAO.getOptions()
     }
 
-    override suspend fun getProcedure(procedureId: Int): Flow<Procedure> {
+    override suspend fun getProcedure(procedureId: Int): Procedure {
         return procedureDAO.getProcedure(procedureId)
     }
 

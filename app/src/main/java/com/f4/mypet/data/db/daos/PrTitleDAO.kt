@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PrTitleDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(title: ProcedureTitle): Long
+    suspend fun insert(title: ProcedureTitle): Long // error there
 
     @Update
     suspend fun update(title: ProcedureTitle)

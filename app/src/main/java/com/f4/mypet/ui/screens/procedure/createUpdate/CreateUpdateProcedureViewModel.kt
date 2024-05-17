@@ -60,6 +60,7 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     )
 
     init {
+        _uiState.update { UiState.Loading }
         viewModelScope.launch(Dispatchers.IO) {
             titles = repository.getProcedureTitlesForCU()
             types = repository.getProcedureTypes()
@@ -69,20 +70,20 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     }
 
     fun getPetProcedure(procedureId: Int) {
+        _uiState.update { UiState.Loading }
         if (procedureId != -1) {
             viewModelScope.launch(Dispatchers.IO) {
-                repository.getProcedure(procedureId).collect { procedure ->
-                    if (procedure != null) {
-                        _procedureUiState.value = procedure
-                        title = titles.find { title -> title.id == procedure.title }
-                            ?: title
-                        type = types.find { type -> type.id == title.type }
-                            ?: type
-                        frequency = repository.getFrequency(procedure.frequency)
-                    }
-                }
-//                _uiState.update { UiState.Success }
+                _procedureUiState.value = repository.getProcedure(procedureId)
+                title = titles.find { title -> title.id == _procedureUiState.value.title }
+                    ?: title
+                type = types.find { type -> type.id == title.type }
+                    ?: type
+                frequency = repository.getFrequency(_procedureUiState.value.frequency)
+
+                _uiState.update { UiState.Success }
             }
+        } else {
+            _uiState.update { UiState.Success }
         }
     }
 
@@ -96,10 +97,10 @@ class CreateUpdateProcedureViewModel @Inject constructor(
 
     fun createProcedure(procedure: Procedure, title: ProcedureTitle, frequency: Frequency) {
         viewModelScope.launch(Dispatchers.IO) {
-            val titleId = repository.insertTitle(title)
-            val frequencyId = repository.insertFrequency(frequency)
-            val procedureto = procedure.copy(title = titleId, frequency = frequencyId)
-            repository.insertProcedure(procedureto)
+            val titleId = repository.insertTitle(title) // start error there
+//            val frequencyId = repository.insertFrequency(frequency)
+//            val procedureWithTitleFreq = procedure.copy(title = titleId, frequency = frequencyId)
+//            repository.insertProcedure(procedureWithTitleFreq)
         }
     }
 }

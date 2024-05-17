@@ -48,31 +48,20 @@ class ProcedureViewModel @Inject constructor(
 
     fun getProcedure(procedureId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getProcedure(procedureId).collect { procedure ->
-                if (procedure != null) {
-                    _procedureUiState.value = procedure
-                    title = repository.getProcedureTitlesForCU().find { it.id == procedure.title }
-                        ?: title
-                    type = repository.getProcedureTypes().find { it.id == title.type }
-                        ?: type
-                    val frequencyDB = repository.getFrequency(procedureId)
-                    frequency = frequencyDB
-                    when (frequency.option) {
-                        FrequencyOptions.Minutes.period -> frequency.frequency += FrequencyOptions.Minutes.abbreviation
-                        FrequencyOptions.Hours.period -> frequency.frequency += FrequencyOptions.Hours.abbreviation
-                        FrequencyOptions.Days.period -> frequency.frequency += FrequencyOptions.Days.abbreviation
-                        FrequencyOptions.Weeks.period -> frequency.frequency += FrequencyOptions.Weeks.abbreviation
-                        else -> frequency.frequency = FrequencyOptions.Never.abbreviation
-                    }
-                }
-                else {
-                    _procedureUiState.value = Procedure(
-                        0, 0, 0,
-                        LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
-                        "", LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
-                        0, 0, 0
-                    )
-                }
+            _procedureUiState.value = repository.getProcedure(procedureId)
+            title =
+                repository.getProcedureTitlesForCU().find { it.id == _procedureUiState.value.title }
+                    ?: title
+            type = repository.getProcedureTypes().find { it.id == title.type }
+                ?: type
+            val frequencyDB = repository.getFrequency(procedureId)
+            frequency = frequencyDB
+            when (frequency.option) {
+                FrequencyOptions.Minutes.period -> frequency.frequency += FrequencyOptions.Minutes.abbreviation
+                FrequencyOptions.Hours.period -> frequency.frequency += FrequencyOptions.Hours.abbreviation
+                FrequencyOptions.Days.period -> frequency.frequency += FrequencyOptions.Days.abbreviation
+                FrequencyOptions.Weeks.period -> frequency.frequency += FrequencyOptions.Weeks.abbreviation
+                else -> frequency.frequency = FrequencyOptions.Never.abbreviation
             }
         }
     }

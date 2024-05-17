@@ -567,7 +567,7 @@ fun SuccessCUProcedureScreen(
                         //TODO изменение полей на основе полученных значений
 
                         if (isCreateScreen) {
-//                            viewModel.createProcedure(procedure)
+                            viewModel.createProcedure(procedure, title, frequency)
                             navController.navigate(Routes.BottomBarRoutes.ListProcedures.route) {
                                 popUpTo(Routes.BottomBarRoutes.ListProcedures.route) {
                                     inclusive = true
@@ -575,7 +575,7 @@ fun SuccessCUProcedureScreen(
                                 launchSingleTop = true
                             }
                         } else {
-//                            viewModel.updateProcedure(procedure)
+                            viewModel.updateProcedure(procedure, title, frequency)
                             navController.navigateUp()
                         }
                     } catch (e: IllegalArgumentException) {
