@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import java.net.SocketTimeoutException
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,7 +36,7 @@ class ListProfileViewModel @Inject constructor(
                 // TODO: получать с сервера процедуры и медрекорды и сразу отправлять в локалку
             } catch (e: HttpException) {
                 _petsUiState.value = repository.getPets()
-            } catch (e: SocketTimeoutException) {
+            } catch (e: IOException) {
                 _petsUiState.value = repository.getPets()
             } finally {
                 _uiState.update { UIState.Success }
