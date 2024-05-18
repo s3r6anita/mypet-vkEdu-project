@@ -207,6 +207,7 @@ fun LoginScreen(
                 )
             }
 
+            // кнопка VK ID
             OneTap(
                 modifier = Modifier.width(355.dp),
                 onAuth = getOneTapSuccessCallback(LocalContext.current) {
