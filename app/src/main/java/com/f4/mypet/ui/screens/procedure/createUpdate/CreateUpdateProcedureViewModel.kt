@@ -7,6 +7,8 @@ import com.f4.mypet.data.db.entities.Frequency
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
+import com.f4.mypet.util.PetDateTimeFormatter
+import com.f4.mypet.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,17 +18,11 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-sealed class UiState {
-    data object Loading : UiState()
-    data class Error(val e: Exception) : UiState()
-    data object Success : UiState()
-}
-
 @HiltViewModel
 class CreateUpdateProcedureViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UIState>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private val _procedureUiState = MutableStateFlow(
@@ -43,9 +39,8 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     var types = emptyList<ProcedureType>() // список всех типов
     var options = emptyList<String>() // список вариантов частоты
 
-    var title = ProcedureTitle(
-        // заголовок создаваемой (изменяемой) процедуры
-        name = "",
+    var title = ProcedureTitle( // заголовок создаваемой (изменяемой) процедуры
+        name = "Неизвестно",
         type = 0,
     )
     var type = ProcedureType( // тип создаваемой (изменяемой) процедуры
@@ -60,18 +55,18 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     )
 
     init {
-        _uiState.update { UiState.Loading }
+        _uiState.update { UIState.Loading }
         viewModelScope.launch(Dispatchers.IO) {
             titles = repository.getProcedureTitlesForCU()
             types = repository.getProcedureTypes()
             options = repository.getFrequencyOptions()
-            _uiState.update { UiState.Success }
+            _uiState.update { UIState.Success }
         }
     }
 
     fun getPetProcedure(procedureId: Int) {
-        _uiState.update { UiState.Loading }
         if (procedureId != -1) {
+            _uiState.update { UIState.Loading }
             viewModelScope.launch(Dispatchers.IO) {
                 _procedureUiState.value = repository.getProcedure(procedureId)
                 title = titles.find { title -> title.id == _procedureUiState.value.title }

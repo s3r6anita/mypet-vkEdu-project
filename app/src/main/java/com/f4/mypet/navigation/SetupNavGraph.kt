@@ -13,6 +13,7 @@ fun SetupNavGraph(
     snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
+    val getGlobalScope = { scope }
 
     NavHost(
         navController = navController,
@@ -25,6 +26,6 @@ fun SetupNavGraph(
 *       popExitTransition = { ExitTransition.None },
 */
     ) {
-        mainNavGraph(navController, snackbarHostState, scope)
+        mainNavGraph(navController, snackbarHostState, getGlobalScope)
     }
 }

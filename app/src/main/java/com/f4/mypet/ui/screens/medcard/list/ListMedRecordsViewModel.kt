@@ -11,8 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +22,7 @@ class ListMedRecordsViewModel @Inject constructor(
 
     var pet = Pet(
         "", "", "", "Самец",
-        LocalDateTime.of(LocalDate.now(), LocalTime.now()),
+        LocalDate.now(),
         "", "", "", 0
     )
 

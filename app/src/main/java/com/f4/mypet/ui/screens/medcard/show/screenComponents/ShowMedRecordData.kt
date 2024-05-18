@@ -17,10 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.MedRecord
 import com.f4.mypet.ui.components.TextComponent
+import com.f4.mypet.util.PetDateTimeFormatter
 
 @Composable
 fun ShowMedRecordData(medRecord: MedRecord) {

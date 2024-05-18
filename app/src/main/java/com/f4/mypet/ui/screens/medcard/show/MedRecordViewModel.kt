@@ -19,7 +19,7 @@ class MedRecordViewModel @Inject constructor(
 ) : ViewModel() {
     private val _medRecordUiState = MutableStateFlow(
         MedRecord(
-            title = "Неизвестно",
+            title = "",
             date = LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
             notes = "",
             pet = 0

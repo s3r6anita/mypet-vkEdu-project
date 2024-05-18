@@ -53,32 +53,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.f4.mypet.PastOrPresentSelectableDates
-import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.SHOWSNACKDURATION
 import com.f4.mypet.ui.theme.GreenButton
-import com.f4.mypet.validate
-import com.f4.mypet.validateBirthday
-import com.f4.mypet.validateMicrochipNumber
+import com.f4.mypet.util.PastOrPresentSelectableDates
+import com.f4.mypet.util.PetDateTimeFormatter
+import com.f4.mypet.util.validate
+import com.f4.mypet.util.validateBirthday
+import com.f4.mypet.util.validateMicrochipNumber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("CyclomaticComplexMethod", "LongMethod", "LongParameterList")
 fun CreateUpdateProfileScreen(
-    isCreateScreen: Boolean,
-    snackbarHostState: SnackbarHostState,
-    globalScope: CoroutineScope,
     navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
+    isCreateScreen: Boolean,
+    globalScope: () -> CoroutineScope,
     profileId: Int = -1,
     viewModel: CreateUpdateProfileViewModel = hiltViewModel()
 ) {
@@ -327,18 +326,16 @@ fun CreateUpdateProfileScreen(
                             onClick = {
                                 openDialog = false
                                 pet = pet.copy(
-                                    birthday = LocalDateTime.ofInstant(
-                                        Instant.ofEpochMilli(
-                                            datePickerState.selectedDateMillis ?: 0
-                                        ),
-                                        ZoneId.of("UTC")
-                                    )
+                                    birthday =
+                                    Instant.ofEpochMilli(
+                                        datePickerState.selectedDateMillis ?: 0
+                                    ).atZone(ZoneId.systemDefault()).toLocalDate()
                                 )
                                 try {
                                     dateIsCorrect =
                                         validateBirthday(pet.birthday)
                                 } catch (e: IllegalArgumentException) {
-                                    globalScope.launch {
+                                    globalScope().launch {
                                         snackbarHostState.showSnackbar(
                                             e.message
                                                 ?: context.resources.getString(R.string.incorrect_date)
@@ -398,7 +395,7 @@ fun CreateUpdateProfileScreen(
                         coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
                 onClick = {
-                    globalScope.launch {
+                    globalScope().launch {
                         val job = launch {
                             snackbarHostState.showSnackbar(
                                 if (isCreateScreen)

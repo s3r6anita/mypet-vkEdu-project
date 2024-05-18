@@ -38,11 +38,11 @@ import com.f4.mypet.ui.theme.LightGrayTint
 
 @Composable
 fun PetItem(
-    pet: Pet,
-    canNavigateBack: Boolean,
-    closeSnackbar: () -> Unit,
     navController: NavHostController,
-    ) {
+    canNavigateBack: Boolean,
+    pet: Pet,
+    closeSnackbar: () -> Unit
+) {
     BottomBarData.selectedItemIndex = 0
     Card(
         modifier = Modifier
@@ -54,9 +54,7 @@ fun PetItem(
                 ) {
                     launchSingleTop = true
                     if (!canNavigateBack) {
-                        popUpTo(START) {
-                            saveState = true
-                        }
+                        popUpTo(START)
                         restoreState = true
                     }
                 }
@@ -74,7 +72,7 @@ fun PetItem(
                 .padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row() {
+            Row {
                 Image(
                     painter = painterResource(id = R.drawable.pet_icon),
                     contentDescription = stringResource(id = R.string.pet_photo_description),

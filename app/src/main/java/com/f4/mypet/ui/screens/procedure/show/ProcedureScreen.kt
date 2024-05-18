@@ -45,7 +45,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
@@ -53,6 +52,7 @@ import com.f4.mypet.ui.components.TextComponent
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.RedButton
+import com.f4.mypet.util.PetDateTimeFormatter
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 

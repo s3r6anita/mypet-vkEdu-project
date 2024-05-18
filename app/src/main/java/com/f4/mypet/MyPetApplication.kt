@@ -5,4 +5,4 @@ import dagger.hilt.android.HiltAndroidApp
 
 @Suppress("EmptyClassBlock")
 @HiltAndroidApp
-class MyPetApplication : Application() {}
+class MyPetApplication : Application()

@@ -51,8 +51,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MedRecordScreen(
-    medRecordId: Int,
     navController: NavHostController,
+    medRecordId: Int,
     viewModel: MedRecordViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()

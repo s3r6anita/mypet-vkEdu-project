@@ -7,6 +7,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.f4.mypet.ui.screens.auth.login.LoginScreen
+import com.f4.mypet.ui.screens.auth.registration.RegistrationScreen
+import com.f4.mypet.ui.screens.medcard.createUpdate.CreateUpdateMedRecordScreen
 import com.f4.mypet.ui.screens.medcard.list.ListMedRecords
 import com.f4.mypet.ui.screens.medcard.show.MedRecordScreen
 import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureScreen
@@ -20,19 +23,33 @@ import kotlinx.coroutines.CoroutineScope
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    globalScope: CoroutineScope
+    globalScope: () -> CoroutineScope
 ) {
     navigation(
         route = START,
-        startDestination = Routes.ListProfile.route
+        startDestination = Routes.Login.route
     ) {
+
+        /** вход в аккаунт */
+        composable(route = Routes.Login.route) {
+            LoginScreen(
+                navController = navController
+            )
+        }
+
+        /** создание аккаунта */
+        composable(route = Routes.Register.route) {
+            RegistrationScreen(
+                navController = navController,
+            )
+        }
 
         /** список профилей */
         composable(route = Routes.ListProfile.route) {
             ListProfileScreen(
+                navController = navController,
                 snackbarHostState = snackbarHostState,
-                globalScope = globalScope,
-                navController = navController
+                globalScope = globalScope
             )
         }
         /** профиль */
@@ -48,19 +65,19 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             ProfileScreen(
+                navController = navController,
                 snackbarHostState = snackbarHostState,
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
-                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true,
-                navController = navController
+                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
         }
         /** создание профиля */
         composable(route = Routes.CreateProfile.route) {
             CreateUpdateProfileScreen(
-                isCreateScreen = true,
+                navController = navController,
                 snackbarHostState = snackbarHostState,
-                globalScope = globalScope,
-                navController = navController
+                isCreateScreen = true,
+                globalScope = globalScope
             )
         }
         /** обновление профиля */
@@ -73,11 +90,11 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             CreateUpdateProfileScreen(
-                isCreateScreen = false,
+                navController = navController,
                 snackbarHostState = snackbarHostState,
+                isCreateScreen = false,
                 globalScope = globalScope,
-                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
-                navController = navController
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1
             )
         }
 
@@ -95,9 +112,9 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             ListProcedureScreen(
+                navController = navController,
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
-                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true,
-                navController = navController
+                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
         }
         /** процедура */
@@ -110,8 +127,8 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             ProcedureScreen(
-                procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1,
-                navController = navController
+                navController = navController,
+                procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1
             )
         }
         /** создание процедуры */
@@ -141,7 +158,7 @@ fun NavGraphBuilder.mainNavGraph(
             CreateUpdateProcedureScreen(
                 navController = navController,
                 isCreateScreen = false,
-                procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1,
+                procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1
             )
         }
 
@@ -159,9 +176,9 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             ListMedRecords(
+                navController = navController,
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
-                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true,
-                navController = navController
+                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
         }
         /** медицинская запись */
@@ -174,8 +191,8 @@ fun NavGraphBuilder.mainNavGraph(
             )
         ) { backStackEntry ->
             MedRecordScreen(
-                medRecordId = backStackEntry.arguments?.getInt("medRecordId") ?: -1,
-                navController = navController
+                navController = navController,
+                medRecordId = backStackEntry.arguments?.getInt("medRecordId") ?: -1
             )
         }
         /** создание медицинской записи */
@@ -187,14 +204,11 @@ fun NavGraphBuilder.mainNavGraph(
                 }
             )
         ) { backStackEntry ->
-//            CreateUpdateMedRecordScreen(
-//                isCreateScreen = true,
-//                backStackEntry.arguments?.getInt("profileId") ?: -1,
-//                navigateUp = { navController.navigateUp() },
-//                navigate = { route, builderOptions ->
-//                    navController.navigate(route, builderOptions)
-//                }
-//            )
+            CreateUpdateMedRecordScreen(
+                navController = navController,
+                isCreateScreen = true,
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+            )
         }
         /** изменение медицинской записи */
         composable(
@@ -205,14 +219,11 @@ fun NavGraphBuilder.mainNavGraph(
                 }
             )
         ) { backStackEntry ->
-//            CreateUpdateMedRecordScreen(
-//                isCreateScreen = false,
-//                procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1,
-//                navigateUp = { navController.navigateUp() },
-//                navigate = { route, builderOptions ->
-//                    navController.navigate(route, builderOptions)
-//                }
-//            )
+            CreateUpdateMedRecordScreen(
+                navController = navController,
+                isCreateScreen = false,
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+            )
         }
     }
 }

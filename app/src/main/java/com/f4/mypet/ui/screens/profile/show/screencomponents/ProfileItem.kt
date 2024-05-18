@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile.show
+package com.f4.mypet.ui.screens.profile.show.screencomponents
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,11 +21,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.ui.components.TextComponent
 import com.f4.mypet.ui.theme.LightBlueBackground
+import com.f4.mypet.util.PetDateTimeFormatter
 
 @Composable
 fun ProfileItem(

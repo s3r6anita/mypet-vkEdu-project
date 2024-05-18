@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.profile.show
+package com.f4.mypet.ui.screens.profile.show.screencomponents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

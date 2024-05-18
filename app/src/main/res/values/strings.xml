@@ -126,15 +126,21 @@
 
     <string name="login_title">Добро пожаловать в MyPet!</string>
     <string name="login_enter">Введите E-mail</string>
-    <string name="login_placeholder">user@gmail.ru</string>
+    <string name="login_placeholder">user@mail.ru</string>
     <string name="login_password_enter">Введите пароль</string>
-    <string name="login_password_placeholder">********</string>
     <string name="login_password_confirm">Введите пароль повторно</string>
     <string name="login_button">Войти</string>
     <string name="login_registration_button">Зарегистрироваться</string>
 
     <string name="reg_title">Регистрация</string>
-    <string name="reg_name_label">Введите ваше имя</string>
+    <string name="reg_name_label">Ваше имя</string>
     <string name="reg_name_placeholder">Введите ваше имя</string>
+    <string name="login_offline_button">Войти офлайн для просмотра</string>
+    <string name="register_title">Регистрация в MyPet</string>
+
+    <string name="login_error">Ошибка загрузки</string>
+    <string name="error">Ошибка</string>
+    <string name="login_retry">Повторить попытку</string>
+    <string name="error_password_equality">Введенные пароли не совпадают</string>
 
 </resources>

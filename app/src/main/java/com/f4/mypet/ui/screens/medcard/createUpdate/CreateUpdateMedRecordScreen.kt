@@ -25,12 +25,11 @@ import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.TherapyNote
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateTherapyScreen(
+fun CreateUpdateMedRecordScreen(
     navController: NavHostController,
     profileId: Int,
     isCreateScreen: Boolean
 ) {
-    val isCreateScreen = true
     Scaffold(
         topBar = {
             MyPetTopBar(
