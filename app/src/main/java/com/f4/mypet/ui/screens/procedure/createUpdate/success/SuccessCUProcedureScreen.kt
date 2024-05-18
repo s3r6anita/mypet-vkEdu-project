@@ -54,6 +54,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.PresentOrFutureSelectableDates
 import com.f4.mypet.R
@@ -76,9 +77,8 @@ import java.time.ZoneId
 @Composable
 fun SuccessCUProcedureScreen(
     isCreateScreen: Boolean,
-    viewModel: CreateUpdateProcedureViewModel = hiltViewModel(),
-    navigateUp: () -> Unit,
-    navigateListProcedures: () -> Unit
+    navController: NavHostController,
+    viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 ) {
     val titles = viewModel.titles
     val types = viewModel.types
@@ -102,7 +102,7 @@ fun SuccessCUProcedureScreen(
             MyPetTopBar(
                 text = stringResource(Routes.CreateProcedure.title),
                 canNavigateBack = true,
-                navigateUp = { navigateUp() },
+                navigateUp = { navController.navigateUp() },
                 actions = {}
             )
         },
@@ -516,10 +516,15 @@ fun SuccessCUProcedureScreen(
 
                         if (isCreateScreen) {
 //                            viewModel.createProcedure(procedure)
-                            navigateListProcedures()
+                            navController.navigate(Routes.BottomBarRoutes.ListProcedures.route) {
+                                popUpTo(Routes.BottomBarRoutes.ListProcedures.route) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
                         } else {
 //                            viewModel.updateProcedure(procedure)
-                            navigateUp()
+                            navController.navigateUp()
                         }
                     } catch (e: IllegalArgumentException) {
                         // TODO: вывод сообщения об ошибке

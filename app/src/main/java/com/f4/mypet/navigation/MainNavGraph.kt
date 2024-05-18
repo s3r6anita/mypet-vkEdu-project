@@ -32,9 +32,7 @@ fun NavGraphBuilder.mainNavGraph(
             ListProfileScreen(
                 snackbarHostState = snackbarHostState,
                 globalScope = globalScope,
-                navigate = { route, builderOptions ->
-                    navController.navigate(route, builderOptions)
-                }
+                navController = navController
             )
         }
         /** профиль */
@@ -53,10 +51,7 @@ fun NavGraphBuilder.mainNavGraph(
                 snackbarHostState = snackbarHostState,
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
                 canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true,
-                navigateUp = { navController.navigateUp() },
-                navigate = { route, builderOptions ->
-                    navController.navigate(route, builderOptions)
-                }
+                navController = navController
             )
         }
         /** создание профиля */
@@ -65,15 +60,7 @@ fun NavGraphBuilder.mainNavGraph(
                 isCreateScreen = true,
                 snackbarHostState = snackbarHostState,
                 globalScope = globalScope,
-                navigateUp = { navController.navigateUp() },
-                navigateListProfile = {
-                    navController.navigate(Routes.ListProfile.route) {
-                        popUpTo(Routes.ListProfile.route) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                }
+                navController = navController
             )
         }
         /** обновление профиля */
@@ -90,7 +77,7 @@ fun NavGraphBuilder.mainNavGraph(
                 snackbarHostState = snackbarHostState,
                 globalScope = globalScope,
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
-                navigateUp = { navController.navigateUp() }
+                navController = navController
             )
         }
 
@@ -110,10 +97,7 @@ fun NavGraphBuilder.mainNavGraph(
             ListProcedureScreen(
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
                 canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true,
-                navigateUp = { navController.navigateUp() },
-                navigate = { route, builderOptions ->
-                    navController.navigate(route, builderOptions)
-                }
+                navController = navController
             )
         }
         /** процедура */
@@ -127,12 +111,7 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             ProcedureScreen(
                 procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1,
-                navigateUp = { navController.navigateUp() },
-                navigateUpdateProcedure = { procedureId ->
-                    navController.navigate("${Routes.UpdateProcedure.route}/$procedureId") {
-                        launchSingleTop = true
-                    }
-                }
+                navController = navController
             )
         }
         /** создание процедуры */
@@ -147,15 +126,7 @@ fun NavGraphBuilder.mainNavGraph(
             CreateUpdateProcedureScreen(
                 isCreateScreen = true,
                 procedureId = backStackEntry.arguments?.getInt("profileId") ?: -1,
-                navigateUp = { navController.navigateUp() },
-                navigateListProcedures = {
-                    navController.navigate(Routes.BottomBarRoutes.ListProcedures.route) {
-                        popUpTo(Routes.BottomBarRoutes.ListProcedures.route) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                }
+                navController = navController
             )
         }
         /** изменение процедуры */
@@ -170,7 +141,7 @@ fun NavGraphBuilder.mainNavGraph(
             CreateUpdateProcedureScreen(
                 isCreateScreen = false,
                 procedureId = backStackEntry.arguments?.getInt("procedureId") ?: -1,
-                navigateUp = { navController.navigateUp() }
+                navController = navController
             )
         }
 
@@ -190,10 +161,7 @@ fun NavGraphBuilder.mainNavGraph(
             ListMedRecords(
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
                 canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true,
-                navigateUp = { navController.navigateUp() },
-                navigate = { route, builderOptions ->
-                    navController.navigate(route, builderOptions)
-                }
+                navController = navController
             )
         }
         /** медицинская запись */
@@ -207,12 +175,7 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             MedRecordScreen(
                 medRecordId = backStackEntry.arguments?.getInt("medRecordId") ?: -1,
-                navigateUp = { navController.navigateUp() },
-                navigateUpdateMedRecord = { medRecordId ->
-                    navController.navigate("${Routes.UpdateMedRecord.route}/$medRecordId") {
-                        launchSingleTop = true
-                    }
-                }
+                navController = navController
             )
         }
         /** создание медицинской записи */

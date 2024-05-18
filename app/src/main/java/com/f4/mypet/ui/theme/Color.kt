@@ -19,3 +19,4 @@ val GreenButton = Color(0xFF4BB34B) // Зеленые кнопки: добави
 val RedButton = Color(0xFFE64646) // Красные кнопки: удалить
 val LightGrayTint = Color(0xFF99A2AD) // Для иконок/неотмеченных чекбоксов/незаполненных полей и дефолтного текста
 val BlueCheckbox = Color(0xFF2688EB) // Синий для: чекбоксов, навигации, свичей
+val OutlinedTextFieldColor = Color(0xFF767676)
