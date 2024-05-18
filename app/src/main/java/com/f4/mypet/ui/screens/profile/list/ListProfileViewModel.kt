@@ -10,9 +10,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -34,16 +31,15 @@ class ListProfileViewModel @Inject constructor(
         _uiState.update { UIState.Loading }
         viewModelScope.launch(IO) {
             try {
-                networkRepository.getPets().flowOn(IO).onEach {
-                   _petsUiState.value = it
-                    repository.replaceAllData(_petsUiState.value)
-                   _uiState.update { UIState.Success }
-                }.launchIn(viewModelScope)
+                _petsUiState.value = networkRepository.getPets()
+                repository.replaceAllData(_petsUiState.value)
                 // TODO: получать с сервера процедуры и медрекорды и сразу отправлять в локалку
             } catch (e: HttpException) {
                 _petsUiState.value = repository.getPets()
             } catch (e: IOException) {
                 _petsUiState.value = repository.getPets()
+            } finally {
+                _uiState.update { UIState.Success }
             }
         }
     }
