@@ -20,5 +20,4 @@ interface FrequencyDAO {
 
     @Query("SELECT distinct option from frequency where id < 1 order by id desc")
     fun getOptions(): List<String>
-
 }

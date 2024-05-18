@@ -30,7 +30,7 @@ fun CreateTherapyScreen(
     profileId: Int,
     isCreateScreen: Boolean
 ) {
-    val isCreateScreen = true //TODO убрать
+    val isCreateScreen = true
     Scaffold(
         topBar = {
             MyPetTopBar(

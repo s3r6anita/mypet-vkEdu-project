@@ -34,7 +34,7 @@ class CreateUpdateProcedureViewModel @Inject constructor(
             0, 0, 0,
             LocalDateTime.now().withMinute(0),
             "", null,
-            0, 0, 0
+            0, 0
         )
     )
     val procedureUiState = _procedureUiState.asStateFlow()
@@ -98,9 +98,9 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     fun createProcedure(procedure: Procedure, title: ProcedureTitle, frequency: Frequency) {
         viewModelScope.launch(Dispatchers.IO) {
             val titleId = repository.insertTitle(title) // start error there
-//            val frequencyId = repository.insertFrequency(frequency)
-//            val procedureWithTitleFreq = procedure.copy(title = titleId, frequency = frequencyId)
-//            repository.insertProcedure(procedureWithTitleFreq)
+            val frequencyId = repository.insertFrequency(frequency)
+            val procedureWithTitleFreq = procedure.copy(title = titleId, frequency = frequencyId)
+            repository.insertProcedure(procedureWithTitleFreq)
         }
     }
 }

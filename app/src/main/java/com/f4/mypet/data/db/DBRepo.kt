@@ -14,6 +14,7 @@ import com.f4.mypet.data.db.entities.ProcedureType
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+@SuppressWarnings("TooManyFunctions")
 interface Repository {
     suspend fun insertPet(pet: Pet)
     suspend fun updatePet(pet: Pet)
@@ -41,6 +42,7 @@ interface Repository {
     suspend fun getMedRecord(medRecord: Int): Flow<MedRecord>
 }
 
+@SuppressWarnings("TooManyFunctions")
 class DBRepository @Inject constructor(
     private val petDAO: PetDAO,
     private val medRecordDAO: MedRecordDAO,

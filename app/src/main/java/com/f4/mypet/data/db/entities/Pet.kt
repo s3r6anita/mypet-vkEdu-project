@@ -16,5 +16,5 @@ data class Pet(
     val coat: String, // вид шерсти
     val microchipNumber: String, // 15 цифр
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id") val id: Int
+    @ColumnInfo(name = "id") val id: Int = 0
 )

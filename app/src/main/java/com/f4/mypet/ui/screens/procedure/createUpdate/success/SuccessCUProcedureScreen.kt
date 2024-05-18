@@ -77,6 +77,7 @@ import java.time.ZoneId
 fun SuccessCUProcedureScreen(
     navController: NavHostController,
     isCreateScreen: Boolean,
+    profileId: Int,
     viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 ) {
     //TODO сделать update когда меняем тип, то есть с insert в таблицу title
@@ -141,12 +142,8 @@ fun SuccessCUProcedureScreen(
             )
 
             // Название процедуры
-            val titleOptions = titles.filter {
-                it.type == selectedType.id
-            }
-            var selectedTitle by remember { mutableStateOf(title) }
-            var titleExpanded by remember { mutableStateOf(false) }
             var titleIsCorrect by remember { mutableStateOf(!isCreateScreen) }
+            // TODO: сделать чтобы при вводе тайтла выпадали последние введенные
 
             OutlinedTextField(
                 value = title.name,
@@ -361,7 +358,10 @@ fun SuccessCUProcedureScreen(
             }
 
             // уведомление
-            var enableNotifications by remember { mutableStateOf(procedure.reminder != null) }
+            var enableNotifications by remember { mutableStateOf(false) }
+            enableNotifications = (procedure.reminder != null) && (procedure.reminder?.let {
+                procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
+            } != "01.01.1001 00:00")
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -519,7 +519,6 @@ fun SuccessCUProcedureScreen(
                                             .withHour(procedure.reminder!!.hour)
                                             .withMinute(procedure.reminder!!.minute)
                                     )
-                                    // TODO: catch Errors
                                 },
                             ) {
                                 Text(stringResource(id = R.string.confirm_button_description))
@@ -561,26 +560,16 @@ fun SuccessCUProcedureScreen(
             Button(
                 modifier = Modifier.padding(20.dp),
                 onClick = {
-                    try {
                         //TODO Проверка на формат даты и на "дату из будущего"
 
-                        //TODO изменение полей на основе полученных значений
-
                         if (isCreateScreen) {
+                            procedure = procedure.copy(pet = profileId)
                             viewModel.createProcedure(procedure, title, frequency)
-                            navController.navigate(Routes.BottomBarRoutes.ListProcedures.route) {
-                                popUpTo(Routes.BottomBarRoutes.ListProcedures.route) {
-                                    inclusive = true
-                                }
-                                launchSingleTop = true
-                            }
+                            navController.navigateUp()
                         } else {
                             viewModel.updateProcedure(procedure, title, frequency)
                             navController.navigateUp()
                         }
-                    } catch (e: IllegalArgumentException) {
-                        // TODO: вывод сообщения об ошибке
-                    }
                 },
                 border = BorderStroke(1.dp, GreenButton),
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton)

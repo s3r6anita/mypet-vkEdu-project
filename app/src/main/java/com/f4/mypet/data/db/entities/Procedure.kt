@@ -3,22 +3,11 @@ package com.f4.mypet.data.db.entities
 import androidx.compose.runtime.Stable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 import javax.annotation.Nullable
 
-@Entity(
-    foreignKeys = [
-        ForeignKey(
-            entity = ProcedureTitle::class,
-            parentColumns = ["id"],
-            childColumns = ["title"],
-            onDelete = ForeignKey.NO_ACTION
-        )
-    ]
-)
-
+@Entity
 @Stable
 data class Procedure(
     val title: Int, // название

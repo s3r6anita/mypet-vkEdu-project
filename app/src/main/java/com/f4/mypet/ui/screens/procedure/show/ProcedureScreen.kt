@@ -72,7 +72,7 @@ fun ProcedureScreen(
     val procedure by viewModel.procedureUiState.collectAsState()
     val title = viewModel.title
     val type = viewModel.type
-    var frequency = viewModel.frequency
+    val frequency = viewModel.frequency
 
     var openAlertDialog by remember { mutableStateOf(false) }
 
@@ -166,12 +166,16 @@ fun ProcedureScreen(
                             header = stringResource(R.string.procedure_screen_frequency),
                             value = frequency.frequency
                         )
-                        procedure.reminder?.format(PetDateTimeFormatter.dateTime)?.let {
-                            TextComponent(
-                                header = stringResource(R.string.procedure_screen_reminder),
-                                value = it
-                            )
-                        }
+                        TextComponent(
+                            header = stringResource(R.string.procedure_screen_reminder),
+                            value = if (procedure.reminder?.let {
+                                    procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
+                                } == "01.01.1001 00:00") {
+                                "нет"
+                            } else {
+                                procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
+                            }
+                        )
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_notice),
                             value = procedure.notes

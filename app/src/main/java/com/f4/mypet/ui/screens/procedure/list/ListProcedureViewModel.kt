@@ -26,7 +26,6 @@ class ListProcedureViewModel @Inject constructor(
     private val _titlesUiState = MutableStateFlow(emptyList<ProcedureTitle>())
     val titlesUiState = _titlesUiState.asStateFlow()
 
-//    var titles = emptyList<ProcedureTitle>()
 
     var pet = Pet(
         "", "", "", "Самец",
@@ -34,20 +33,12 @@ class ListProcedureViewModel @Inject constructor(
         "", "", "", 0
     )
 
-//    init {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            titles = repository.getProcedureTitles()
-//        }
-//    }
-
     fun getPetsProcedures(petId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             pet = repository.getPetForCU(petId)
             repository.getProceduresForPet(petId).collect { procedures ->
                 _proceduresUiState.value = procedures
             }
-
-//            titles = repository.getProcedureTitles()
         }
     }
 

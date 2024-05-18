@@ -32,7 +32,8 @@ fun CreateUpdateProcedureScreen(
         UiState.Loading -> LoadingScreen()
         UiState.Success -> SuccessCUProcedureScreen(
             navController = navController,
-            isCreateScreen = isCreateScreen
+            isCreateScreen = isCreateScreen,
+            profileId = profileId
         )
         else -> ErrorScreen(retryAction = viewModel::getPetProcedure, procedureId)
     }
