@@ -3,6 +3,7 @@ package com.f4.mypet
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.vk.id.VKID
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -12,5 +13,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyPetApp()
         }
+        val vkid = VKID(this)
     }
 }

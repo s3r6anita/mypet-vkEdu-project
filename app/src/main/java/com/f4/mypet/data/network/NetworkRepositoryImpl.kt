@@ -8,6 +8,10 @@ import com.f4.mypet.data.network.model.response.Response
 import com.f4.mypet.data.network.service.AuthService
 import com.f4.mypet.data.network.service.PetService
 import com.google.gson.Gson
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -81,10 +85,14 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPets(): List<Pet> {
+    override suspend fun getPets(): Flow<List<Pet>> {
         return try {
-            val response = petService.getPets()
-            response.data ?: emptyList()
+            callbackFlow {
+                trySendBlocking(
+                    petService.getPets().data ?: emptyList()
+                    )
+                awaitClose()
+            }
         } catch (e: HttpException) {
             throw e
         }

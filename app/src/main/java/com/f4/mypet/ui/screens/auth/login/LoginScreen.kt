@@ -44,6 +44,7 @@ import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.util.UIState
+import com.vk.id.onetap.compose.onetap.OneTap
 import kotlinx.coroutines.launch
 
 @Composable
@@ -194,6 +195,11 @@ fun LoginScreen(
                     color = LightGrayTint
                 )
             }
+
+            // кнопка VK ID
+            OneTap(
+                onAuth = { onAuth = { /*...*/ }(it) }
+            )
         }
     }
 }
