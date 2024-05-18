@@ -87,6 +87,8 @@ class NetworkRepositoryImpl @Inject constructor(
             response.data ?: emptyList()
         } catch (e: HttpException) {
             throw e
+        } catch (e: IOException) {
+            throw e
         }
     }
 

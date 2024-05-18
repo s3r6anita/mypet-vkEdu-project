@@ -96,7 +96,7 @@ class DBRepository @Inject constructor(
         return procedureDAO.getProceduresForPet(petId)
     }
 
-    override suspend fun getProcedureTitles(): List<ProcedureTitle> {
+    override suspend fun getProcedureTitles(): Flow<List<ProcedureTitle>> {
         return prTitleDAO.getProcedureTitles()
     }
 

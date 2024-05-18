@@ -32,6 +32,7 @@ fun CreateUpdateProcedureScreen(
     when (uiState) {
         UIState.Loading -> LoadingScreen()
         UIState.Success -> SuccessCUProcedureScreen(
+            navController = navController,
             isCreateScreen = isCreateScreen,
             profileId = profileId
         )

@@ -7,7 +7,6 @@ import com.f4.mypet.data.db.entities.Frequency
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
-import com.f4.mypet.util.PetDateTimeFormatter
 import com.f4.mypet.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -39,12 +38,13 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     var types = emptyList<ProcedureType>() // список всех типов
     var options = emptyList<String>() // список вариантов частоты
 
-    var title = ProcedureTitle( // заголовок создаваемой (изменяемой) процедуры
-        name = "Неизвестно",
+    var title = ProcedureTitle(
+        // заголовок создаваемой (изменяемой) процедуры
+        name = "",
         type = 0,
     )
     var type = ProcedureType( // тип создаваемой (изменяемой) процедуры
-        name = "Неизвестно",
+        name = "",
         id = title.id
     )
 
@@ -75,10 +75,10 @@ class CreateUpdateProcedureViewModel @Inject constructor(
                     ?: type
                 frequency = repository.getFrequency(_procedureUiState.value.frequency)
 
-                _uiState.update { UiState.Success }
+                _uiState.update { UIState.Success }
             }
         } else {
-            _uiState.update { UiState.Success }
+            _uiState.update { UIState.Success }
         }
     }
 

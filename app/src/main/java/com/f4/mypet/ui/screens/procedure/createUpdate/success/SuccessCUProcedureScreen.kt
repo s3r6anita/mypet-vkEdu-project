@@ -55,13 +55,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.f4.mypet.PetDateTimeFormatter
-import com.f4.mypet.PresentOrFutureSelectableDates
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureViewModel
-import com.f4.mypet.ui.screens.procedure.createUpdate.FrequencyOptions
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
@@ -362,10 +359,14 @@ fun SuccessCUProcedureScreen(
             }
 
             // уведомление
-            var enableNotifications by remember { mutableStateOf(false) }
-            enableNotifications = (procedure.reminder != null) && (procedure.reminder?.let {
-                procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
-            } != "01.01.1001 00:00")
+            var enableNotifications by remember {
+                mutableStateOf(((procedure.reminder?.let {
+                    procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
+                } != "01.01.1001 00:00")))
+            }
+            if (procedure.reminder == null)
+                enableNotifications = false
+
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -385,11 +386,18 @@ fun SuccessCUProcedureScreen(
                     onCheckedChange = {
                         if (!it)
                             procedure = procedure.copy(reminder = null)
-                        else if (procedure.reminder == null && it)
+                        else if ((procedure.reminder == null ||
+                                    (procedure.reminder?.let {
+                                        procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
+                                    }
+                                            == "01.01.1001 00:00"))
+                            && it
+                        ) {
                             procedure = procedure.copy(
                                 reminder = procedure.dateDone
                                     .minusDays(1).withMinute(0)
                             )
+                        }
                         enableNotifications = it
                     },
                     thumbContent = if (enableNotifications) {
