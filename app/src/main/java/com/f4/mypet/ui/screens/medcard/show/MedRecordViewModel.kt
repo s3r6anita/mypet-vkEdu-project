@@ -2,9 +2,9 @@ package com.f4.mypet.ui.screens.medcard.show
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.data.db.Repository
 import com.f4.mypet.data.db.entities.MedRecord
+import com.f4.mypet.util.PetDateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ class MedRecordViewModel @Inject constructor(
 ) : ViewModel() {
     private val _medRecordUiState = MutableStateFlow(
         MedRecord(
-            title = -1,
+            title = "",
             date = LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
             notes = "",
             pet = 0

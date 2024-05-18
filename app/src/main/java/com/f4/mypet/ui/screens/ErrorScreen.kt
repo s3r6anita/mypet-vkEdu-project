@@ -11,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlin.reflect.KFunction1
 
 @Composable
-fun ErrorScreen(retryAction: KFunction1<Int, Unit>, procedureId: Int, modifier: Modifier = Modifier) {
+fun ErrorScreen(
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
@@ -22,7 +24,7 @@ fun ErrorScreen(retryAction: KFunction1<Int, Unit>, procedureId: Int, modifier: 
     ) {
         IconButton(
             modifier = Modifier.size(64.dp),
-            onClick = { retryAction(procedureId) }
+            onClick = { retryAction() }
         ) {
             Icon(
                 modifier = Modifier.size(64.dp),

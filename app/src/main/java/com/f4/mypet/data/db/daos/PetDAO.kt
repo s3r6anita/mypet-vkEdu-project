@@ -7,13 +7,15 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.f4.mypet.data.db.entities.Pet
-import kotlinx.coroutines.flow.Flow
 
 
 @Dao
 interface PetDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(pet: Pet)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(pets: List<Pet>)
 
     @Update
     suspend fun update(pet: Pet)
@@ -22,12 +24,15 @@ interface PetDAO {
     suspend fun delete(pet: Pet)
 
     @Query("SELECT * from pet")
-    fun getPets(): Flow<List<Pet>>
+    fun getPets(): List<Pet>
 
     @Query("SELECT * from pet where id = :petId")
-    fun getPet(petId: Int): Flow<Pet>
+    fun getPet(petId: Int): Pet
 
     @Query("SELECT * from pet where id = :petId")
     fun getPetForCU(petId: Int): Pet
+
+    @Query("DELETE from pet")
+    fun deleteAll()
 
 }

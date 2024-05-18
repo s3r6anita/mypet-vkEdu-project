@@ -17,10 +17,10 @@ import com.f4.mypet.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyPetTopBar(
-    modifier: Modifier = Modifier,
     text: String,
-    canNavigateBack: Boolean = false,
     navigateUp: () -> Unit,
+    modifier: Modifier = Modifier,
+    canNavigateBack: Boolean = false,
     actions: @Composable() RowScope.() -> Unit = { },
 ) {
     CenterAlignedTopAppBar(

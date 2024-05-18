@@ -2,11 +2,12 @@ package com.f4.mypet.ui.screens.procedure.createUpdate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.data.db.Repository
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
+import com.f4.mypet.util.PetDateTimeFormatter
+import com.f4.mypet.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,17 +17,11 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-sealed class UiState {
-    data object Loading : UiState()
-    data class Error(val e: Exception) : UiState()
-    data object Success : UiState()
-}
-
 @HiltViewModel
 class CreateUpdateProcedureViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UIState>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private val _procedureUiState = MutableStateFlow(
@@ -52,15 +47,17 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     )
 
     init {
+        _uiState.update { UIState.Loading }
         viewModelScope.launch(Dispatchers.IO) {
             titles = repository.getProcedureTitles()
             types = repository.getProcedureTypes()
-            _uiState.update { UiState.Success }
         }
+        _uiState.update { UIState.Success }
     }
 
     fun getPetProcedure(procedureId: Int) {
         if (procedureId != -1) {
+            _uiState.update { UIState.Loading }
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getProcedure(procedureId).collect { procedure ->
                     _procedureUiState.value = procedure
@@ -69,8 +66,8 @@ class CreateUpdateProcedureViewModel @Inject constructor(
                     type = types.find { type -> type.id == title.type }
                         ?:  type
                 }
-                _uiState.update { UiState.Success }
             }
+            _uiState.update { UIState.Success }
         }
     }
 }

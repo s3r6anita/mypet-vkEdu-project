@@ -4,48 +4,50 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.f4.mypet.data.db.Repository
 import com.f4.mypet.data.db.entities.Pet
+import com.f4.mypet.data.network.NetworkRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: Repository,
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
+    // если null, то ошибок не было
+    private val _msg = MutableStateFlow<String?>("")
+    val msg = _msg.asStateFlow()
+
     private val _petUiState = MutableStateFlow(
         Pet(
             "", "", "", "Самец",
-            LocalDateTime.of(LocalDate.now(), LocalTime.now()),
+            LocalDate.now(),
             "", "", "", -1
         )
     )
     val petUiState = _petUiState.asStateFlow()
 
-    fun getPetProfile(petId: Int?) {
+    fun getPetProfile(petId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            //TODO: сделать тут try catch на petID
-            if (petId != null) {
-                repository.getPet(petId).collect() { pet ->
-                    if (pet != null) {
-                        _petUiState.value = pet
-                    }
-                }
+            if (petId != -1) {
+                // получение локально, т.к. данные обновились при получении списка питомцев
+                _petUiState.value = repository.getPet(petId)
             }
         }
-
     }
 
+
     fun removePet(pet: Pet) {
+        _msg.value = ""
         viewModelScope.launch(Dispatchers.IO) {
-            repository.removePet(pet)
-            repository.removeProceduresForPet(pet.id)
-            repository.removeMedRecordsForPet(pet.id)
+//            repository.removePet(pet)
+//            repository.removeProceduresForPet(pet.id)
+//            repository.removeMedRecordsForPet(pet.id)
+            _msg.value = networkRepository.removePet(pet.id)
         }
     }
 }

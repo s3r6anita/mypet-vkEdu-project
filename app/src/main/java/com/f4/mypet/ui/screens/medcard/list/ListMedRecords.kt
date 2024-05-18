@@ -38,9 +38,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ListMedRecords(
+    navController: NavHostController,
     profileId: Int,
     canNavigateBack: Boolean,
-    navController: NavHostController,
     viewModel: ListMedRecordsViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
@@ -68,7 +68,7 @@ fun ListMedRecords(
                 profileId = profileId,
                 canNavigateBack = canNavigateBack,
                 items = BottomBarData.items,
-                navController = navController
+                getNavController = { navController }
             )
         }
     ) { innerPadding ->

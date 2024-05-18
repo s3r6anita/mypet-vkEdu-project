@@ -13,6 +13,9 @@ interface ProcedureDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(procedure: Procedure)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(procedures: List<Procedure>)
+
     @Delete
     suspend fun delete(procedure: Procedure)
 
@@ -24,5 +27,8 @@ interface ProcedureDAO {
 
     @Query("SELECT * from procedure where id = :procedureId")
     fun getProcedure(procedureId: Int): Flow<Procedure>
+
+    @Query("DELETE from procedure")
+    fun deleteAll()
 
 }

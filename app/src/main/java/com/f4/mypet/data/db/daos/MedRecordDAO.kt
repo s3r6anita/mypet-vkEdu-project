@@ -12,6 +12,9 @@ interface MedRecordDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(medRecord: MedRecord)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(medRecords: List<MedRecord>)
+
     @Query("SELECT * from MedRecord where pet = :petId")
     fun getMedRecords(petId: Int): Flow<List<MedRecord>>
 
@@ -20,4 +23,7 @@ interface MedRecordDAO {
 
     @Query("DELETE FROM medrecord WHERE pet = :petId")
     suspend fun deleteMedRecordsForPet(petId: Int)
+
+    @Query("DELETE from medrecord")
+    fun deleteAll()
 }

@@ -20,7 +20,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 sealed class BottomNavigationItems(
     val route: Routes.BottomBarRoutes,
-    @DrawableRes var icon: Int,
+    @DrawableRes val icon: Int,
     val hasNews: Boolean = false
 ){
     data object Procedures: BottomNavigationItems(
@@ -51,9 +51,11 @@ fun MyPetBottomBar(
     profileId: Int,
     canNavigateBack: Boolean,
     items: ImmutableList<BottomNavigationItems>,
-    navController: NavHostController,
+    getNavController: () -> NavHostController,
     modifier: Modifier = Modifier
 ) {
+    val navController = getNavController()
+
     NavigationBar(
         modifier = modifier
     ) {

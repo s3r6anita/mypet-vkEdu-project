@@ -28,11 +28,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.theme.LightBlueBackground
+import com.f4.mypet.util.PetDateTimeFormatter
 
 
 @Composable

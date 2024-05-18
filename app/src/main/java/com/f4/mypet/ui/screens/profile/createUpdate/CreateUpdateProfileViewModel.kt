@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,7 +19,7 @@ class CreateUpdateProfileViewModel @Inject constructor(
     private val _petUiState = MutableStateFlow(
         Pet(
             "", "", "", "Самец",
-            LocalDateTime.of(LocalDate.now(), LocalTime.now()),
+            LocalDate.now(),
             "", "", "", -1
         )
     )
@@ -30,9 +28,7 @@ class CreateUpdateProfileViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             //TODO: сделать тут try catch на petID
             if (petId != -1) {
-                repository.getPet(petId).collect { pet ->
-                    _petUiState.value = pet
-                }
+                _petUiState.value = repository.getPet(petId)
             }
         }
     }

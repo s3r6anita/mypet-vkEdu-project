@@ -27,12 +27,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.f4.mypet.PetDateTimeFormatter
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.MedRecord
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.LightGrayTint
+import com.f4.mypet.util.PetDateTimeFormatter
 
 @Composable
 fun MedRecordItem(
@@ -78,7 +78,7 @@ fun MedRecordItem(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = medRecord.title.toString(), // TODO: убрать toString() после того, как изменим Entity
+                        text = medRecord.title,
                         color = Color.Black,
                         style = MaterialTheme.typography.titleLarge
                     )
