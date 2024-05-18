@@ -1,10 +1,13 @@
 package com.f4.mypet.ui.screens.auth.login
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -44,6 +48,10 @@ import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.util.UIState
+import com.vk.id.AccessToken
+import com.vk.id.OAuth
+import com.vk.id.VKID
+import com.vk.id.onetap.common.OneTapOAuth
 import com.vk.id.onetap.compose.onetap.OneTap
 import kotlinx.coroutines.launch
 
@@ -65,6 +73,9 @@ fun LoginScreen(
     var password by remember {
         mutableStateOf("1qazxsw2")
     }
+
+    val vkid = VKID(LocalContext.current)
+    var token: AccessToken? by remember { mutableStateOf(null) }
 
     LaunchedEffect(uiState) {
         if (uiState == UIState.Success) {
@@ -196,10 +207,50 @@ fun LoginScreen(
                 )
             }
 
-            // кнопка VK ID
             OneTap(
-                onAuth = { onAuth = { /*...*/ }(it) }
+                modifier = Modifier.width(355.dp),
+                onAuth = getOneTapSuccessCallback(LocalContext.current) {
+                    token = it
+                    Log.d("tag", "${it.userID}")
+
+                },
+                signInAnotherAccountButtonEnabled = true,
+                vkid = vkid,
             )
         }
     }
 }
+
+public fun getOneTapSuccessCallback(
+    context: Context,
+    onToken: (AccessToken) -> Unit
+): (OneTapOAuth?, AccessToken) -> Unit = { oAuth, token ->
+    onToken(token)
+    onVKIDAuthSuccess(context, oAuth?.toOAuth(), token)
+}
+
+private fun onVKIDAuthSuccess(
+    context: Context,
+    oAuth: OAuth?,
+    accessToken: AccessToken,
+) {
+    val oAuthLabel = oAuth?.name ?: "VK ID"
+}
+
+
+//private fun onVKIDAuthFail(
+//    context: Context,
+//    oAuth: OAuth?,
+//    fail: VKIDAuthFail,
+//) {
+//    val oAuthLabel = oAuth?.name ?: "VK ID"
+//    when (fail) {
+//        is VKIDAuthFail.Canceled -> {
+//            showToast(context, "Auth with $oAuthLabel was canceled")
+//        }
+//
+//        else -> {
+//            showToast(context, "Auth with $oAuthLabel failed with: ${fail.description}")
+//        }
+//    }
+//}
