@@ -3,33 +3,16 @@ package com.f4.mypet.data.db.entities
 import androidx.compose.runtime.Stable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 import javax.annotation.Nullable
 
-@Entity(
-    foreignKeys = [
-//        ForeignKey(
-//            entity = Pet::class,
-//            parentColumns = ["id"],
-//            childColumns = ["pet"],
-//            onDelete = ForeignKey.NO_ACTION
-//        ),
-        ForeignKey(
-            entity = ProcedureTitle::class,
-            parentColumns = ["id"],
-            childColumns = ["title"],
-            onDelete = ForeignKey.NO_ACTION
-        )
-    ]
-)
-
+@Entity
 @Stable
 data class Procedure(
     val title: Int, // название
     val isDone: Int, // выполнена ли: 0 - нет, 1 - да
-    val frequency: Int, // раз в сколько часов повторять
+    val frequency: Int, // ссылка на частоту
     val dateDone: LocalDateTime, // когда следует выполнить
     val notes: String, // заметки
     @Nullable

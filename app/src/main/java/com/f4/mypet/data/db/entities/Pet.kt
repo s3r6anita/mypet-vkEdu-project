@@ -16,23 +16,5 @@ data class Pet(
     val coat: String, // вид шерсти
     val microchipNumber: String, // 15 цифр
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id") val id: Int
+    @ColumnInfo(name = "id") val id: Int = 0
 )
-
-//data class PetWithProcedures(
-//    @Embedded val pet: Pet,
-//    @Relation(
-//        parentColumn = "id",
-//        entityColumn = "pet"
-//    )
-//    val procedures: List<Procedure>
-//)
-
-//data class PetWithMedRecords(
-//    @Embedded val pet: Pet,
-//    @Relation(
-//        parentColumn = "id",
-//        entityColumn = "pet"
-//    )
-//    val medRecords: List<MedRecord>
-//)

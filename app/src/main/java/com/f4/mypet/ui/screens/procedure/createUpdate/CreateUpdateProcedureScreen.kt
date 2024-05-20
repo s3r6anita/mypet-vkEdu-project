@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 fun CreateUpdateProcedureScreen(
     navController: NavHostController,
     isCreateScreen: Boolean,
+    profileId: Int = -1,
     procedureId: Int = -1,
     viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 ) {
@@ -31,10 +32,10 @@ fun CreateUpdateProcedureScreen(
     when (uiState) {
         UIState.Loading -> LoadingScreen()
         UIState.Success -> SuccessCUProcedureScreen(
+            navController = navController,
             isCreateScreen = isCreateScreen,
-            navController = navController
+            profileId = profileId
         )
-
         else -> ErrorScreen(retryAction = {
             scope.launch {
                 viewModel.getPetProcedure(procedureId)

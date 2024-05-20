@@ -143,7 +143,7 @@ fun NavGraphBuilder.mainNavGraph(
             CreateUpdateProcedureScreen(
                 navController = navController,
                 isCreateScreen = true,
-                procedureId = backStackEntry.arguments?.getInt("profileId") ?: -1
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
             )
         }
         /** изменение процедуры */

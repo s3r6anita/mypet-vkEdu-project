@@ -133,6 +133,8 @@ class NetworkRepositoryImpl @Inject constructor(
             petService.getPets().data ?: emptyList()
         } catch (e: HttpException) {
             throw e
+        } catch (e: IOException) {
+            throw e
         }
     }
 

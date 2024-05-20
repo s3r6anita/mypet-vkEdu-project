@@ -20,7 +20,7 @@ class CreateUpdateProfileViewModel @Inject constructor(
         Pet(
             "", "", "", "Самец",
             LocalDate.now(),
-            "", "", "", -1
+            "", "", ""
         )
     )
     val petUiState = _petUiState.asStateFlow()
