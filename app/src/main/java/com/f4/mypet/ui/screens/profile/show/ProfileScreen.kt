@@ -102,7 +102,9 @@ fun ProfileScreen(
 
     Scaffold(
         topBar = {
-            MyPetTopBar(text = stringResource(Routes.BottomBarRoutes.Profile.title),
+            MyPetTopBar(
+                text = stringResource(Routes.BottomBarRoutes.Profile.title),
+                canNavigateBack = canNavigateBack,
                 navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка удалить
@@ -128,9 +130,7 @@ fun ProfileScreen(
                     // кнопка выхода
                     IconButton(onClick = {
                         navController.navigate(START) {
-                            popUpTo(if (canNavigateBack) Routes.ListProfile.route else START) {
-                                inclusive = true
-                            }
+                            popUpTo(START)
                             launchSingleTop = true
                         }
                     }
@@ -140,7 +140,8 @@ fun ProfileScreen(
                             contentDescription = stringResource(id = R.string.exit_button_description)
                         )
                     }
-                })
+                }
+            )
         },
         bottomBar = {
             MyPetBottomBar(
