@@ -1,7 +1,8 @@
 package com.f4.mypet.data.network.model.request
 
-class RegisterRequest(
+data class RegisterRequest(
     val email: String,
-    val password: String,
-    val name: String
+    val password: String?,
+    val name: String,
+    val vkid: Long?
 )

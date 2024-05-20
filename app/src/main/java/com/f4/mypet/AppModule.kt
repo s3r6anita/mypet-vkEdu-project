@@ -71,6 +71,7 @@ object AppModule {
     @[Singleton Provides]
     fun getNetworkRepository(@ApplicationContext appContext: Context): NetworkRepository {
         return NetworkRepositoryImpl(
+            dataStore = appContext.dataStore,
             authService = provideNoAuthenticationApi(provideUnauthenticatedOkHttpClient()),
             petService = provideAuthenticationApi(
                 provideAuthenticatedOkHttpClient(

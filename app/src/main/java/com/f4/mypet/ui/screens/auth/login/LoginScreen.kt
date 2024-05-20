@@ -1,13 +1,10 @@
 package com.f4.mypet.ui.screens.auth.login
 
-import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -48,10 +45,7 @@ import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.util.UIState
-import com.vk.id.AccessToken
-import com.vk.id.OAuth
 import com.vk.id.VKID
-import com.vk.id.onetap.common.OneTapOAuth
 import com.vk.id.onetap.compose.onetap.OneTap
 import kotlinx.coroutines.launch
 
@@ -60,6 +54,7 @@ fun LoginScreen(
     navController: NavHostController,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val localContext = LocalContext.current
     val scope = rememberCoroutineScope()
     val msg by viewModel.msg.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
@@ -74,9 +69,6 @@ fun LoginScreen(
         mutableStateOf("1qazxsw2")
     }
 
-    val vkid = VKID(LocalContext.current)
-    var token: AccessToken? by remember { mutableStateOf(null) }
-
     LaunchedEffect(uiState) {
         if (uiState == UIState.Success) {
             if (msg == null) {
@@ -86,9 +78,9 @@ fun LoginScreen(
                     launchSingleTop = true
                 }
             }
-        }
-        if (uiState == UIState.Error) {
-            openErrorAlert = true
+            if (uiState == UIState.Error) {
+                openErrorAlert = true
+            }
         }
     }
 
@@ -192,9 +184,7 @@ fun LoginScreen(
             TextButton(
                 onClick = {
                     navController.navigate(Routes.Register.route) {
-                        popUpTo(Routes.ListProfile.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Routes.ListProfile.route)
                         launchSingleTop = true
                     }
                 },
@@ -209,54 +199,19 @@ fun LoginScreen(
 
             // кнопка VK ID
             OneTap(
-                modifier = Modifier.width(355.dp),
-                onAuth = getOneTapSuccessCallback(LocalContext.current) {
-                    token = it
-                    Log.d("tag", "${it.userID}")
-                    navController.navigate(Routes.ListProfile.route) {
-                        popUpTo(START)
-                        restoreState = true
-                        launchSingleTop = true
-                    }
-
-                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp),
+                vkid = VKID(localContext),
                 signInAnotherAccountButtonEnabled = true,
-                vkid = vkid,
+                onFail = viewModel.getOneTapFailCallback(localContext),
+                onAuth = viewModel.getOneTapSuccessCallback { token ->
+                    scope.launch {
+                        viewModel.saveToken(token)
+                        viewModel.loginByVK(token)
+                    }
+                }
             )
         }
     }
 }
-
-public fun getOneTapSuccessCallback(
-    context: Context,
-    onToken: (AccessToken) -> Unit
-): (OneTapOAuth?, AccessToken) -> Unit = { oAuth, token ->
-    onToken(token)
-    onVKIDAuthSuccess(context, oAuth?.toOAuth(), token)
-}
-
-private fun onVKIDAuthSuccess(
-    context: Context,
-    oAuth: OAuth?,
-    accessToken: AccessToken,
-) {
-    val oAuthLabel = oAuth?.name ?: "VK ID"
-}
-
-
-//private fun onVKIDAuthFail(
-//    context: Context,
-//    oAuth: OAuth?,
-//    fail: VKIDAuthFail,
-//) {
-//    val oAuthLabel = oAuth?.name ?: "VK ID"
-//    when (fail) {
-//        is VKIDAuthFail.Canceled -> {
-//            showToast(context, "Auth with $oAuthLabel was canceled")
-//        }
-//
-//        else -> {
-//            showToast(context, "Auth with $oAuthLabel failed with: ${fail.description}")
-//        }
-//    }
-//}
