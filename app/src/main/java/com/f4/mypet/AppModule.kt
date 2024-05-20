@@ -49,6 +49,8 @@ annotation class AuthenticatedClient
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    @[Singleton Provides]
+    fun provideContext(@ApplicationContext context: Context): Context = context
 
     @[Singleton Provides]
     fun getRepository(
@@ -61,6 +63,7 @@ object AppModule {
             myDB.prTitleDAO()
         )
     }
+
 
     @[Singleton Provides]
     fun provideDatabase(app: Application): PetDatabase {
@@ -81,7 +84,6 @@ object AppModule {
             jwtTokenManager = provideJwtTokenManager(appContext.dataStore)
         )
     }
-
 
     @[Provides Singleton]
     fun provideJwtTokenManager(dataStore: DataStore<Preferences>): JwtTokenManager {
@@ -116,6 +118,7 @@ object AppModule {
             .build()
     }
 
+
     /** For requests requiring the access token  */
     @[Provides Singleton]
     fun provideAuthenticationApi(@AuthenticatedClient okHttpClient: OkHttpClient): PetService {
@@ -131,7 +134,6 @@ object AppModule {
             .create(PetService::class.java)
     }
 
-
     /** For requests that don’t require authentication  */
     @[Provides Singleton PublicClient]
     fun provideUnauthenticatedOkHttpClient(): OkHttpClient {
@@ -144,7 +146,6 @@ object AppModule {
             .writeTimeout(UNAUTHENTICATED_TIMEOUT, TimeUnit.SECONDS)
             .build()
     }
-
     /** For API calls without authentication */
     @[Provides Singleton]
     fun provideNoAuthenticationApi(@PublicClient okHttpClient: OkHttpClient): AuthService {
@@ -156,4 +157,5 @@ object AppModule {
             .build()
             .create(AuthService::class.java)
     }
+
 }

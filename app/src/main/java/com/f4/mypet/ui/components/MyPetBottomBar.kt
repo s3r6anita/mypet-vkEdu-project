@@ -23,17 +23,24 @@ sealed class BottomNavigationItems(
     @DrawableRes val icon: Int,
     val hasNews: Boolean = false
 ){
-    data object Procedures: BottomNavigationItems(
+    data object Procedures : BottomNavigationItems(
         route = Routes.BottomBarRoutes.ListProcedures,
         icon = R.drawable.procedures_icon
     )
-    data object MedCard: BottomNavigationItems(
+
+    data object MedCard : BottomNavigationItems(
         route = Routes.BottomBarRoutes.ListMedRecords,
         icon = R.drawable.therapy_icon
     )
-    data object Profile: BottomNavigationItems(
+
+    data object Profile : BottomNavigationItems(
         route = Routes.BottomBarRoutes.Profile,
         icon = R.drawable.pet_icon
+    )
+
+    data object Wall : BottomNavigationItems(
+        route = Routes.BottomBarRoutes.PetsWall,
+        icon = R.drawable.newspaper_icon
     )
 }
 
@@ -43,6 +50,7 @@ data object BottomBarData {
         BottomNavigationItems.Procedures,
         BottomNavigationItems.MedCard,
         BottomNavigationItems.Profile,
+        BottomNavigationItems.Wall
     )
 }
 

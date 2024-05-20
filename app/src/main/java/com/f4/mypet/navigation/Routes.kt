@@ -34,7 +34,7 @@ sealed class Routes(
         data object Profile :
             BottomBarRoutes("Profile", R.string.profile_screen_title)
 
-        data object PetsNews :
-            BottomBarRoutes("PetsNews", R.string.profile_screen_title)
+        data object PetsWall :
+            BottomBarRoutes("PetsWall", R.string.wall_screen_title)
     }
 }

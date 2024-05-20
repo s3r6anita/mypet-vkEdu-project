@@ -142,6 +142,6 @@
     <string name="login_retry">Повторить попытку</string>
     <string name="error_password_equality">Введенные пароли не совпадают</string>
 
-    <!--    <integer name="com_vk_sdk_AppId">com.f4.mypet</integer>-->
+    <string name="wall_screen_title">Лента</string>
 
 </resources>

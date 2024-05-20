@@ -1,0 +1,108 @@
+package com.f4.mypet.ui.screens.wall
+
+import android.content.Context
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.f4.mypet.data.network.NetworkRepository
+import com.vk.api.sdk.VK
+import com.vk.api.sdk.VKApiConfig
+import com.vk.api.sdk.VKApiManager
+import com.vk.api.sdk.VKDefaultValidationHandler
+import com.vk.api.sdk.internal.ApiCommand
+import com.vk.api.sdk.utils.log.DefaultApiLogger
+import com.vk.api.sdk.utils.log.Logger
+import com.vk.dto.common.id.UserId
+import com.vk.id.AccessToken
+import com.vk.id.VKIDUser
+import com.vk.sdk.api.wall.WallService
+import com.vk.sdk.api.wall.dto.WallGetResponseDto
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import java.util.concurrent.LinkedBlockingDeque
+import javax.inject.Inject
+
+@HiltViewModel
+class PetsWallViewModel @Inject constructor(
+    networkRepository: NetworkRepository,
+    @ApplicationContext private val context: Context
+) : ViewModel() {
+
+    val token: AccessToken? =
+        AccessToken(
+            token = "vk1.a.WMwyI6S-BkkNFwJ5bRc_ymj6NKKI-D-ffnWJY8YAUudzSJkyUA1PR8FlVpjUe_SVLgFPD1WBWr04Mu2r5IeCv6A8QU52gouvQVzniiaMh4HSV0GtlfVPK-MRxbPlwwET_B0tUdtl6uU6FE-ZHNAOAli_krS1HQecV44RluqNo9gI60C_NJxKyJv9tD1vzTAHbAcceHDpB7w_HIVjlCtx1w",
+            userID = 179272816,
+            expireTime = System.currentTimeMillis(),
+            userData = VKIDUser(
+                firstName = "Софья",
+                lastName = "Пономарева"
+            )
+        )
+
+    private val _responseUiState = MutableStateFlow<WallGetResponseDto?>(null)
+    val responseUiState = _responseUiState.asStateFlow()
+
+    init {
+        VK.setConfig(
+            VKApiConfig(
+                context = context,
+                appId = 0,
+                validationHandler = VKDefaultValidationHandler(context),
+                apiHostProvider = { "api.vk.com" },
+                logger = DefaultApiLogger(lazy { Logger.LogLevel.VERBOSE }, "API")
+            )
+        )
+    }
+
+    fun getPosts() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                if (token != null) {
+                    _responseUiState.value =
+                        VK.executeSync(
+                            WallService()
+                                .wallGet(ownerId = UserId(-160065516), count = 20)
+                                .withVKIDToken(token!!)
+                        )
+                }
+            } catch (ex: Exception) {
+                null
+            }
+
+        }
+    }
+
+}
+
+fun <T> ApiCommand<T>.withVKIDToken(
+    accessToken: AccessToken
+
+): ApiCommand<T> {
+    return object : ApiCommand<T>() {
+
+        private fun saveToken(token: AccessToken) {
+            VK.saveAccessToken(
+                userId = UserId(token.userID),
+                accessToken = token.token,
+                secret = null,
+                expiresInSec = ((System.currentTimeMillis() - token.expireTime) / 1000).toInt(),
+                createdMs = System.currentTimeMillis()
+            )
+        }
+
+        override fun onExecute(manager: VKApiManager): T {
+            try {
+                saveToken(accessToken)
+                return this@withVKIDToken.execute(manager)
+            } catch (e: Exception) {
+                Log.e("TAG", e.stackTraceToString())
+                val res = LinkedBlockingDeque<Result<T>>(1)
+                return res.take().getOrThrow()
+            }
+        }
+    }
+}
