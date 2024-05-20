@@ -2,12 +2,19 @@ package com.f4.mypet.ui.screens.auth.login
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,6 +23,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,27 +52,47 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.util.UIState
+import com.vk.api.sdk.VK
+import com.vk.api.sdk.VKApiConfig
+import com.vk.api.sdk.VKDefaultValidationHandler
+import com.vk.api.sdk.utils.log.DefaultApiLogger
+import com.vk.api.sdk.utils.log.Logger
+import com.vk.dto.common.id.UserId
 import com.vk.id.AccessToken
 import com.vk.id.OAuth
 import com.vk.id.VKID
+import com.vk.id.VKIDUser
 import com.vk.id.onetap.common.OneTapOAuth
 import com.vk.id.onetap.compose.onetap.OneTap
+import com.vk.sdk.api.photos.dto.PhotosPhotoDto
+import com.vk.sdk.api.photos.dto.PhotosPhotoSizesTypeDto
+import com.vk.sdk.api.wall.WallService
+import com.vk.sdk.api.wall.dto.WallGetResponseDto
+import com.vk.sdk.api.wall.dto.WallWallItemDto
+import com.vk.sdk.api.wall.dto.WallWallpostAttachmentDto
+import com.vk.sdk.api.wall.dto.WallWallpostAttachmentTypeDto
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun LoginScreen(
     navController: NavHostController,
+    context: Context,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val msg by viewModel.msg.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
+
 
     var openErrorAlert by remember {
         mutableStateOf(false)
@@ -75,155 +105,283 @@ fun LoginScreen(
     }
 
     val vkid = VKID(LocalContext.current)
-    var token: AccessToken? by remember { mutableStateOf(null) }
-
-    LaunchedEffect(uiState) {
-        if (uiState == UIState.Success) {
-            if (msg == null) {
-                navController.navigate(Routes.ListProfile.route) {
-                    popUpTo(START)
-                    restoreState = true
-                    launchSingleTop = true
-                }
-            }
-        }
-        if (uiState == UIState.Error) {
-            openErrorAlert = true
-        }
-    }
-
-    if (openErrorAlert) {
-        LoginErrorAlert(
-            msg = msg,
-            closeAlert = { openErrorAlert = !openErrorAlert },
-            getNavController = { navController },
-            retryAction = {
-                scope.launch {
-                    viewModel.login(email, password)
-                }
-            }
+    var token: AccessToken? by remember {
+        mutableStateOf(
+            AccessToken(
+                token = "vk1.a.WMwyI6S-BkkNFwJ5bRc_ymj6NKKI-D-ffnWJY8YAUudzSJkyUA1PR8FlVpjUe_SVLgFPD1WBWr04Mu2r5IeCv6A8QU52gouvQVzniiaMh4HSV0GtlfVPK-MRxbPlwwET_B0tUdtl6uU6FE-ZHNAOAli_krS1HQecV44RluqNo9gI60C_NJxKyJv9tD1vzTAHbAcceHDpB7w_HIVjlCtx1w",
+                userID = 179272816,
+                expireTime = System.currentTimeMillis(),
+                userData = VKIDUser(
+                    firstName = "Софья",
+                    lastName = "Пономарева"
+                )
+            )
         )
     }
 
-    Scaffold { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(innerPadding)
-                .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 15.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.login_title),
-                    color = Color.Black,
-                    style = MaterialTheme.typography.displayMedium
+    var wallResponse by remember {
+        mutableStateOf<WallGetResponseDto?>(null)
+    }
+
+    if (token != null) {
+        LaunchedEffect(Unit) {
+            wallResponse = withContext(Dispatchers.IO) {
+                VK.setConfig(
+                    VKApiConfig(
+                        context = context,
+                        appId = 0,
+                        validationHandler = VKDefaultValidationHandler(context),
+                        apiHostProvider = { "api.vk.com" },
+                        logger = DefaultApiLogger(lazy { Logger.LogLevel.VERBOSE }, "API")
+                    )
                 )
+                try {
+                    VK.executeSync(
+                        WallService()
+                            .wallGet(ownerId = UserId(-160065516), count = 20)
+                            .withVKIDToken(token!!)
+                    )
+                } catch (ex: Exception) {
+                    null
+                }
             }
+        }
+    }
+    if (wallResponse != null) {
+        Wall(wallResponse = wallResponse!!)
+    } else {
 
-            // email
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text(stringResource(id = R.string.login_enter)) },
-                placeholder = { Text(stringResource(id = R.string.login_placeholder)) },
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                trailingIcon = {
-                    IconButton(onClick = { email = "" }) {
-                        Icon(
-                            Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.clear)
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp),
-            )
 
-            // password
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text(stringResource(id = R.string.login_password_enter)) },
-                placeholder = { Text(stringResource(id = R.string.login_password_enter)) },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                trailingIcon = {
-                    IconButton(onClick = { password = "" }) {
-                        Icon(
-                            Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.clear)
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp),
-            )
-
-            // Кнопка "Войти"
-            Button(
-                onClick = {
-                    scope.launch {
-                        viewModel.login(email, password)
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.login_button),
-                    textAlign = TextAlign.Center,
-                    color = Color.White
-                )
-            }
-
-            // Кнопка "Зарегистрироваться"
-            TextButton(
-                onClick = {
-                    navController.navigate(Routes.Register.route) {
-                        popUpTo(Routes.ListProfile.route) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = stringResource(id = R.string.login_registration_button),
-                    textAlign = TextAlign.Center,
-                    color = LightGrayTint
-                )
-            }
-
-            // кнопка VK ID
-            OneTap(
-                modifier = Modifier.width(355.dp),
-                onAuth = getOneTapSuccessCallback(LocalContext.current) {
-                    token = it
-                    Log.d("tag", "${it.userID}")
+        LaunchedEffect(uiState) {
+            if (uiState == UIState.Success) {
+                if (msg == null) {
                     navController.navigate(Routes.ListProfile.route) {
                         popUpTo(START)
                         restoreState = true
                         launchSingleTop = true
                     }
+                }
+            }
+            if (uiState == UIState.Error) {
+                openErrorAlert = true
+            }
+        }
 
-                },
-                signInAnotherAccountButtonEnabled = true,
-                vkid = vkid,
+        if (openErrorAlert) {
+            LoginErrorAlert(
+                msg = msg,
+                closeAlert = { openErrorAlert = !openErrorAlert },
+                getNavController = { navController },
+                retryAction = {
+                    scope.launch {
+                        viewModel.login(email, password)
+                    }
+                }
             )
         }
+
+        Scaffold { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(innerPadding)
+                    .padding(horizontal = 20.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 15.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.login_title),
+                        color = Color.Black,
+                        style = MaterialTheme.typography.displayMedium
+                    )
+                }
+
+                // email
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text(stringResource(id = R.string.login_enter)) },
+                    placeholder = { Text(stringResource(id = R.string.login_placeholder)) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        IconButton(onClick = { email = "" }) {
+                            Icon(
+                                Icons.Default.Clear,
+                                contentDescription = stringResource(id = R.string.clear)
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp),
+                )
+
+                // password
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text(stringResource(id = R.string.login_password_enter)) },
+                    placeholder = { Text(stringResource(id = R.string.login_password_enter)) },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        IconButton(onClick = { password = "" }) {
+                            Icon(
+                                Icons.Default.Clear,
+                                contentDescription = stringResource(id = R.string.clear)
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 20.dp),
+                )
+
+                // Кнопка "Войти"
+                Button(
+                    onClick = {
+                        scope.launch {
+                            viewModel.login(email, password)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.login_button),
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                }
+
+
+                // Кнопка "Зарегистрироваться"
+                TextButton(
+                    onClick = {
+                        navController.navigate(Routes.Register.route) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.login_registration_button),
+                        textAlign = TextAlign.Center,
+                        color = LightGrayTint
+                    )
+                }
+
+                // кнопка VK ID
+                OneTap(
+                    modifier = Modifier.width(355.dp),
+                    onAuth = getOneTapSuccessCallback(LocalContext.current) {
+                        token = it
+                        Log.d("tag", "${it.token}")
+                    },
+                    signInAnotherAccountButtonEnabled = true,
+                    vkid = vkid,
+                )
+
+            }
+        }
+    }
+}
+
+
+@Composable
+fun Wall(wallResponse: WallGetResponseDto) {
+    wallResponse.items.forEach {
+        val post = it as WallWallItemDto.WallWallpostFullDto
+        Post(post = post)
+        Log.d("wallitem", "!!! item = ${it}")
+    }
+}
+
+@Composable
+fun Post(post: WallWallItemDto.WallWallpostFullDto) {
+    Box {
+        Text(text = post.text ?: "")
+        if (post.attachments != null) {
+            Log.d("attachements", post.attachments.toString())
+            PhotosGridScreen(photos = post.attachments!!.filter { it.type == WallWallpostAttachmentTypeDto.PHOTO })
+            Log.d(
+                "photos",
+                post.attachments!!.filter { it.type == WallWallpostAttachmentTypeDto.PHOTO }
+                    .toString()
+            )
+        }
+
+        Spacer(modifier = Modifier.padding(vertical = 30.dp))
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PhotosGridScreen(photos: List<WallWallpostAttachmentDto>, modifier: Modifier = Modifier) {
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Adaptive(150.dp),
+        verticalItemSpacing = 4.dp,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        content = {
+            items(count = photos.size) {
+                photos.forEach {
+                    PhotoCard(photo = it.photo!!)
+                }
+            }
+        },
+        modifier = Modifier.fillMaxSize()
+    )
+}
+
+@Composable
+fun PhotoCard(photo: PhotosPhotoDto, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier,
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
+        var retryHash by remember { mutableStateOf(0) }
+        Log.d(
+            "photo url",
+            photo.sizes?.find { it.type == PhotosPhotoSizesTypeDto.X }?.url.toString()
+        )
+        SubcomposeAsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(photo.sizes?.find { it.type == PhotosPhotoSizesTypeDto.X }?.url)
+                .setParameter("retry_hash", retryHash, memoryCacheKey = null)
+                .crossfade(true)
+                .build(),
+            loading = {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .size(24.dp)
+                )
+            },
+            error = {
+//                IconButton(
+//                    onClick = { retryHash++ }
+//                ) {
+//                    Icon(
+//                        painter = painterResource(id = R.drawable.ic_refresh),
+//                        contentDescription = "refresh"
+//                    )
+//                }
+                Log.d("TAAAG", "ERROR")
+            },
+            contentDescription = null
+        )
     }
 }
 

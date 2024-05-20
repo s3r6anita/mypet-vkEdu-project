@@ -44,6 +44,7 @@
     <string name="list_profile_screen_title">Мои питомцы</string>
     <string name="list_profile_screen_add_button_icon_description">Добавить питомца</string>
 
+    <string name="pets_news_screen_title"></string>
 
     <string name="profile_screen_title">Профиль</string>
     <string name="profile_screen_delete_pet_text">Вы уверены, что хотите удалить профиль?</string>
@@ -140,5 +141,7 @@
     <string name="error">Ошибка</string>
     <string name="login_retry">Повторить попытку</string>
     <string name="error_password_equality">Введенные пароли не совпадают</string>
+
+    <!--    <integer name="com_vk_sdk_AppId">com.f4.mypet</integer>-->
 
 </resources>
