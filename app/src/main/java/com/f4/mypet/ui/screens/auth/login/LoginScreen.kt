@@ -78,9 +78,9 @@ fun LoginScreen(
                     launchSingleTop = true
                 }
             }
-            if (uiState == UIState.Error) {
-                openErrorAlert = true
-            }
+        }
+        if (uiState == UIState.Error) {
+            openErrorAlert = true
         }
     }
 

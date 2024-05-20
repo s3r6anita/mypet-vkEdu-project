@@ -111,9 +111,9 @@ object AppModule {
             .authenticator(authAuthenticator)
             .addInterceptor(accessTokenInterceptor)
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(UNAUTHENTICATED_TIMEOUT, TimeUnit.SECONDS)
-            .readTimeout(UNAUTHENTICATED_TIMEOUT, TimeUnit.SECONDS)
-            .writeTimeout(UNAUTHENTICATED_TIMEOUT, TimeUnit.SECONDS)
+            .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+            .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
             .build()
     }
 
