@@ -17,11 +17,11 @@ class LocalDateAdapter : TypeAdapter<LocalDate?>() {
     }
 
     override fun read(jsonReader: JsonReader): LocalDate? {
-        if (jsonReader.peek() == JsonToken.NULL) {
+        return if (jsonReader.peek() == JsonToken.NULL) {
             jsonReader.nextNull()
-            return null
+            null
         } else {
-            return LocalDate.parse(jsonReader.nextString(), PetDateTimeFormatter.date)
+            LocalDate.parse(jsonReader.nextString(), PetDateTimeFormatter.date)
         }
     }
 }
@@ -37,11 +37,11 @@ class LocalDateTimeAdapter : TypeAdapter<LocalDateTime?>() {
     }
 
     override fun read(jsonReader: JsonReader): LocalDateTime? {
-        if (jsonReader.peek() == JsonToken.NULL) {
+        return if (jsonReader.peek() == JsonToken.NULL) {
             jsonReader.nextNull()
-            return null
+            null
         } else {
-            return LocalDateTime.parse(jsonReader.nextString(), PetDateTimeFormatter.dateTime)
+            LocalDateTime.parse(jsonReader.nextString(), PetDateTimeFormatter.dateTime)
         }
     }
 }

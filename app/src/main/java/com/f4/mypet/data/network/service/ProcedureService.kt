@@ -11,5 +11,5 @@ interface ProcedureService: MyPetService {
     suspend fun getProcedures(): Response<List<Procedure>>
 
     @DELETE("procedure/{id}")
-    suspend fun removePrpedure(@Path("id") id: Int): Response<Procedure?>
+    suspend fun removeProcedure(@Path("id") id: Int): Response<Procedure?>
 }

@@ -53,10 +53,7 @@ class ProcedureViewModel @Inject constructor(
                     ?: title
             type = repository.getProcedureTypes().find { it.id == title.type }
                 ?: type
-            val frequencyDB = repository.getFrequency(_procedureUiState.value.frequencyOption)
-            if (frequencyDB != null) {
-                frequency = frequencyDB
-            }
+            frequency = repository.getFrequency(_procedureUiState.value.frequencyOption)
 
             when (frequency.option) {
                 FrequencyOptions.Minutes.period -> frequency.frequency =

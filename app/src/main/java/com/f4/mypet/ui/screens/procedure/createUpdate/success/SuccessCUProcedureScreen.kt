@@ -578,7 +578,7 @@ fun SuccessCUProcedureScreen(
 
                         if (isCreateScreen) {
                             procedure = procedure.copy(pet = profileId)
-                            viewModel.createProcedure(procedure, title, frequency)
+                            viewModel.createProcedure(procedure, title)
                             navController.navigateUp()
                         } else {
                             viewModel.updateProcedure(procedure, title, frequency)

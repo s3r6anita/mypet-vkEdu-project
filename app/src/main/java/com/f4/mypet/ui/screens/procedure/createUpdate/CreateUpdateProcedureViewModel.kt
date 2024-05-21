@@ -76,10 +76,7 @@ class CreateUpdateProcedureViewModel @Inject constructor(
                     ?: title
                 type = types.find { type -> type.id == title.type }
                     ?: type
-                val frequencyDB = repository.getFrequency(_procedureUiState.value.frequencyOption)
-                if (frequencyDB != null) {
-                    frequency = frequencyDB
-                }
+                frequency = repository.getFrequency(_procedureUiState.value.frequencyOption)
 
                 _uiState.update { UIState.Success }
             }
@@ -96,7 +93,7 @@ class CreateUpdateProcedureViewModel @Inject constructor(
         }
     }
 
-    fun createProcedure(procedure: Procedure, title: ProcedureTitle, frequency: Frequency) {
+    fun createProcedure(procedure: Procedure, title: ProcedureTitle) {
         viewModelScope.launch(Dispatchers.IO) {
             val titleId = repository.insertTitle(title) // start error there
             val procedureWithTitleFreq = procedure.copy(title = titleId)
