@@ -118,6 +118,7 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             PetsWallScreen(
                 navController = navController,
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
                 canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
         }

@@ -3,16 +3,12 @@ package com.f4.mypet.ui.screens.wall
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -36,6 +32,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.f4.mypet.ui.components.BottomBarData
+import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.screens.ErrorScreen
 import com.vk.sdk.api.photos.dto.PhotosPhotoDto
 import com.vk.sdk.api.photos.dto.PhotosPhotoSizesTypeDto
@@ -49,6 +47,7 @@ import kotlinx.coroutines.launch
 fun PetsWallScreen(
     navController: NavHostController,
     canNavigateBack: Boolean,
+    profileId: Int,
     viewModel: PetsWallViewModel = hiltViewModel()
 ) {
     val localScope = rememberCoroutineScope()
@@ -59,105 +58,106 @@ fun PetsWallScreen(
             viewModel.getPosts()
         }
     }
-
-    if (response != null) {
-
-        Scaffold { innerPadding ->
+    Scaffold(
+        bottomBar = {
+            MyPetBottomBar(
+                profileId = profileId,
+                canNavigateBack = canNavigateBack,
+                items = BottomBarData.items,
+                getNavController = { navController }
+            )
+        }
+    ) { innerPadding ->
+        val modifier = Modifier
+            .fillMaxWidth()
+            .padding(innerPadding)
+            .padding(horizontal = 20.dp)
+            .verticalScroll(rememberScrollState())
+        if (response != null) {
+            Wall(wallResponse = response!!, modifier = modifier)
+        } else {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding)
-                    .padding(horizontal = 20.dp)
-                    .verticalScroll(rememberScrollState()),
+                modifier = modifier,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Wall(wallResponse = response!!)
+                ErrorScreen(retryAction = { })
             }
         }
 
-
-    } else {
-
-        ErrorScreen(retryAction = { })
-
     }
+
+
+
 }
 
 
 @Composable
-fun Wall(wallResponse: WallGetResponseDto) {
-    LazyColumn(content = {
-        wallResponse.items.forEach {
-            val post = it as WallWallItemDto.WallWallpostFullDto
-            Post(post = post)
-            Log.d("wallitem", "!!! item = ${it}")
-        }
-    })
+fun Wall(wallResponse: WallGetResponseDto, modifier: Modifier) {
+    Column(modifier = modifier,
+        content = {
+            val posts = wallResponse.items
+            posts.forEach {
+                val post = it as WallWallItemDto.WallWallpostFullDto
+                Post(post = post)
+            }
+        })
 
 }
 
 @Composable
 fun Post(post: WallWallItemDto.WallWallpostFullDto) {
-    Box {
-        Text(text = post.text ?: "")
-        if (post.attachments != null) {
-            Log.d("attachements", post.attachments.toString())
-            PhotosGridScreen(photos = post.attachments!!.filter { it.type == WallWallpostAttachmentTypeDto.PHOTO })
-            Log.d(
-                "photos",
-                post.attachments!!.filter { it.type == WallWallpostAttachmentTypeDto.PHOTO }
-                    .toString()
-            )
-        }
+    Row() {
+        Card(
+            modifier = Modifier
+                .padding(vertical = 2.dp)
+                .fillMaxWidth()
+        ) {
+            Text(text = "Мой питомец")
+            Text(text = post.text ?: "")
+            if (post.attachments != null) {
+                PhotosGridScreen(photos = post.attachments!!.filter { it.type == WallWallpostAttachmentTypeDto.PHOTO })
+            }
 
-        Spacer(modifier = Modifier.padding(vertical = 30.dp))
+            Spacer(modifier = Modifier.padding(vertical = 30.dp))
+        }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PhotosGridScreen(photos: List<WallWallpostAttachmentDto>, modifier: Modifier = Modifier) {
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Adaptive(150.dp),
-        verticalItemSpacing = 4.dp,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        content = {
-            item() {
-                photos.forEach {
-                    PhotoCard(photo = it.photo!!)
-                }
-            }
-        },
-        modifier = Modifier.fillMaxSize()
-    )
+    Row {
+        photos.forEach {
+            PhotoCard(photo = it.photo!!)
+        }
+    }
+
 }
 
 @Composable
 fun PhotoCard(photo: PhotosPhotoDto, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ) {
-        var retryHash by remember { mutableStateOf(0) }
-        Log.d(
-            "photo url",
-            photo.sizes?.find { it.type == PhotosPhotoSizesTypeDto.X }?.url.toString()
-        )
-        SubcomposeAsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(photo.sizes?.find { it.type == PhotosPhotoSizesTypeDto.X }?.url)
-                .setParameter("retry_hash", retryHash, memoryCacheKey = null)
-                .crossfade(true)
-                .build(),
-            loading = {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .size(24.dp)
-                )
-            },
-            error = {
+    Row {
+
+        Card(
+            modifier = modifier,
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            var retryHash by remember { mutableStateOf(0) }
+            SubcomposeAsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(photo.sizes?.find { it.type == PhotosPhotoSizesTypeDto.X }?.url)
+                    .setParameter("retry_hash", retryHash, memoryCacheKey = null)
+                    .crossfade(true)
+                    .build(),
+                loading = {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .size(24.dp)
+                    )
+                },
+                error = {
 //                IconButton(
 //                    onClick = { retryHash++ }
 //                ) {
@@ -166,9 +166,10 @@ fun PhotoCard(photo: PhotosPhotoDto, modifier: Modifier = Modifier) {
 //                        contentDescription = "refresh"
 //                    )
 //                }
-                Log.d("TAAAG", "ERROR")
-            },
-            contentDescription = null
-        )
+                    Log.d("TAAAG", "ERROR")
+                },
+                contentDescription = null
+            )
+        }
     }
 }
