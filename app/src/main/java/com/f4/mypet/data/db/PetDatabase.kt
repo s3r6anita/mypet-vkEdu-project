@@ -49,8 +49,7 @@ abstract class PetDatabase : RoomDatabase() {
                     PetDatabase::class.java,
                     "pet_database"
                 )
-//                    .createFromAsset("databases/initial_db.db")
-//                    .fallbackToDestructiveMigration()
+                    .createFromAsset("databases/initial_db.db")
                     .build()
                     .also { Instance = it }
             }

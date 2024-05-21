@@ -5,16 +5,14 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.LocalDateTime
 
 class LocalDateAdapter : TypeAdapter<LocalDate?>() {
-    private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-
     override fun write(jsonWriter: JsonWriter?, value: LocalDate?) {
         if (value == null) {
             jsonWriter?.nullValue()
         } else {
-            jsonWriter?.value(value.format(dateTimeFormatter))
+            jsonWriter?.value(value.format(PetDateTimeFormatter.date))
         }
     }
 
@@ -23,7 +21,27 @@ class LocalDateAdapter : TypeAdapter<LocalDate?>() {
             jsonReader.nextNull()
             return null
         } else {
-            return LocalDate.parse(jsonReader.nextString(), dateTimeFormatter)
+            return LocalDate.parse(jsonReader.nextString(), PetDateTimeFormatter.date)
+        }
+    }
+}
+
+class LocalDateTimeAdapter : TypeAdapter<LocalDateTime?>() {
+
+    override fun write(jsonWriter: JsonWriter?, value: LocalDateTime?) {
+        if (value == null) {
+            jsonWriter?.nullValue()
+        } else {
+            jsonWriter?.value(value.format(PetDateTimeFormatter.dateTime))
+        }
+    }
+
+    override fun read(jsonReader: JsonReader): LocalDateTime? {
+        if (jsonReader.peek() == JsonToken.NULL) {
+            jsonReader.nextNull()
+            return null
+        } else {
+            return LocalDateTime.parse(jsonReader.nextString(), PetDateTimeFormatter.dateTime)
         }
     }
 }

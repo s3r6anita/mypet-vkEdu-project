@@ -5,12 +5,14 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.f4.mypet.data.db.entities.Pet
+import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.network.authentication.JwtTokenManager
 import com.f4.mypet.data.network.model.request.LoginRequest
 import com.f4.mypet.data.network.model.request.RegisterRequest
 import com.f4.mypet.data.network.model.response.Response
 import com.f4.mypet.data.network.service.AuthService
 import com.f4.mypet.data.network.service.PetService
+import com.f4.mypet.data.network.service.ProcedureService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.vk.id.AccessToken
@@ -24,6 +26,7 @@ class NetworkRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val authService: AuthService,
     private val petService: PetService,
+    private val procedureService: ProcedureService,
     private val jwtTokenManager: JwtTokenManager
 ) : NetworkRepository {
 
@@ -131,6 +134,16 @@ class NetworkRepositoryImpl @Inject constructor(
     override suspend fun getPets(): List<Pet> {
         return try {
             petService.getPets().data ?: emptyList()
+        } catch (e: HttpException) {
+            throw e
+        } catch (e: IOException) {
+            throw e
+        }
+    }
+
+    override suspend fun getProcedures(): List<Procedure> {
+        return try {
+            procedureService.getProcedures().data ?: emptyList()
         } catch (e: HttpException) {
             throw e
         } catch (e: IOException) {

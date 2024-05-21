@@ -9,5 +9,5 @@ data class Frequency(
     var option: String, // единицы измерения
     var frequency: String, // частота
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id") val id: Int
+    @ColumnInfo(name = "id") val id: Int = 0
 )

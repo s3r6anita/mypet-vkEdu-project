@@ -84,7 +84,9 @@ fun SuccessCUProcedureScreen(
     //TODO сделать update когда меняем тип, то есть с insert в таблицу title
     val titles = viewModel.titles
     val types = viewModel.types
-    val options = viewModel.options
+    val frequencyOptions = viewModel.frequencyOptions
+    val frequencyOptionsTitles = viewModel.frequencyOptionsTitles
+
     val procedureDB by viewModel.procedureUiState.collectAsState()
 
     val type by remember {
@@ -163,11 +165,11 @@ fun SuccessCUProcedureScreen(
             var frequencyExpanded by remember { mutableStateOf(false) }
             var selectedFrequency by remember {
                 mutableStateOf(
-                    if (isCreateScreen) options[0]
-                    else viewModel.frequency.option
+                    if (isCreateScreen) frequencyOptions[0]
+                    else viewModel.frequency
                 )
             }
-            var frequencyString by remember { mutableStateOf(frequency.frequency) }
+            var frequencyInProcedure by remember { mutableStateOf(procedure.frequency) }
 
 
             ExposedDropdownMenuBox(
@@ -182,7 +184,7 @@ fun SuccessCUProcedureScreen(
                         .menuAnchor()
                         .fillMaxWidth()
                         .padding(bottom = 15.dp),
-                    value = selectedFrequency,
+                    value = selectedFrequency.option,
                     readOnly = true,
                     label = { Text(stringResource(R.string.creation_procedure_screen_frequence)) },
                     onValueChange = { },
@@ -197,24 +199,24 @@ fun SuccessCUProcedureScreen(
                         frequencyExpanded = false
                     }
                 ) {
-                    options.forEach() { selectionOption ->
+                    frequencyOptions.forEach() { selectionOption ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption) },
+                            text = { Text(selectionOption.option) },
                             onClick = {
                                 selectedFrequency = selectionOption
-                                frequency = frequency.copy(option = selectionOption)
+                                procedure = procedure.copy(frequencyOption = selectionOption.id)
                                 frequencyExpanded = false
                             }
                         )
                     }
                 }
             }
-            if (selectedFrequency != options[0]) {
+            if (selectedFrequency != frequencyOptions.first()) {
                 OutlinedTextField(
-                    value = frequencyString,
+                    value = frequencyInProcedure.toString(),
                     onValueChange = {
-                        frequencyString = it
-                        frequency = frequency.copy(frequency = frequencyString)
+                        frequencyInProcedure = it
+                        procedure = procedure.copy(frequency = frequencyInProcedure)
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
@@ -223,7 +225,7 @@ fun SuccessCUProcedureScreen(
                     singleLine = true,
                     trailingIcon = {
                         IconButton(onClick = {
-                            frequencyString = ""
+                            frequencyInProcedure = ""
                         }) {
                             Icon(
                                 Icons.Default.Clear,

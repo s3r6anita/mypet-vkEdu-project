@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.f4.mypet.data.db.Repository
 import com.f4.mypet.data.db.entities.Pet
+import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.network.NetworkRepository
 import com.f4.mypet.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,7 @@ class ListProfileViewModel @Inject constructor(
 ) : ViewModel() {
     private val _petsUiState = MutableStateFlow(emptyList<Pet>())
     val petsUiState = _petsUiState.asStateFlow()
+    private val _proceduresUiState = MutableStateFlow(emptyList<Procedure>())
 
     private val _uiState = MutableStateFlow<UIState>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -32,7 +34,9 @@ class ListProfileViewModel @Inject constructor(
         viewModelScope.launch(IO) {
             try {
                 _petsUiState.value = networkRepository.getPets()
-                repository.replaceAllData(_petsUiState.value)
+                _proceduresUiState.value = networkRepository.getProcedures()
+
+                repository.replaceAllData(_petsUiState.value, _proceduresUiState.value)
                 // TODO: получать с сервера процедуры и медрекорды и сразу отправлять в локалку
             } catch (e: HttpException) {
                 _petsUiState.value = repository.getPets()

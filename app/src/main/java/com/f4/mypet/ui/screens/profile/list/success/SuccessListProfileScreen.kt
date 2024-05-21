@@ -13,7 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -44,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.profile.list.ListProfileViewModel
@@ -82,13 +83,14 @@ fun SuccessListProfileScreen(
                     // TODO: кнопка обратной связи
                     // кнопка входа
                     IconButton(onClick = {
-                        navController.navigate(Routes.Login.route) {
+                        navController.navigate(START) {
+                            popUpTo(START)
                             launchSingleTop = true
                         }
                     }) {
                         Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = stringResource(id = R.string.login_button)
+                            imageVector = Icons.AutoMirrored.Default.ExitToApp,
+                            contentDescription = stringResource(id = R.string.exit_button_description)
                         )
                     }
                 }

@@ -26,7 +26,7 @@ class CreateUpdateProcedureViewModel @Inject constructor(
 
     private val _procedureUiState = MutableStateFlow(
         Procedure(
-            0, 0, 0,
+            0, 0, "",0,
             LocalDateTime.now().withMinute(0),
             "", null,
             0, 0
@@ -36,7 +36,8 @@ class CreateUpdateProcedureViewModel @Inject constructor(
 
     var titles = emptyList<ProcedureTitle>() // список всех заголовков
     var types = emptyList<ProcedureType>() // список всех типов
-    var options = emptyList<String>() // список вариантов частоты
+    var frequencyOptions = emptyList<Frequency>() // список вариантов частоты
+    var frequencyOptionsTitles = mutableListOf<String>() // список вариантов частоты
 
     var title = ProcedureTitle(
         // заголовок создаваемой (изменяемой) процедуры
@@ -50,8 +51,7 @@ class CreateUpdateProcedureViewModel @Inject constructor(
 
     var frequency = Frequency( // частота создаваемой (изменяемой) процедуры
         option = "никогда",
-        frequency = "0",
-        id = 0
+        frequency = "0"
     )
 
     init {
@@ -59,7 +59,10 @@ class CreateUpdateProcedureViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             titles = repository.getProcedureTitlesForCU()
             types = repository.getProcedureTypes()
-            options = repository.getFrequencyOptions()
+            frequencyOptions = repository.getFrequencyOptions()
+            frequencyOptions.forEach() {
+                frequencyOptionsTitles.add(it.id, it.option)
+            }
             _uiState.update { UIState.Success }
         }
     }
@@ -73,7 +76,10 @@ class CreateUpdateProcedureViewModel @Inject constructor(
                     ?: title
                 type = types.find { type -> type.id == title.type }
                     ?: type
-                frequency = repository.getFrequency(_procedureUiState.value.frequency)
+                val frequencyDB = repository.getFrequency(_procedureUiState.value.frequencyOption)
+                if (frequencyDB != null) {
+                    frequency = frequencyDB
+                }
 
                 _uiState.update { UIState.Success }
             }
@@ -93,8 +99,7 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     fun createProcedure(procedure: Procedure, title: ProcedureTitle, frequency: Frequency) {
         viewModelScope.launch(Dispatchers.IO) {
             val titleId = repository.insertTitle(title) // start error there
-            val frequencyId = repository.insertFrequency(frequency)
-            val procedureWithTitleFreq = procedure.copy(title = titleId, frequency = frequencyId)
+            val procedureWithTitleFreq = procedure.copy(title = titleId)
             repository.insertProcedure(procedureWithTitleFreq)
         }
     }

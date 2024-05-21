@@ -16,7 +16,9 @@ import com.f4.mypet.data.network.authentication.JwtTokenDataStore
 import com.f4.mypet.data.network.authentication.JwtTokenManager
 import com.f4.mypet.data.network.service.AuthService
 import com.f4.mypet.data.network.service.PetService
+import com.f4.mypet.data.network.service.ProcedureService
 import com.f4.mypet.util.LocalDateAdapter
+import com.f4.mypet.util.LocalDateTimeAdapter
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -28,6 +30,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -50,7 +53,7 @@ annotation class AuthenticatedClient
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @[Singleton Provides]
+    @[Provides Singleton]
     fun getRepository(
         myDB: PetDatabase
     ): Repository {
@@ -63,41 +66,54 @@ object AppModule {
         )
     }
 
-    @[Singleton Provides]
+    @[Provides Singleton]
     fun provideDatabase(app: Application): PetDatabase {
         return PetDatabase.getDatabase(app)
     }
 
 
-    @[Singleton Provides]
-    fun getNetworkRepository(@ApplicationContext appContext: Context): NetworkRepository {
+    @[Provides Singleton]
+    fun getNetworkRepository(
+        @ApplicationContext appContext: Context,
+        authService: AuthService,
+        petService: PetService,
+        procedureService: ProcedureService,
+        jwtTokenManager: JwtTokenManager
+    ): NetworkRepository {
         return NetworkRepositoryImpl(
             dataStore = appContext.dataStore,
-            authService = provideNoAuthenticationApi(provideUnauthenticatedOkHttpClient()),
-            petService = provideAuthenticationApi(
-                provideAuthenticatedOkHttpClient(
-                    provideAccessTokenInterceptor(appContext),
-                    providesAuthAuthenticator(appContext)
-                )
-            ),
-            jwtTokenManager = provideJwtTokenManager(appContext.dataStore)
+            authService = authService,
+            petService = petService,
+            procedureService = procedureService,
+            jwtTokenManager = jwtTokenManager
         )
     }
 
 
     @[Provides Singleton]
-    fun provideJwtTokenManager(dataStore: DataStore<Preferences>): JwtTokenManager {
-        return JwtTokenDataStore(dataStore = dataStore)
+    fun providePetService(retrofit: Retrofit): PetService {
+        return retrofit.create(PetService::class.java)
     }
 
     @[Provides Singleton]
-    fun provideAccessTokenInterceptor(@ApplicationContext appContext: Context): AccessTokenInterceptor {
-        return AccessTokenInterceptor(provideJwtTokenManager(appContext.dataStore))
+    fun provideProcedureService(retrofit: Retrofit): ProcedureService {
+        return retrofit.create(ProcedureService::class.java)
+    }
+
+
+    @[Provides Singleton]
+    fun provideJwtTokenManager(@ApplicationContext appContext: Context): JwtTokenManager {
+        return JwtTokenDataStore(appContext.dataStore)
     }
 
     @[Provides Singleton]
-    fun providesAuthAuthenticator(@ApplicationContext appContext: Context): AuthAuthenticator {
-        return AuthAuthenticator(provideJwtTokenManager(appContext.dataStore))
+    fun provideAccessTokenInterceptor(jtm: JwtTokenManager): AccessTokenInterceptor {
+        return AccessTokenInterceptor(tokenManager = jtm)
+    }
+
+    @[Provides Singleton]
+    fun providesAuthAuthenticator(jtm: JwtTokenManager): AuthAuthenticator {
+        return AuthAuthenticator(tokenManager = jtm)
     }
 
     /** For requests requiring the access token  */
@@ -120,17 +136,17 @@ object AppModule {
 
     /** For requests requiring the access token  */
     @[Provides Singleton]
-    fun provideAuthenticationApi(@AuthenticatedClient okHttpClient: OkHttpClient): PetService {
+    fun provideAuthenticationApi(@AuthenticatedClient okHttpClient: OkHttpClient): Retrofit {
         val baseUrl = "https://mypet-backend-s3r6.amvera.io/"
         val gsonBuilder = GsonBuilder()
             .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
+            .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
             .create()
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
             .client(okHttpClient)
             .build()
-            .create(PetService::class.java)
     }
 
 
