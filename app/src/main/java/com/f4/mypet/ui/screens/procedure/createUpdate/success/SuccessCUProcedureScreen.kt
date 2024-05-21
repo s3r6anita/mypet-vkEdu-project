@@ -1,11 +1,14 @@
 package com.f4.mypet.ui.screens.procedure.createUpdate.success
 
 import android.app.AlarmManager
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,6 +58,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -77,16 +81,22 @@ import com.f4.mypet.util.PresentOrFutureSelectableDates
 import com.f4.mypet.util.validate
 import kotlinx.collections.immutable.toImmutableList
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 fun scheduleNotification(context: Context, title: String, message: String, notificationTime: LocalDateTime) {
+    // Логирование времени установки уведомления
+    Log.d("NotificationMY", "Setting up notification for time: $notificationTime")
     val intent = Intent(context, AlarmReceiver::class.java).apply {
         putExtra("notification_title", title)
         putExtra("notification_message", message)
     }
-    val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    val pendingIntent = PendingIntent.getBroadcast(
+        context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     val utcZoneId = ZoneId.of("UTC")
@@ -95,10 +105,25 @@ fun scheduleNotification(context: Context, title: String, message: String, notif
 
     alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
 }
+fun createNotificationChannel(context: Context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channelId = "notification_channel"
+        val channelName = "My Notification Channel"
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val notificationChannel = NotificationChannel(channelId, channelName, importance).apply {
+            description = "Channel description"
+        }
+
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(notificationChannel)
+    }
+}
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val title = intent.getStringExtra("notification_title") ?: "Процедура"
         val message = intent.getStringExtra("notification_message") ?: "Время выполнить процедуру"
+
+        Log.d("Notification", "Received broadcast with title: $title and message: $message")
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationId = 1
@@ -123,6 +148,7 @@ fun SuccessCUProcedureScreen(
     viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 ) {
     //TODO сделать update когда меняем тип, то есть с insert в таблицу title
+    val context = LocalContext.current
     val titles = viewModel.titles
     val types = viewModel.types
     val frequencyOptions = viewModel.frequencyOptions
@@ -612,14 +638,21 @@ fun SuccessCUProcedureScreen(
             )
             val createDelayedNotification = remember { mutableStateOf(false) }
             if (createDelayedNotification.value) {
-                val title = viewModel.title // Получаем заголовок процедуры
+                val title = title.name // Получаем заголовок процедуры
                 val message = "Время выполнить процедуру: $title"
-                val moscowZoneId = ZoneId.of("Europe/Moscow")
-                val moscowDateTime = LocalDateTime.of(2024, 4, 23, 19, 14)
-                val moscowZonedDateTime = ZonedDateTime.of(moscowDateTime, moscowZoneId)
-                val utcZoneId = ZoneId.of("UTC")
-                val notificationTime = moscowZonedDateTime.withZoneSameInstant(utcZoneId).toLocalDateTime()
-                scheduleNotification(context, title, message, notificationTime)
+
+                // Получаем дату и время из процедуры
+                val reminderDate = procedure.reminder!!.format(PetDateTimeFormatter.date)
+                val reminderTime = procedure.reminder!!.format(PetDateTimeFormatter.time)
+
+                // Создаем LocalDateTime из даты и времени
+                val reminderDateTime = LocalDateTime.of(
+                    LocalDate.parse(reminderDate, PetDateTimeFormatter.date), // Преобразуем дату из строки в LocalDate
+                    LocalTime.parse(reminderTime, PetDateTimeFormatter.time)  // Преобразуем время из строки в LocalTime
+                )
+                // Логирование времени перед передачей в scheduleNotification
+                Log.d("NotificationMY", "Reminder DateTime: $reminderDateTime")
+                scheduleNotification(context, title, message, reminderDateTime)
                 createDelayedNotification.value = false
             }
             // сохранение
@@ -629,7 +662,7 @@ fun SuccessCUProcedureScreen(
                     modifier = Modifier.padding(20.dp),
                     onClick = {
                         //TODO Проверка на формат даты и на "дату из будущего"
-                        if (enableNotifications && timeNotificationString.isNotEmpty()) {
+                        if (enableNotifications) {
                             createDelayedNotification.value = true
                         }
 

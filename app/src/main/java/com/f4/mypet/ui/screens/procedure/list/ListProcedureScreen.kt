@@ -86,7 +86,7 @@ fun ListProcedureScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            //PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
+            PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
 
             // список процедур
             Column(
