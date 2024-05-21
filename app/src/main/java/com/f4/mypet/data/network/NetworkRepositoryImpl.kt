@@ -155,18 +155,17 @@ class NetworkRepositoryImpl @Inject constructor(
         const val serverError = 503
         val VK_TOKEN_KEY = stringPreferencesKey("vk_token")
 
-    }
-}
+        object GsonSerializer {
+            val gson = Gson()
 
-object GsonSerializer {
-    val gson = Gson()
+            fun <T> toJson(obj: T): String {
+                return gson.toJson(obj)
+            }
 
-    fun <T> toJson(obj: T): String {
-        return gson.toJson(obj)
-    }
-
-    inline fun <reified T> fromJson(json: String): T {
-        val type = object : TypeToken<T>() {}.type
-        return gson.fromJson(json, type)
+            inline fun <reified T> fromJson(json: String): T {
+                val type = object : TypeToken<T>() {}.type
+                return gson.fromJson(json, type)
+            }
+        }
     }
 }

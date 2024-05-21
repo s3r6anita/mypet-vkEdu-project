@@ -6,7 +6,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface ProcedureService: MyPetService {
+interface ProcedureService {
     @GET("procedure")
     suspend fun getProcedures(): Response<List<Procedure>>
 
