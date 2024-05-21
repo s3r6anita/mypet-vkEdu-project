@@ -1,7 +1,14 @@
 package com.f4.mypet.ui.screens.procedure.createUpdate.success
 
+import android.app.AlarmManager
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,6 +60,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
@@ -71,7 +79,40 @@ import kotlinx.collections.immutable.toImmutableList
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
+fun scheduleNotification(context: Context, title: String, message: String, notificationTime: LocalDateTime) {
+    val intent = Intent(context, AlarmReceiver::class.java).apply {
+        putExtra("notification_title", title)
+        putExtra("notification_message", message)
+    }
+    val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+    val utcZoneId = ZoneId.of("UTC")
+    val utcZonedDateTime = notificationTime.atZone(utcZoneId)
+    val triggerAtMillis = utcZonedDateTime.toInstant().toEpochMilli()
+
+    alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
+}
+class AlarmReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val title = intent.getStringExtra("notification_title") ?: "Процедура"
+        val message = intent.getStringExtra("notification_message") ?: "Время выполнить процедуру"
+
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationId = 1
+
+        val notification = NotificationCompat.Builder(context, "notification_channel")
+            .setSmallIcon(R.drawable.pet_icon)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+
+        notificationManager.notify(notificationId, notification)
+    }
+}
 @Suppress("CyclomaticComplexMethod", "LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -569,12 +610,28 @@ fun SuccessCUProcedureScreen(
                 shape = RoundedCornerShape(12.dp),
                 colors = getOutLinedTextFieldColors()
             )
-
+            val createDelayedNotification = remember { mutableStateOf(false) }
+            if (createDelayedNotification.value) {
+                val title = viewModel.title // Получаем заголовок процедуры
+                val message = "Время выполнить процедуру: $title"
+                val moscowZoneId = ZoneId.of("Europe/Moscow")
+                val moscowDateTime = LocalDateTime.of(2024, 4, 23, 19, 14)
+                val moscowZonedDateTime = ZonedDateTime.of(moscowDateTime, moscowZoneId)
+                val utcZoneId = ZoneId.of("UTC")
+                val notificationTime = moscowZonedDateTime.withZoneSameInstant(utcZoneId).toLocalDateTime()
+                scheduleNotification(context, title, message, notificationTime)
+                createDelayedNotification.value = false
+            }
             // сохранение
-            Button(
-                modifier = Modifier.padding(20.dp),
-                onClick = {
+            Box(modifier = Modifier
+                .fillMaxSize()) {
+                Button(
+                    modifier = Modifier.padding(20.dp),
+                    onClick = {
                         //TODO Проверка на формат даты и на "дату из будущего"
+                        if (enableNotifications && timeNotificationString.isNotEmpty()) {
+                            createDelayedNotification.value = true
+                        }
 
                         if (isCreateScreen) {
                             procedure = procedure.copy(pet = profileId)
@@ -584,15 +641,16 @@ fun SuccessCUProcedureScreen(
                             viewModel.updateProcedure(procedure, title, frequency)
                             navController.navigateUp()
                         }
-                },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.save_button_description),
-                    Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
+                    },
+                    border = BorderStroke(1.dp, GreenButton),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.save_button_description),
+                        Modifier.padding(start = 10.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
         }
     }

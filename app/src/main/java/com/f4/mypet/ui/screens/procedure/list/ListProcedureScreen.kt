@@ -2,6 +2,7 @@ package com.f4.mypet.ui.screens.procedure.list
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -78,14 +79,14 @@ fun ListProcedureScreen(
         },
     ) { innerPadding ->
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
+            //PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
 
             // список процедур
             Column(
@@ -102,28 +103,32 @@ fun ListProcedureScreen(
                     )
                 }
             }
-
-            // кнопка ADD
-            Button(
-                modifier = Modifier.padding(vertical = 20.dp),
-                onClick = {
-                    navController.navigate(Routes.CreateProcedure.route + "/" + profileId) {
-                        launchSingleTop = true
-                    }
-                },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.add_button_icon_description)
-                )
-                Text(
-                    text = stringResource(id = R.string.add_button_description),
-                    Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
+            Box(modifier = Modifier
+                .fillMaxSize()) {
+                // кнопка ADD
+                Button(
+                    modifier = Modifier.padding(vertical = 20.dp)
+                        .align(Alignment.BottomCenter),
+                    onClick = {
+                        navController.navigate(Routes.CreateProcedure.route + "/" + profileId) {
+                            launchSingleTop = true
+                        }
+                    },
+                    border = BorderStroke(1.dp, GreenButton),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(id = R.string.add_button_icon_description)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.add_button_description),
+                        Modifier.padding(start = 10.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
+
         }
     }
 }
