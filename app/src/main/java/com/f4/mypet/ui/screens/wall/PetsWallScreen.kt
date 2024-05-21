@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.rememberScrollState
@@ -86,11 +87,14 @@ fun PetsWallScreen(
 
 @Composable
 fun Wall(wallResponse: WallGetResponseDto) {
-    wallResponse.items.forEach {
-        val post = it as WallWallItemDto.WallWallpostFullDto
-        Post(post = post)
-        Log.d("wallitem", "!!! item = ${it}")
-    }
+    LazyColumn(content = {
+        wallResponse.items.forEach {
+            val post = it as WallWallItemDto.WallWallpostFullDto
+            Post(post = post)
+            Log.d("wallitem", "!!! item = ${it}")
+        }
+    })
+
 }
 
 @Composable
@@ -119,7 +123,7 @@ fun PhotosGridScreen(photos: List<WallWallpostAttachmentDto>, modifier: Modifier
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = {
-            items(count = photos.size) {
+            item() {
                 photos.forEach {
                     PhotoCard(photo = it.photo!!)
                 }
