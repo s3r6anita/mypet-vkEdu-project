@@ -1,6 +1,7 @@
 package com.f4.mypet.ui.screens.medcard.createUpdate
 
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CreateUpdateMedRecordScreen(
     navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
     isCreateScreen: Boolean,
     profileId: Int = -1,
     medRecordId: Int = -1,
@@ -36,6 +38,7 @@ fun CreateUpdateMedRecordScreen(
         UIState.Success -> SuccessCUMedCardScreen(
             isCreateScreen = isCreateScreen,
             navController = navController,
+            snackbarHostState = snackbarHostState,
             profileId = profileId
         )
 

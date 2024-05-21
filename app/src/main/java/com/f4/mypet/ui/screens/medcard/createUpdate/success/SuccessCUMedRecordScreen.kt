@@ -10,20 +10,25 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.medcard.createUpdate.CreateUpdateMedRecordViewModel
 import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordDateField
@@ -31,6 +36,7 @@ import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordNo
 import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordTimeField
 import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordTitleField
 import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.SaveButton
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @Suppress("CyclomaticComplexMethod", "LongMethod")
@@ -38,18 +44,31 @@ import java.time.LocalDateTime
 @Composable
 fun SuccessCUMedCardScreen(
     navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
     isCreateScreen: Boolean,
     profileId: Int,
     viewModel: CreateUpdateMedRecordViewModel = hiltViewModel()
 ) {
+    val scope = rememberCoroutineScope()
+    val localContext = LocalContext.current
 
     val medRecordDB by viewModel.medRecordUiState.collectAsState()
 
     var medRecord by remember {
         mutableStateOf(medRecordDB)
     }
+
     LaunchedEffect(medRecordDB) {
         medRecord = medRecordDB
+    }
+
+    val showIncorrectDateMsg: (e: IllegalArgumentException) -> Unit = {
+        scope.launch {
+            snackbarHostState.showSnackbar(
+                it.message
+                    ?: localContext.resources.getString(R.string.incorrect_date)
+            )
+        }
     }
 
     Scaffold(
@@ -66,6 +85,13 @@ fun SuccessCUMedCardScreen(
                 actions = {}
             )
         },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState
+            ) {
+                MyPetSnackBar(it.visuals.message)
+            }
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -108,7 +134,9 @@ fun SuccessCUMedCardScreen(
                                     medRecord.date.toLocalTime()
                                 )
                             )
-                        }
+                        },
+                        onDateIncorrect = showIncorrectDateMsg,
+                        dbDate = medRecord.date
                     )
                     MedRecordTimeField(
                         isCreateScreen = isCreateScreen,
@@ -120,7 +148,8 @@ fun SuccessCUMedCardScreen(
                                     selectedTime.toLocalTime()
                                 )
                             )
-                        }
+                        },
+                        dbTime = medRecord.date
                     )
                     // заметки
                     MedRecordNotesField(
