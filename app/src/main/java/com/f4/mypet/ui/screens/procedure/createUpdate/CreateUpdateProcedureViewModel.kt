@@ -7,6 +7,7 @@ import com.f4.mypet.data.db.entities.Frequency
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
+import com.f4.mypet.data.network.NetworkRepository
 import com.f4.mypet.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateUpdateProcedureViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: Repository,
+    private val networkRepository: NetworkRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UIState>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -98,6 +100,7 @@ class CreateUpdateProcedureViewModel @Inject constructor(
             val titleId = repository.insertTitle(title) // start error there
             val procedureWithTitleFreq = procedure.copy(title = titleId)
             repository.insertProcedure(procedureWithTitleFreq)
+//            networkRepository.insertProcedure(procedureWithTitleFreq) TODO: починить
         }
     }
 }

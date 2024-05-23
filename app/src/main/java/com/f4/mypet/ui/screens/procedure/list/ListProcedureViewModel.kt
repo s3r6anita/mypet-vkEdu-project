@@ -6,7 +6,6 @@ import com.f4.mypet.data.db.Repository
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
-import com.f4.mypet.data.network.NetworkRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListProcedureViewModel @Inject constructor(
-    private val repository: Repository,
-    private val networkRepository: NetworkRepository
+    private val repository: Repository
 ) : ViewModel() {
     private val _proceduresUiState = MutableStateFlow(emptyList<Procedure>())
     val proceduresUiState = _proceduresUiState.asStateFlow()

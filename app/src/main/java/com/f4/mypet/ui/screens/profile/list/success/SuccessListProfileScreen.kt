@@ -168,7 +168,7 @@ fun SuccessListProfileScreen(
 
 //            кнопка добавления нового питомца в список
             Button(
-                modifier = Modifier.padding(20.dp),
+                modifier = Modifier.padding(0.dp),
                 onClick = {
                     globalScope.coroutineContext.cancelChildren()
                     navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }

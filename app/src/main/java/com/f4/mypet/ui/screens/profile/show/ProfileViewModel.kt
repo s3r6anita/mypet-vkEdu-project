@@ -34,19 +34,19 @@ class ProfileViewModel @Inject constructor(
     fun getPetProfile(petId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             if (petId != -1) {
-                // получение локально, т.к. данные обновились при получении списка питомцев
                 _petUiState.value = repository.getPet(petId)
+                // пока подтягивание с сервера отключено
+//                _petUiState.value = networkRepository.getPet(petId) ?: _petUiState.value
             }
         }
     }
 
 
     fun removePet(pet: Pet) {
-        _msg.value = ""
         viewModelScope.launch(Dispatchers.IO) {
-//            repository.removePet(pet)
-//            repository.removeProceduresForPet(pet.id)
-//            repository.removeMedRecordsForPet(pet.id)
+            repository.removePet(pet)
+            repository.removeProceduresForPet(pet.id)
+            repository.removeMedRecordsForPet(pet.id)
             _msg.value = networkRepository.removePet(pet.id)
         }
     }

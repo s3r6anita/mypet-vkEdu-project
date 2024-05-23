@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
 
-val regex = "^[а-яА-Я-\\s-]+$".toRegex()
+val regex = "^[а-яА-ЯёЁ\\s-]+\$".toRegex()
 val dateRegex = "^\\d{2}\\.\\d{2}\\.\\d{4}$".toRegex()
 val chipNumberRegex = "^\\d{15}$".toRegex()
 val emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()

@@ -14,10 +14,15 @@ interface NetworkRepository {
     suspend fun login(data: LoginRequest): String?
     suspend fun register(data: RegisterRequest): String?
 
+    suspend fun insertPet(pet: Pet): String?
     suspend fun getPets(): List<Pet>
-//    suspend fun insertPet(): List<Pet>
-//    suspend fun updatePet(): List<Pet>
+    suspend fun getPet(id: Int): Pet?
+    suspend fun updatePet(pet: Pet): String?
     suspend fun removePet(id: Int): String?
 
+    suspend fun insertProcedure(procedure: Procedure): String?
     suspend fun getProcedures(): List<Procedure>
+
+//    suspend fun updateProcedure(procedure: Procedure): String?
+//    suspend fun removeProcedure(id: Int): String?
 }

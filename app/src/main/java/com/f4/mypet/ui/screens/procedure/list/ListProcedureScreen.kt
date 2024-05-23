@@ -105,9 +105,8 @@ fun ListProcedureScreen(
 
             // кнопка ADD
             Button(
-                modifier = Modifier.padding(vertical = 20.dp),
                 onClick = {
-                    navController.navigate(Routes.CreateProcedure.route + "/" + profileId) {
+                    navController.navigate("${Routes.CreateProcedure.route}/$profileId") {
                         launchSingleTop = true
                     }
                 },

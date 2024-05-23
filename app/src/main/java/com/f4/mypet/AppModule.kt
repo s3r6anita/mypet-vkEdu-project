@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-private const val UNAUTHENTICATED_TIMEOUT = 3L
+private const val UNAUTHENTICATED_TIMEOUT = 5L
 private const val TIMEOUT = 10L
 private const val AUTH_PREFERENCES = "my_preferences"
 

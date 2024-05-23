@@ -1,5 +1,6 @@
 package com.f4.mypet.ui.screens.procedure.createUpdate.success
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -95,6 +96,8 @@ fun SuccessCUProcedureScreen(
     var title by remember {
         mutableStateOf(viewModel.title)
     }
+    Log.d("title", title.toString())
+    Log.d("title1", viewModel.title.toString())
     var frequency by remember {
         mutableStateOf(viewModel.frequency)
     }
@@ -578,9 +581,11 @@ fun SuccessCUProcedureScreen(
 
                         if (isCreateScreen) {
                             procedure = procedure.copy(pet = profileId)
+                            title = title.copy(type = selectedType.id)
                             viewModel.createProcedure(procedure, title)
                             navController.navigateUp()
                         } else {
+                            title = title.copy(type = selectedType.id)
                             viewModel.updateProcedure(procedure, title, frequency)
                             navController.navigateUp()
                         }

@@ -7,6 +7,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.network.authentication.JwtTokenManager
+import com.f4.mypet.data.network.model.request.CreatePetRequest
+import com.f4.mypet.data.network.model.request.CreateProcedureRequest
 import com.f4.mypet.data.network.model.request.LoginRequest
 import com.f4.mypet.data.network.model.request.RegisterRequest
 import com.f4.mypet.data.network.model.response.Response
@@ -114,6 +116,70 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getPets(): List<Pet> {
+        return try {
+            petService.getPets().data ?: emptyList()
+        } catch (e: HttpException) {
+            throw e
+        } catch (e: IOException) {
+            throw e
+        }
+    }
+
+    override suspend fun getPet(id: Int): Pet? {
+        return try {
+            petService.getPet(id).data
+        } catch (e: HttpException) {
+            throw e
+        } catch (e: IOException) {
+            throw e
+        }
+    }
+
+    override suspend fun insertPet(pet: Pet): String? {
+        val request = CreatePetRequest(
+            name = pet.name,
+            kind = pet.kind,
+            breed = pet.breed,
+            sex = pet.sex,
+            birthday = pet.birthday,
+            color = pet.color,
+            coat = pet.coat,
+            microchipNumber = pet.microchipNumber
+        )
+        return try {
+            val response = petService.createPet(request)
+            response.data ?: response.msg
+        } catch (e: HttpException) {
+            if (e.code() == serverError) {
+                "Сервер недоступен"
+            } else {
+                val errorResponseBody = e.response()?.errorBody()?.string()
+                val errorResponse = Gson().fromJson(errorResponseBody, Response::class.java)
+                errorResponse.msg ?: "Ошибка сериализации ответа сервера"
+            }
+        } catch (e: IOException) {
+            "Превышено время ожидания. Сервер недоступен"
+        }
+    }
+
+    override suspend fun updatePet(pet: Pet): String? {
+        return try {
+            val response = petService.updatePet(pet)
+            response.data ?: response.msg
+        } catch (e: HttpException) {
+            if (e.code() == serverError) {
+                "Сервер недоступен"
+            } else {
+                val errorResponseBody = e.response()?.errorBody()?.string()
+                val errorResponse = Gson().fromJson(errorResponseBody, Response::class.java)
+                errorResponse.msg ?: "Ошибка сериализации ответа сервера"
+            }
+        } catch (e: IOException) {
+            "Превышено время ожидания. Сервер недоступен"
+        }
+    }
+
     override suspend fun removePet(id: Int): String? {
         return try {
             val response = petService.removePet(id)
@@ -131,13 +197,31 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPets(): List<Pet> {
+    override suspend fun insertProcedure(procedure: Procedure): String? {
+        val request = CreateProcedureRequest(
+            title = procedure.title,
+            isDone = procedure.isDone,
+            frequency = procedure.frequency,
+            frequencyOption = procedure.frequencyOption,
+            dateDone = procedure.dateDone,
+            notes = procedure.notes,
+            reminder = procedure.reminder,
+            pet = procedure.pet,
+            inMedCard = procedure.inMedCard
+        )
         return try {
-            petService.getPets().data ?: emptyList()
+            val response = procedureService.createProcedure(request)
+            response.data ?: response.msg
         } catch (e: HttpException) {
-            throw e
+            if (e.code() == serverError) {
+                "Сервер недоступен"
+            } else {
+                val errorResponseBody = e.response()?.errorBody()?.string()
+                val errorResponse = Gson().fromJson(errorResponseBody, Response::class.java)
+                errorResponse.msg ?: "Ошибка сериализации ответа сервера"
+            }
         } catch (e: IOException) {
-            throw e
+            "Превышено время ожидания. Сервер недоступен"
         }
     }
 

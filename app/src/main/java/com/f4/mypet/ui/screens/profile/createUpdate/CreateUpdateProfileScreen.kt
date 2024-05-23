@@ -417,7 +417,9 @@ fun CreateUpdateProfileScreen(
                             launchSingleTop = true
                         }
                     } else {
-                        viewModel.updatePet(pet)
+                        scope.launch {
+                            viewModel.updatePet(pet)
+                        }
                         navController.navigateUp()
                     }
                 }

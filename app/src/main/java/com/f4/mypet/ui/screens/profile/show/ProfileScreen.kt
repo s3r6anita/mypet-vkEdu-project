@@ -71,8 +71,14 @@ fun ProfileScreen(
     }
 
     LaunchedEffect(msg) {
-        if (msg != "" && msg != null) {
+        if (msg != null && msg != "") {
             showStatusDialog = true
+        }
+        if (msg == null) {
+            navController.navigate(Routes.ListProfile.route) {
+                popUpTo(Routes.ListProfile.route)
+                launchSingleTop = true
+            }
         }
     }
 
@@ -177,7 +183,6 @@ fun ProfileScreen(
 
             // кнопка редактирования
             Button(
-                modifier = Modifier.padding(bottom = 40.dp),
                 onClick = {
                     navController.navigate("${Routes.UpdateProfile.route}/$profileId") {
                         launchSingleTop = true
