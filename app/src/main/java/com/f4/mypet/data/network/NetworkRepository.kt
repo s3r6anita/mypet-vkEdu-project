@@ -1,5 +1,6 @@
 package com.f4.mypet.data.network
 
+import com.f4.mypet.data.db.entities.MedRecord
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.network.model.request.LoginRequest
@@ -22,7 +23,11 @@ interface NetworkRepository {
 
     suspend fun insertProcedure(procedure: Procedure): String?
     suspend fun getProcedures(): List<Procedure>
+//    suspend fun updateProcedure(procedure: Procedure): String?
+//    suspend fun removeProcedure(id: Int): String?
 
+//    suspend fun insertProcedure(procedure: Procedure): String?
+    suspend fun getMedRecords(): List<MedRecord>
 //    suspend fun updateProcedure(procedure: Procedure): String?
 //    suspend fun removeProcedure(id: Int): String?
 }

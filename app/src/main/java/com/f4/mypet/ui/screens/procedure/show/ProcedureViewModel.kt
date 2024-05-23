@@ -23,27 +23,17 @@ class ProcedureViewModel @Inject constructor(
 ) : ViewModel() {
     private val _procedureUiState = MutableStateFlow(
         Procedure(
-            0, 0, "",0,
+            0, 0, "", 0,
             LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
             "", LocalDateTime.parse("01.01.1001 00:00", PetDateTimeFormatter.dateTime),
             0, 0, 0
         )
     )
-    var title = ProcedureTitle(
-        name = "Неизвестно",
-        type = -1,
-        id = -1
-    )
-    var type = ProcedureType(
-        name = "Неизвестно",
-        id = title.type
-    )
-    var frequency = Frequency(
-        "Никогда",
-        "0"
-    )
-
     val procedureUiState = _procedureUiState.asStateFlow()
+
+    var title = ProcedureTitle(name = "", type = -1, id = -1)
+    var type = ProcedureType(name = "", id = title.type)
+    var frequency = Frequency(option = "Никогда", frequency = "0")
 
     fun getProcedure(procedureId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -58,12 +48,16 @@ class ProcedureViewModel @Inject constructor(
             when (frequency.option) {
                 FrequencyOptions.Minutes.period -> frequency.frequency =
                     _procedureUiState.value.frequency + FrequencyOptions.Minutes.abbreviation
+
                 FrequencyOptions.Hours.period -> frequency.frequency =
                     _procedureUiState.value.frequency + FrequencyOptions.Hours.abbreviation
+
                 FrequencyOptions.Days.period -> frequency.frequency =
                     _procedureUiState.value.frequency + FrequencyOptions.Days.abbreviation
+
                 FrequencyOptions.Weeks.period -> frequency.frequency =
                     _procedureUiState.value.frequency + FrequencyOptions.Weeks.abbreviation
+
                 else -> frequency.frequency = FrequencyOptions.Never.abbreviation
             }
         }
@@ -76,3 +70,4 @@ class ProcedureViewModel @Inject constructor(
         }
     }
 }
+

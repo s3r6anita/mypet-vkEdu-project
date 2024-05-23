@@ -98,7 +98,6 @@ fun ListMedRecords(
 
             // кнопка добавления
             Button(
-                modifier = Modifier.padding(bottom = 20.dp),
                 onClick = {
                     navController.navigate(Routes.CreateMedRecord.route) {
                         launchSingleTop = true

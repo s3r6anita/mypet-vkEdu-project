@@ -24,7 +24,7 @@ interface Repository {
     suspend fun getPets(): List<Pet>
     suspend fun getPet(petId: Int): Pet
     suspend fun getPetForCU(petId: Int): Pet
-    suspend fun replaceAllData(pets: List<Pet>, procedures: List<Procedure>)
+    suspend fun replaceAllData(pets: List<Pet>, procedures: List<Procedure>, medRecords: List<MedRecord>)
     suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>>
     suspend fun getProcedureTitles(): Flow<List<ProcedureTitle>>
     suspend fun getProcedureTitlesForCU(): List<ProcedureTitle>
@@ -83,13 +83,13 @@ class DBRepository @Inject constructor(
         return petDAO.getPetForCU(petId)
     }
 
-    override suspend fun replaceAllData(pets: List<Pet>, procedures: List<Procedure>) {
+    override suspend fun replaceAllData(pets: List<Pet>, procedures: List<Procedure>, medRecords: List<MedRecord>) {
         petDAO.deleteAll()
         procedureDAO.deleteAll()
         medRecordDAO.deleteAll()
         petDAO.insertAll(pets)
         procedureDAO.insertAll(procedures)
-//        medRecordDAO.insertAll(medRecords)
+        medRecordDAO.insertAll(medRecords)
     }
 
     override suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>> {

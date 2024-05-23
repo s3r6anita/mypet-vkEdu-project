@@ -75,7 +75,7 @@ fun MedRecordScreen(
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(R.string.therapy_title),
+                text = stringResource(R.string.medrecord_show_title),
                 canNavigateBack = true,
                 navigateUp = { navController.navigateUp() }
             )
@@ -115,14 +115,12 @@ fun MedRecordScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Bottom,
                 modifier = Modifier
+                    .padding(bottom = 40.dp)
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
                 // Кнопка редактирования
                 Button(
-                    modifier = Modifier
-                        .padding(bottom = 40.dp)
-                        .weight(1f),
                     contentPadding = PaddingValues(start = 1.dp, end = 1.dp),
                     border = BorderStroke(1.dp, GreenButton),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
@@ -145,9 +143,6 @@ fun MedRecordScreen(
                 Button(
                     border = BorderStroke(1.dp, RedButton),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = RedButton),
-                    modifier = Modifier
-                        .padding(bottom = 40.dp)
-                        .weight(1f),
                     onClick = {
                         openAlertDialog = true
                     },

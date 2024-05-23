@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.f4.mypet.data.db.entities.MedRecord
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.network.authentication.JwtTokenManager
@@ -13,6 +14,7 @@ import com.f4.mypet.data.network.model.request.LoginRequest
 import com.f4.mypet.data.network.model.request.RegisterRequest
 import com.f4.mypet.data.network.model.response.Response
 import com.f4.mypet.data.network.service.AuthService
+import com.f4.mypet.data.network.service.MedRecordService
 import com.f4.mypet.data.network.service.PetService
 import com.f4.mypet.data.network.service.ProcedureService
 import com.google.gson.Gson
@@ -29,6 +31,7 @@ class NetworkRepositoryImpl @Inject constructor(
     private val authService: AuthService,
     private val petService: PetService,
     private val procedureService: ProcedureService,
+    private val medRecordService: MedRecordService,
     private val jwtTokenManager: JwtTokenManager
 ) : NetworkRepository {
 
@@ -45,7 +48,6 @@ class NetworkRepositoryImpl @Inject constructor(
         }.first() ?: ""
         return GsonSerializer.fromJson<AccessToken>(tokenAsJson)
     }
-
 
     override suspend fun login(data: LoginRequest): String? {
         try {
@@ -228,6 +230,18 @@ class NetworkRepositoryImpl @Inject constructor(
     override suspend fun getProcedures(): List<Procedure> {
         return try {
             procedureService.getProcedures().data ?: emptyList()
+        } catch (e: HttpException) {
+            throw e
+        } catch (e: IOException) {
+            throw e
+        }
+    }
+
+
+
+    override suspend fun getMedRecords(): List<MedRecord> {
+        return try {
+            medRecordService.getMedRecords().data ?: emptyList()
         } catch (e: HttpException) {
             throw e
         } catch (e: IOException) {
