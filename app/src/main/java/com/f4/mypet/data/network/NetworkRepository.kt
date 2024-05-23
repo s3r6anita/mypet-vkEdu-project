@@ -23,6 +23,7 @@ interface NetworkRepository {
 
     suspend fun insertProcedure(procedure: Procedure): String?
     suspend fun getProcedures(): List<Procedure>
+    suspend fun getPetProcedures(id: Int): List<Procedure>
 //    suspend fun updateProcedure(procedure: Procedure): String?
 //    suspend fun removeProcedure(id: Int): String?
 

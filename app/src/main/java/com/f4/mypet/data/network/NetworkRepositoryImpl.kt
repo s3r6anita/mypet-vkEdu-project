@@ -33,7 +33,7 @@ class NetworkRepositoryImpl @Inject constructor(
     private val procedureService: ProcedureService,
     private val medRecordService: MedRecordService,
     private val jwtTokenManager: JwtTokenManager
-) : NetworkRepository {
+) : NetworkRepository, ApiHandler  {
 
     override suspend fun saveVKtoken(token: AccessToken) {
         val jsonFromToken = GsonSerializer.toJson(token)
@@ -237,6 +237,15 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getPetProcedures(id: Int): List<Procedure> {
+        return try {
+            procedureService.getPetProcedures(id).data ?: emptyList()
+        } catch (e: HttpException) {
+            throw e
+        } catch (e: IOException) {
+            throw e
+        }
+    }
 
 
     override suspend fun getMedRecords(): List<MedRecord> {

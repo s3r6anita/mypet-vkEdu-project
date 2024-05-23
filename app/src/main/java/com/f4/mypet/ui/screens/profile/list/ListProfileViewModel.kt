@@ -23,10 +23,10 @@ class ListProfileViewModel @Inject constructor(
     private val repository: Repository,
     private val networkRepository: NetworkRepository
 ) : ViewModel() {
-    private val _petsUiState = MutableStateFlow(emptyList<Pet>())
-    val petsUiState = _petsUiState.asStateFlow()
     private val _proceduresUiState = MutableStateFlow(emptyList<Procedure>())
     private val _medRecordsUiState = MutableStateFlow(emptyList<MedRecord>())
+    private val _petsUiState = MutableStateFlow(emptyList<Pet>())
+    val petsUiState = _petsUiState.asStateFlow()
 
     private val _uiState = MutableStateFlow<UIState>(UIState.Loading)
     val uiState = _uiState.asStateFlow()

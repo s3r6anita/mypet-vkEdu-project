@@ -60,9 +60,10 @@ import kotlinx.coroutines.cancelChildren
 fun SuccessListProfileScreen(
     snackbarHostState: SnackbarHostState,
     globalScope: CoroutineScope,
-    navController: NavHostController,
+    getNavController: () -> NavHostController,
     viewModel: ListProfileViewModel = hiltViewModel()
 ) {
+    val navController = getNavController()
     val pets by viewModel.petsUiState.collectAsState()
 
     val preferences = LocalContext.current.getSharedPreferences("pref", Context.MODE_PRIVATE)
