@@ -7,6 +7,7 @@ import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.network.NetworkRepository
+import com.f4.mypet.data.network.model.NetworkResult
 import com.f4.mypet.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,8 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -62,16 +61,19 @@ class ListProcedureViewModel @Inject constructor(
     fun refreshProcedures(petId: Int) {
         _uiState.update { UIState.Loading }
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _isRefreshing.emit(true)
-                _proceduresUiState.value = networkRepository.getPetProcedures(petId)
-                _isRefreshing.emit(false)
-            } catch (e: HttpException) {
-                _uiState.update { UIState.Error }
-            } catch (e: IOException) {
-                _uiState.update { UIState.Error }
-            } finally {
-                _uiState.update { UIState.Success }
+            _isRefreshing.emit(true)
+            val response = networkRepository.getPetProcedures(petId)
+            _isRefreshing.emit(false)
+            when (response) {
+                is NetworkResult.Success -> {
+                    _proceduresUiState.value = response.data as List<Procedure>
+
+                    // TODO: update local DB
+                    _uiState.update { UIState.Success }
+                }
+                is NetworkResult.Error -> {
+                    _uiState.update { UIState.Error }
+                }
             }
         }
     }

@@ -8,6 +8,7 @@ import com.f4.mypet.data.db.entities.MedRecord
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.network.authentication.JwtTokenManager
+import com.f4.mypet.data.network.model.NetworkResult
 import com.f4.mypet.data.network.model.request.CreatePetRequest
 import com.f4.mypet.data.network.model.request.CreateProcedureRequest
 import com.f4.mypet.data.network.model.request.LoginRequest
@@ -33,7 +34,7 @@ class NetworkRepositoryImpl @Inject constructor(
     private val procedureService: ProcedureService,
     private val medRecordService: MedRecordService,
     private val jwtTokenManager: JwtTokenManager
-) : NetworkRepository, ApiHandler  {
+) : NetworkRepository, ApiHandler {
 
     override suspend fun saveVKtoken(token: AccessToken) {
         val jsonFromToken = GsonSerializer.toJson(token)
@@ -237,14 +238,8 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPetProcedures(id: Int): List<Procedure> {
-        return try {
-            procedureService.getPetProcedures(id).data ?: emptyList()
-        } catch (e: HttpException) {
-            throw e
-        } catch (e: IOException) {
-            throw e
-        }
+    override suspend fun getPetProcedures(id: Int): NetworkResult<Any> {
+        return handleApi { procedureService.getPetProcedures(id) }
     }
 
 
