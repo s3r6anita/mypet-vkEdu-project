@@ -11,7 +11,6 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -21,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,6 +41,7 @@ import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.screens.profile.show.screencomponents.ProfileItem
 import com.f4.mypet.ui.screens.profile.show.screencomponents.RemoveProfileALert
 import com.f4.mypet.ui.theme.GreenButton
@@ -85,7 +84,6 @@ fun ProfileScreen(
     if (openAlertDialog) {
         RemoveProfileALert(
             pet = pet,
-            getNavController = { navController },
             closeAlertDialog = {
                 openAlertDialog = !openAlertDialog
             }
@@ -93,17 +91,7 @@ fun ProfileScreen(
     }
 
     if (showStatusDialog) {
-        AlertDialog(
-            text = { Text(text = msg ?: stringResource(R.string.error)) },
-            onDismissRequest = { showStatusDialog = !showStatusDialog },
-            confirmButton = {
-                TextButton(onClick = {
-                    showStatusDialog = !showStatusDialog
-                }) {
-                    Text(text = stringResource(id = R.string.confirm_button_description))
-                }
-            }
-        )
+        StatusDialog(msg) { showStatusDialog = !showStatusDialog }
     }
 
     Scaffold(

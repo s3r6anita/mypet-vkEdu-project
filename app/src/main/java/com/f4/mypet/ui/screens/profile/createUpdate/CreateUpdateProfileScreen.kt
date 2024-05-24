@@ -58,6 +58,7 @@ import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.SHOWSNACKDURATION
+import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.util.PastOrPresentSelectableDates
 import com.f4.mypet.util.PetDateTimeFormatter
@@ -83,6 +84,11 @@ fun CreateUpdateProfileScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val msg by viewModel.msg.collectAsState()
+    val petDB by viewModel.petUiState.collectAsState()
+    var pet by remember { mutableStateOf(petDB) }
+
+    var showStatusDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -90,11 +96,32 @@ fun CreateUpdateProfileScreen(
         }
     }
 
-    val petDB by viewModel.petUiState.collectAsState()
-    var pet by remember { mutableStateOf(petDB) }
     LaunchedEffect(petDB) {
         pet = petDB
     }
+
+    if (showStatusDialog) {
+        StatusDialog(msg) { showStatusDialog = !showStatusDialog }
+    }
+
+    LaunchedEffect(msg) {
+        if (msg != null && msg != "") {
+            showStatusDialog = true
+        }
+        if (msg == null) {
+            if (isCreateScreen) {
+                navController.navigate(Routes.ListProfile.route) {
+                    popUpTo(Routes.ListProfile.route) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            } else {
+                navController.navigateUp()
+            }
+        }
+    }
+
 
     Scaffold(
         topBar = {
@@ -397,30 +424,25 @@ fun CreateUpdateProfileScreen(
                 onClick = {
                     globalScope().launch {
                         val job = launch {
-                            snackbarHostState.showSnackbar(
-                                if (isCreateScreen)
-                                    context.resources.getString(R.string.create_profile_successful_pet_creation)
-                                else
-                                    context.resources.getString(R.string.create_profile_successful_pet_update)
-                            )
+                            if (msg == null)
+                                snackbarHostState.showSnackbar(
+                                    if (isCreateScreen)
+                                        context.resources.getString(R.string.create_profile_successful_pet_creation)
+                                    else
+                                        context.resources.getString(R.string.create_profile_successful_pet_update)
+                                )
                         }
                         delay(SHOWSNACKDURATION)
                         job.cancel()
                     }
                     if (isCreateScreen) {
-                        viewModel.createPet(pet)
-
-                        navController.navigate(Routes.ListProfile.route) {
-                            popUpTo(Routes.ListProfile.route) {
-                                inclusive = true
-                            }
-                            launchSingleTop = true
+                        scope.launch {
+                            viewModel.createPet(pet)
                         }
                     } else {
                         scope.launch {
                             viewModel.updatePet(pet)
                         }
-                        navController.navigateUp()
                     }
                 }
             ) {

@@ -28,6 +28,7 @@ class CreateUpdateProfileViewModel @Inject constructor(
         )
     )
     val petUiState = _petUiState.asStateFlow()
+
     fun getPetProfile(petId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             //TODO: сделать тут try catch на petID
@@ -40,7 +41,7 @@ class CreateUpdateProfileViewModel @Inject constructor(
     fun createPet(pet: Pet) {
         _msg.value = ""
         viewModelScope.launch {
-//            repository.createPet(pet)
+            repository.insertPet(pet)
             _msg.value = networkRepository.insertPet(pet)
         }
     }

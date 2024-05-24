@@ -4,7 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -80,24 +80,26 @@ fun SuccessListProcedureScreen(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .pullRefresh(pullRefreshState)
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp),
         ) {
+            PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
+
             PullRefreshIndicator(
                 isRefreshing,
                 pullRefreshState,
                 Modifier.align(Alignment.CenterHorizontally)
             )
-            PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
 
             // список процедур
             Column(
                 modifier = Modifier
-                    .height(400.dp)
+                    .fillMaxWidth()
+                    .padding(bottom = 60.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 procedures.forEach { procedure ->

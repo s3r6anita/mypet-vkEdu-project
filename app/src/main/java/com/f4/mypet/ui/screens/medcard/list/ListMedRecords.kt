@@ -3,7 +3,6 @@ package com.f4.mypet.ui.screens.medcard.list
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -73,19 +72,19 @@ fun ListMedRecords(
         }
     ) { innerPadding ->
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
         ) {
             PetCardHeader(petName = pet.name, backgroundColor = LightBlueBackground)
 
             // список медзаписей
             Column(
                 modifier = Modifier
-                    .height(400.dp)
+                    .padding(bottom = 60.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 medRecords.forEach { medRecord ->
