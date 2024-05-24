@@ -89,7 +89,7 @@ import java.time.ZonedDateTime
 
 fun scheduleNotification(context: Context, title: String, message: String, notificationTime: LocalDateTime, notificationId: Int) {
     // Логирование времени установки уведомления
-    Log.d("Notification_scheduleNotification_1", "Setting up notification for time: $notificationTime")
+    Log.d("Notification_scheduleNotification_1", "Setting up notification for time: $notificationTime, id = $notificationId")
     val intent = Intent(context, AlarmReceiver::class.java).apply {
         putExtra("notification_title", title)
         putExtra("notification_message", message)
@@ -647,7 +647,7 @@ fun SuccessCUProcedureScreen(
             if (createDelayedNotification.value) {
                 val title = title.name // Получаем заголовок процедуры
                 val message = "Время выполнить процедуру!"
-
+                val procedureId = procedure.id
                 // Получаем дату и время из процедуры
                 val reminderDate = procedure.reminder!!.format(PetDateTimeFormatter.date)
                 val reminderTime = procedure.reminder!!.format(PetDateTimeFormatter.time)
@@ -659,7 +659,7 @@ fun SuccessCUProcedureScreen(
                 )
                 // Логирование времени перед передачей в scheduleNotification
                 Log.d("NotificationMY", "Reminder DateTime: $reminderDateTime")
-                scheduleNotification(context, title, message, reminderDateTime, 0)
+                scheduleNotification(context, title, message, reminderDateTime, procedureId)
                 createDelayedNotification.value = false
             }
             // сохранение
