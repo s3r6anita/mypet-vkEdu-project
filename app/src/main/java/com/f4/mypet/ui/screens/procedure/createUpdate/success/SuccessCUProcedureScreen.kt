@@ -87,7 +87,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-fun scheduleNotification(context: Context, title: String, message: String, notificationTime: LocalDateTime) {
+fun scheduleNotification(context: Context, title: String, message: String, notificationTime: LocalDateTime, notificationId: Int) {
     // Логирование времени установки уведомления
     Log.d("Notification_scheduleNotification_1", "Setting up notification for time: $notificationTime")
     val intent = Intent(context, AlarmReceiver::class.java).apply {
@@ -95,7 +95,7 @@ fun scheduleNotification(context: Context, title: String, message: String, notif
         putExtra("notification_message", message)
     }
     val pendingIntent = PendingIntent.getBroadcast(
-        context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -161,7 +161,6 @@ fun SuccessCUProcedureScreen(
     val types = viewModel.types
     val frequencyOptions = viewModel.frequencyOptions
     val frequencyOptionsTitles = viewModel.frequencyOptionsTitles
-
     val procedureDB by viewModel.procedureUiState.collectAsState()
 
     val type by remember {
@@ -647,7 +646,7 @@ fun SuccessCUProcedureScreen(
             val createDelayedNotification = remember { mutableStateOf(false) }
             if (createDelayedNotification.value) {
                 val title = title.name // Получаем заголовок процедуры
-                val message = "Время выполнить процедуру: $title"
+                val message = "Время выполнить процедуру!"
 
                 // Получаем дату и время из процедуры
                 val reminderDate = procedure.reminder!!.format(PetDateTimeFormatter.date)
@@ -660,7 +659,7 @@ fun SuccessCUProcedureScreen(
                 )
                 // Логирование времени перед передачей в scheduleNotification
                 Log.d("NotificationMY", "Reminder DateTime: $reminderDateTime")
-                scheduleNotification(context, title, message, reminderDateTime)
+                scheduleNotification(context, title, message, reminderDateTime, 0)
                 createDelayedNotification.value = false
             }
             // сохранение
