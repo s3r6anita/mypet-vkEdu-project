@@ -89,7 +89,7 @@ import java.time.ZonedDateTime
 
 fun scheduleNotification(context: Context, title: String, message: String, notificationTime: LocalDateTime) {
     // Логирование времени установки уведомления
-    Log.d("NotificationMY", "Setting up notification for time: $notificationTime")
+    Log.d("Notification_scheduleNotification_1", "Setting up notification for time: $notificationTime")
     val intent = Intent(context, AlarmReceiver::class.java).apply {
         putExtra("notification_title", title)
         putExtra("notification_message", message)
@@ -99,16 +99,21 @@ fun scheduleNotification(context: Context, title: String, message: String, notif
     )
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    val utcZoneId = ZoneId.of("UTC")
+    val utcZoneId = ZoneId.of("Europe/Moscow")
     val utcZonedDateTime = notificationTime.atZone(utcZoneId)
     val triggerAtMillis = utcZonedDateTime.toInstant().toEpochMilli()
 
     alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
+    Log.d("Notification_scheduleNotification_2", "Alarm set for time: $triggerAtMillis")
+
+    // Преобразование обратно в читаемое время для проверки
+    val triggerTime = Instant.ofEpochMilli(triggerAtMillis).atZone(utcZoneId).toLocalDateTime()
+    Log.d("Notification_scheduleNotification_3", "Alarm is set to trigger at (Moscow time): $triggerTime")
 }
 fun createNotificationChannel(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val channelId = "notification_channel"
-        val channelName = "My Notification Channel"
+        val channelId = "notification_channel1"
+        val channelName = "My Notification Channel1"
         val importance = NotificationManager.IMPORTANCE_HIGH
         val notificationChannel = NotificationChannel(channelId, channelName, importance).apply {
             description = "Channel description"
@@ -116,6 +121,9 @@ fun createNotificationChannel(context: Context) {
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)
+        Log.d("Notification_createNotificationChannel", "Notification channel created with ID: $channelId, Name: $channelName, Importance: $importance")
+    } else {
+        Log.d("Notification_createNotificationChannel", "Notification channels are not supported on this version of Android.")
     }
 }
 class AlarmReceiver : BroadcastReceiver() {
@@ -123,12 +131,12 @@ class AlarmReceiver : BroadcastReceiver() {
         val title = intent.getStringExtra("notification_title") ?: "Процедура"
         val message = intent.getStringExtra("notification_message") ?: "Время выполнить процедуру"
 
-        Log.d("Notification", "Received broadcast with title: $title and message: $message")
+        Log.d("Notification_onRecieve", "Received broadcast with title: $title and message: $message")
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationId = 1
 
-        val notification = NotificationCompat.Builder(context, "notification_channel")
+        val notification = NotificationCompat.Builder(context, "notification_channel1")
             .setSmallIcon(R.drawable.pet_icon)
             .setContentTitle(title)
             .setContentText(message)

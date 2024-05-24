@@ -16,12 +16,12 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestExactAlarmPermission()
+        createNotificationChannel(this)
         setContent {
             MyPetApp()
         }
-        createNotificationChannel(this)
         val vkid = VKID(this)
-        requestExactAlarmPermission()
     }
     private fun requestExactAlarmPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
