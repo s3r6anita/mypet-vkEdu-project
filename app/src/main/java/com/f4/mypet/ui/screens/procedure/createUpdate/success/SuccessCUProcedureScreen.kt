@@ -93,21 +93,22 @@ fun scheduleNotification(context: Context, title: String, message: String, notif
     val intent = Intent(context, AlarmReceiver::class.java).apply {
         putExtra("notification_title", title)
         putExtra("notification_message", message)
+        putExtra("notification_id", notificationId) // Добавим notificationId в intent
     }
     val pendingIntent = PendingIntent.getBroadcast(
         context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    val utcZoneId = ZoneId.of("Europe/Moscow")
-    val utcZonedDateTime = notificationTime.atZone(utcZoneId)
-    val triggerAtMillis = utcZonedDateTime.toInstant().toEpochMilli()
+    val moscowZoneId = ZoneId.of("Europe/Moscow")
+    val moscowZonedDateTime = notificationTime.atZone(moscowZoneId)
+    val triggerAtMillis = moscowZonedDateTime.toInstant().toEpochMilli()
 
     alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
     Log.d("Notification_scheduleNotification_2", "Alarm set for time: $triggerAtMillis")
 
     // Преобразование обратно в читаемое время для проверки
-    val triggerTime = Instant.ofEpochMilli(triggerAtMillis).atZone(utcZoneId).toLocalDateTime()
+    val triggerTime = Instant.ofEpochMilli(triggerAtMillis).atZone(moscowZoneId).toLocalDateTime()
     Log.d("Notification_scheduleNotification_3", "Alarm is set to trigger at (Moscow time): $triggerTime")
 }
 fun createNotificationChannel(context: Context) {
@@ -130,11 +131,11 @@ class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val title = intent.getStringExtra("notification_title") ?: "Процедура"
         val message = intent.getStringExtra("notification_message") ?: "Время выполнить процедуру"
+        val notificationId = intent.getIntExtra("notification_id", 0) // Получим notificationId из intent
 
         Log.d("Notification_onRecieve", "Received broadcast with title: $title and message: $message")
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationId = 1
 
         val notification = NotificationCompat.Builder(context, "notification_channel1")
             .setSmallIcon(R.drawable.pet_icon)
@@ -143,7 +144,7 @@ class AlarmReceiver : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 
-        notificationManager.notify(notificationId, notification)
+        notificationManager.notify(notificationId, notification) // Используем notificationId для уведомления
     }
 }
 @Suppress("CyclomaticComplexMethod", "LongMethod")
@@ -645,8 +646,8 @@ fun SuccessCUProcedureScreen(
             )
             val createDelayedNotification = remember { mutableStateOf(false) }
             if (createDelayedNotification.value) {
-                val title = title.name // Получаем заголовок процедуры
-                val message = "Время выполнить процедуру!"
+                val title_notification = title.name // Получаем заголовок процедуры
+                val message = "Напоминание: дата выполнения процедуры - ${procedure.dateDone.format(PetDateTimeFormatter.date)} Время - ${procedure.dateDone.format(PetDateTimeFormatter.time)}"
                 val procedureId = procedure.id
                 // Получаем дату и время из процедуры
                 val reminderDate = procedure.reminder!!.format(PetDateTimeFormatter.date)
@@ -659,7 +660,7 @@ fun SuccessCUProcedureScreen(
                 )
                 // Логирование времени перед передачей в scheduleNotification
                 Log.d("NotificationMY", "Reminder DateTime: $reminderDateTime")
-                scheduleNotification(context, title, message, reminderDateTime, procedureId)
+                scheduleNotification(context, title_notification, message, reminderDateTime, procedureId)
                 createDelayedNotification.value = false
             }
             // сохранение
@@ -669,10 +670,6 @@ fun SuccessCUProcedureScreen(
                     modifier = Modifier.padding(20.dp),
                     onClick = {
                         //TODO Проверка на формат даты и на "дату из будущего"
-                        if (enableNotifications) {
-                            createDelayedNotification.value = true
-                        }
-
                         if (isCreateScreen) {
                             procedure = procedure.copy(pet = profileId)
                             viewModel.createProcedure(procedure, title)
@@ -680,6 +677,9 @@ fun SuccessCUProcedureScreen(
                         } else {
                             viewModel.updateProcedure(procedure, title, frequency)
                             navController.navigateUp()
+                        }
+                        if (enableNotifications) {
+                            createDelayedNotification.value = true
                         }
                     },
                     border = BorderStroke(1.dp, GreenButton),
