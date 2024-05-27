@@ -35,6 +35,6 @@ interface NetworkRepository {
 //    suspend fun removeProcedure(id: Int): String?
 
     suspend fun insertTitle(title: ProcedureTitle): NetworkResult<Any?>
-    suspend fun getTitles(): List<ProcedureTitle>
+    suspend fun getTitles(): NetworkResult<Any?>
     suspend fun updateTitle(title: ProcedureTitle): NetworkResult<Any?>
 }

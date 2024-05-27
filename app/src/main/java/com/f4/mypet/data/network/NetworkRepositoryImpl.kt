@@ -247,14 +247,8 @@ class NetworkRepositoryImpl @Inject constructor(
         return handleApi { procedureTitleService.createTitle(request) }
     }
 
-    override suspend fun getTitles(): List<ProcedureTitle> {
-        return try {
-            procedureTitleService.getTitles().data ?: emptyList()
-        } catch (e: HttpException) {
-            throw e
-        } catch (e: IOException) {
-            throw e
-        }
+    override suspend fun getTitles(): NetworkResult<Any?> {
+        return handleApi { procedureTitleService.getTitles() }
     }
 
     override suspend fun updateTitle(title: ProcedureTitle): NetworkResult<Any?> {
