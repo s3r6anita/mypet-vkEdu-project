@@ -31,6 +31,11 @@ class ListMedRecordsViewModel @Inject constructor(
             pet = repository.getPetForCU(petId)
             repository.getMedRecordsForPet(petId).collect { medRecords ->
                 _medRecordsUiState.value = medRecords
+
+                // TODO: когда будешь делать получение записей с сервера добавь это для обновление локальной бд
+//                repository.removeMedRecordsForPet(petId)
+//                repository.insertListOfProcedures(_medRecordsUiState.value)
+
             }
         }
     }

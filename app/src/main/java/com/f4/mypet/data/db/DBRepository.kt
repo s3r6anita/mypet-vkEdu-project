@@ -20,7 +20,9 @@ interface Repository {
     suspend fun updatePet(pet: Pet)
     suspend fun removePet(pet: Pet)
     suspend fun removeProceduresForPet(petId: Int)
+    suspend fun insertListOfProcedures(procedures: List<Procedure>)
     suspend fun removeMedRecordsForPet(petId: Int)
+    suspend fun insertListOfMedRecords(medRecords: List<MedRecord>)
     suspend fun getPets(): List<Pet>
     suspend fun getPet(petId: Int): Pet
     suspend fun getPetForCU(petId: Int): Pet
@@ -71,8 +73,16 @@ class DBRepository @Inject constructor(
         procedureDAO.deleteProceduresForPet(petId)
     }
 
+    override suspend fun insertListOfProcedures(procedures: List<Procedure>) {
+        procedureDAO.insertAll(procedures)
+    }
+
     override suspend fun removeMedRecordsForPet(petId: Int) {
         medRecordDAO.deleteMedRecordsForPet(petId)
+    }
+
+    override suspend fun insertListOfMedRecords(medRecords: List<MedRecord>) {
+        medRecordDAO.insertAll(medRecords)
     }
 
     override suspend fun getPets(): List<Pet> {
