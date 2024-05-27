@@ -5,7 +5,7 @@ import com.f4.mypet.data.network.model.response.Response
 import retrofit2.HttpException
 
 interface ApiHandler {
-
+    @Suppress("TooGenericExceptionCaught")
     suspend fun <T : Any> handleApi(
         execute: suspend () -> Response<T>
     ): NetworkResult<Any> {

@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
 
+@Suppress("LongParameterList")
 @Composable
 fun ButtonComponent(
     onClick: () -> Unit,
