@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.screens.procedure.createUpdate.success.createNotificationChannel
 import com.vk.id.VKID
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,10 +18,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         requestExactAlarmPermission()
         createNotificationChannel(this)
-        val startDestination = intent.getStringExtra("destination_route") ?: START
+        val notificationRoute = intent.getStringExtra("destination_route")
 
         setContent {
-            MyPetApp(startDestination)
+            MyPetApp(notificationRoute)
         }
         val vkid = VKID(this)
     }

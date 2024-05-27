@@ -11,14 +11,14 @@ import androidx.navigation.compose.NavHost
 fun SetupNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    startDestination: String = START // Добавлен параметр startDestination с значением по умолчанию
+    notificationRoute: String?
 ) {
     val scope = rememberCoroutineScope()
     val getGlobalScope = { scope }
 
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = START,
         enterTransition = { EnterTransition.None },
 /**
 *    Отключение анимаций перехода между экранами
@@ -29,4 +29,19 @@ fun SetupNavGraph(
     ) {
         mainNavGraph(navController, snackbarHostState, getGlobalScope)
     }
+    if (notificationRoute != null) {
+//        val routes = notificationRoute.split("/")
+//        navController.navigate(routes[0])
+//        val index = 1
+//        while (index < routes.size) {
+//            var route = ""
+//            for (i in 0..index) {
+//                route += routes[i] + "/"
+//            }
+//            route = route.substringBeforeLast('/')
+            navController.navigate(notificationRoute)
+
+//        }
+    }
+
 }

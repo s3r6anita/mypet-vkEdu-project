@@ -10,12 +10,12 @@ import com.f4.mypet.ui.theme.MyPetTheme
 
 
 @Composable
-fun MyPetApp(startDestination: String = START) {
+fun MyPetApp(notificationRoute: String?) {
     MyPetTheme {
         SetupNavGraph(
             navController = rememberNavController(),
             snackbarHostState = remember { SnackbarHostState() },
-            startDestination = startDestination
+            notificationRoute = notificationRoute
         )
     }
 }

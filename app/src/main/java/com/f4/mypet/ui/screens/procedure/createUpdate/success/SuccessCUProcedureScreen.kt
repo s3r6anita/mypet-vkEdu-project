@@ -156,7 +156,7 @@ class AlarmReceiver : BroadcastReceiver() {
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent) // Устанавливаем PendingIntent для уведомления
-            //.setAutoCancel(true) // Автоматическое закрытие уведомления после нажатия
+            .setAutoCancel(true) // Автоматическое закрытие уведомления после нажатия
             .build()
 
         notificationManager.notify(notificationId, notification) // Используем notificationId для уведомления
