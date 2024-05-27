@@ -1,7 +1,6 @@
 package com.f4.mypet.ui.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,8 +33,7 @@ fun PetCardHeader(
             containerColor = backgroundColor,
         ),
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 20.dp),
+            .fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier
@@ -49,10 +47,11 @@ fun PetCardHeader(
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))
                     .size(100.dp)
-                    .background(MaterialTheme.colorScheme.onSecondary),
+                ,
             )
             Text(
                 text = petName,
+                color = Color.Black,
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(start = 20.dp)
             )

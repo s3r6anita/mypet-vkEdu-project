@@ -3,17 +3,14 @@ package com.f4.mypet.ui.screens.medcard.list
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -21,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +26,7 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.BottomBarData
+import com.f4.mypet.ui.components.ButtonComponent
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.PetCardHeader
@@ -73,19 +72,21 @@ fun ListMedRecords(
     ) { innerPadding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp),
+                .padding(20.dp),
         ) {
             PetCardHeader(petName = pet.name, backgroundColor = LightBlueBackground)
 
             // список медзаписей
             Column(
                 modifier = Modifier
-                    .padding(bottom = 60.dp)
-                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 medRecords.forEach { medRecord ->
                     MedRecordItem(
@@ -93,25 +94,21 @@ fun ListMedRecords(
                         navController = navController
                     )
                 }
-            }
 
-            // кнопка добавления
-            Button(
-                onClick = {
-                    navController.navigate(Routes.CreateMedRecord.route) {
-                        launchSingleTop = true
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.add_button_icon_description)
-                )
-                Text(
+                // кнопка добавления
+                ButtonComponent(
+                    onClick = {
+                        navController.navigate(Routes.CreateMedRecord.route) {
+                            launchSingleTop = true
+                        }
+                    },
                     text = stringResource(id = R.string.add_button_description),
-                    modifier = Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
+                    color = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                    icon = Icons.Default.Add,
+                    modifier = Modifier,
+                    textColor = Color.White,
+                    borderColor = GreenButton,
+                    enabled = true,
                 )
             }
         }

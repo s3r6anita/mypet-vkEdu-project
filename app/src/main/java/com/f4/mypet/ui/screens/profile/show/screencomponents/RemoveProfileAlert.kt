@@ -1,6 +1,7 @@
 package com.f4.mypet.ui.screens.profile.show.screencomponents
 
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -46,6 +47,7 @@ fun RemoveProfileALert(
             }) {
                 Text(text = stringResource(id = R.string.cancel_button_description))
             }
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
     )
 }

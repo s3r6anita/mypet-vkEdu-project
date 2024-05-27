@@ -1,25 +1,22 @@
 package com.f4.mypet.ui.screens.profile.show
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,6 +35,7 @@ import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.components.BottomBarData
+import com.f4.mypet.ui.components.ButtonComponent
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
@@ -158,37 +156,30 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp),
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 50.dp)
-            ) {
+            Box() {
                 ProfileItem(pet)
             }
 
             // кнопка редактирования
-            Button(
+            ButtonComponent(
                 onClick = {
                     navController.navigate("${Routes.UpdateProfile.route}/$profileId") {
                         launchSingleTop = true
                     }
                 },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton)
-            ) {
-                Icon(
-                    Icons.Rounded.Edit,
-                    stringResource(id = R.string.update_profile_button_description)
-                )
-                Text(
-                    text = stringResource(id = R.string.edit_button_description),
-                    modifier = Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
+                text = stringResource(id = R.string.edit_button_description),
+                color = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
+                icon = Icons.Default.Edit,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                textColor = GreenButton,
+                borderColor = GreenButton,
+                enabled = true,
+            )
         }
     }
 }

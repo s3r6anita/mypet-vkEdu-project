@@ -1,6 +1,5 @@
 package com.f4.mypet.ui.screens.procedure.list.success
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,17 +13,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +28,7 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.BottomBarData
+import com.f4.mypet.ui.components.ButtonComponent
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.PetCardHeader
@@ -39,6 +36,7 @@ import com.f4.mypet.ui.screens.procedure.list.ListProcedureViewModel
 import com.f4.mypet.ui.screens.procedure.list.ProcedureItem
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGreenBackground
+import kotlinx.coroutines.cancelChildren
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -85,7 +83,7 @@ fun SuccessListProcedureScreen(
                 .pullRefresh(pullRefreshState)
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp),
+                .padding(20.dp),
         ) {
             PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
 
@@ -99,8 +97,9 @@ fun SuccessListProcedureScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 60.dp)
-                    .verticalScroll(rememberScrollState())
+                    .padding(vertical = 20.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 procedures.forEach { procedure ->
                     ProcedureItem(
@@ -110,26 +109,21 @@ fun SuccessListProcedureScreen(
                             ?: stringResource(id = R.string.unknown)
                     )
                 }
-            }
 
-            // кнопка ADD
-            Button(
-                onClick = {
-                    navController.navigate("${Routes.CreateProcedure.route}/$profileId") {
-                        launchSingleTop = true
-                    }
-                },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.add_button_icon_description)
-                )
-                Text(
+                // кнопка ADD
+                ButtonComponent(
+                    onClick = {
+                        navController.navigate("${Routes.CreateProcedure.route}/$profileId") {
+                            launchSingleTop = true
+                        }
+                    },
                     text = stringResource(id = R.string.add_button_description),
-                    Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
+                    color = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                    icon = Icons.Default.Add,
+                    modifier = Modifier,
+                    textColor = Color.White,
+                    borderColor = GreenButton,
+                    enabled = true,
                 )
             }
         }

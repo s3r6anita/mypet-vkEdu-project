@@ -3,12 +3,12 @@ package com.f4.mypet.ui.screens.procedure.show
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -56,7 +56,7 @@ fun RemoveProcedureAlert(
                 Text(stringResource(R.string.procedure_screen_cancel))
             }
         },
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         modifier = Modifier.shadow(
             elevation = 8.dp,
             shape = RoundedCornerShape(12.dp)

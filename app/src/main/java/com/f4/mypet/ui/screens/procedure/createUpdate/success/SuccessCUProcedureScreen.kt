@@ -1,7 +1,6 @@
 package com.f4.mypet.ui.screens.procedure.createUpdate.success
 
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,11 +14,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -49,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -58,7 +58,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.ui.components.ButtonComponent
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.components.OutlinedTextFieldComponent
 import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureViewModel
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
@@ -124,10 +126,10 @@ fun SuccessCUProcedureScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp)
+                .padding(20.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
 
             // выбор типа процедуры в отдельной функции, по аналогии нужно другие выборы вынести
@@ -159,9 +161,10 @@ fun SuccessCUProcedureScreen(
                 },
                 label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
                 modifier = Modifier
-                    .padding(bottom = 10.dp, start = 30.dp, end = 30.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
                 isError = !titleIsCorrect,
+                colors = getOutLinedTextFieldColors()
             )
 
             // периодичность - выпадающее меню с выбором
@@ -173,20 +176,17 @@ fun SuccessCUProcedureScreen(
                 )
             }
             var frequencyInProcedure by remember { mutableStateOf(procedure.frequency) }
-
-
             ExposedDropdownMenuBox(
                 expanded = frequencyExpanded,
                 onExpandedChange = {
                     frequencyExpanded = it
                 },
-                modifier = Modifier.padding(bottom = 5.dp)
             ) {
                 TextField(
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth()
-                        .padding(bottom = 15.dp),
+                        .padding(vertical = 8.dp),
                     value = selectedFrequency.option,
                     readOnly = true,
                     label = { Text(stringResource(R.string.creation_procedure_screen_frequence)) },
@@ -238,8 +238,8 @@ fun SuccessCUProcedureScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 15.dp),
-                    shape = RoundedCornerShape(12.dp),
+                        .padding(vertical = 8.dp),
+                    shape = RoundedCornerShape(8.dp),
                     colors = getOutLinedTextFieldColors()
                 )
             }
@@ -268,8 +268,8 @@ fun SuccessCUProcedureScreen(
                 isError = !timeIsCorrect,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 15.dp),
-                shape = RoundedCornerShape(12.dp),
+                    .padding(vertical = 8.dp),
+                shape = RoundedCornerShape(8.dp),
                 colors = getOutLinedTextFieldColors()
             )
             if (openTimeDialog) {
@@ -324,8 +324,8 @@ fun SuccessCUProcedureScreen(
                 isError = !dateIsCorrect,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 15.dp),
-                shape = RoundedCornerShape(12.dp),
+                    .padding(vertical = 8.dp),
+                shape = RoundedCornerShape(8.dp),
                 colors = getOutLinedTextFieldColors()
             )
             if (openDateDialog) {
@@ -375,7 +375,7 @@ fun SuccessCUProcedureScreen(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 15.dp)
+                    .padding(vertical = 8.dp)
                     .toggleable(
                         value = enableNotifications,
                         onValueChange = {
@@ -457,8 +457,8 @@ fun SuccessCUProcedureScreen(
                     isError = !timeReminderIsCorrect,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 15.dp),
-                    shape = RoundedCornerShape(12.dp),
+                        .padding(vertical = 8.dp),
+                    shape = RoundedCornerShape(8.dp),
                     colors = getOutLinedTextFieldColors()
                 )
                 if (openTimeReminderDialog) {
@@ -513,8 +513,8 @@ fun SuccessCUProcedureScreen(
                     isError = !dateReminderIsCorrect,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 15.dp),
-                    shape = RoundedCornerShape(12.dp),
+                        .padding(vertical = 8.dp),
+                    shape = RoundedCornerShape(8.dp),
                     colors = getOutLinedTextFieldColors()
                 )
                 if (openDateReminderDialog) {
@@ -567,38 +567,36 @@ fun SuccessCUProcedureScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 15.dp),
+                    .padding(vertical = 8.dp),
                 singleLine = false,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(8.dp),
                 colors = getOutLinedTextFieldColors()
             )
 
             // сохранение
-            Button(
-                modifier = Modifier.padding(20.dp),
+            ButtonComponent(
                 onClick = {
-                        //TODO Проверка на формат даты и на "дату из будущего"
+                    //TODO Проверка на формат даты и на "дату из будущего"
 
-                        if (isCreateScreen) {
-                            procedure = procedure.copy(pet = profileId)
-                            title = title.copy(type = selectedType.id)
-                            viewModel.createProcedure(procedure, title)
-                            navController.navigateUp()
-                        } else {
-                            title = title.copy(type = selectedType.id)
-                            viewModel.updateProcedure(procedure, title, frequency)
-                            navController.navigateUp()
-                        }
+                    if (isCreateScreen) {
+                        procedure = procedure.copy(pet = profileId)
+                        title = title.copy(type = selectedType.id)
+                        viewModel.createProcedure(procedure, title)
+                        navController.navigateUp()
+                    } else {
+                        title = title.copy(type = selectedType.id)
+                        viewModel.updateProcedure(procedure, title, frequency)
+                        navController.navigateUp()
+                    }
                 },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.save_button_description),
-                    Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
+                text = stringResource(id = R.string.save_button_description),
+                color = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                icon = null,
+                modifier = Modifier.fillMaxWidth(),
+                textColor = Color.White,
+                borderColor = GreenButton,
+                enabled = true,
+            )
         }
     }
 }

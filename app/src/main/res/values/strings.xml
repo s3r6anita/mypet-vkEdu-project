@@ -32,6 +32,7 @@
     <string name="add_button_icon_description">Icon +</string>
     <string name="arrow_right_description">Стрелка вправо</string>
     <string name="edit_button_description">Редактировать</string>
+    <string name="icon_description">Icon</string>
 
     <string name="remember_my_choice">Запоминать выбор питомца на время сессии приложения</string>
 

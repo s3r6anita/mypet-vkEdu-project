@@ -15,7 +15,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -33,18 +32,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
+import com.f4.mypet.ui.components.ButtonComponent
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.profile.list.ListProfileViewModel
@@ -109,14 +108,13 @@ fun SuccessListProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 20.dp, vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(650.dp),
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -152,8 +150,8 @@ fun SuccessListProfileScreen(
 //            список питомцев
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     pets.forEach { pet ->
                         PetItem(
@@ -164,28 +162,22 @@ fun SuccessListProfileScreen(
                         )
                         Spacer(modifier = Modifier.height(20.dp))
                     }
-                }
-            }
 
-//            кнопка добавления нового питомца в список
-            Button(
-                modifier = Modifier.padding(0.dp),
-                onClick = {
-                    globalScope.coroutineContext.cancelChildren()
-                    navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.list_profile_screen_add_button_icon_description)
-                )
-                Text(
-                    text = stringResource(id = R.string.add_button_description),
-                    Modifier.padding(start = 10.dp),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                    // кнопка добавления нового питомца в список
+                    ButtonComponent(
+                        onClick = {
+                            globalScope.coroutineContext.cancelChildren()
+                            navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
+                        },
+                        text = stringResource(id = R.string.add_button_description),
+                        color = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                        icon = Icons.Default.Add,
+                        modifier = Modifier,
+                        textColor = Color.White,
+                        borderColor = GreenButton,
+                        enabled = true,
+                    )
+                }
             }
         }
     }

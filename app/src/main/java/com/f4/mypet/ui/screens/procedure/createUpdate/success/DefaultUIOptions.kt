@@ -6,7 +6,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.ui.theme.RedButton
@@ -16,15 +15,17 @@ import com.f4.mypet.ui.theme.RedButton
 fun getDropdownMenuColors(): TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
     focusedBorderColor = LightBlueBackground,
     unfocusedBorderColor = LightGrayTint,
-    containerColor = MaterialTheme.colorScheme.onSecondary,
+    containerColor = MaterialTheme.colorScheme.background,
     errorBorderColor = RedButton
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun getOutLinedTextFieldColors(): TextFieldColors = ExposedDropdownMenuDefaults.textFieldColors(
-    unfocusedIndicatorColor = LightBlueBackground,
-    focusedIndicatorColor = BlueCheckbox,
-    unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary,
-    focusedContainerColor = LightBlueBackground
+    unfocusedIndicatorColor = LightGrayTint,
+    focusedIndicatorColor = LightBlueBackground,
+    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+    focusedContainerColor = MaterialTheme.colorScheme.background,
+    errorContainerColor = MaterialTheme.colorScheme.background,
+    errorIndicatorColor = RedButton
 )
