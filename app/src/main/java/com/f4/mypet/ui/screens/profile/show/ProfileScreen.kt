@@ -195,6 +195,13 @@ fun ProfileScreen(
                     style = MaterialTheme.typography.titleMedium
                 )
             }
+
+            //todo onclick обратной связи
+//            onClick = {
+//                navController.navigate(Routes.BugReport.route) {
+//                    launchSingleTop = true
+//                }
+//            }
         }
     }
 }
