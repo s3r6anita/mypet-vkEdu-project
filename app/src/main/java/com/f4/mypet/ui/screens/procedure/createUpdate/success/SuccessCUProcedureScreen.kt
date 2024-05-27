@@ -71,6 +71,7 @@ import com.f4.mypet.MainActivity
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureViewModel
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
@@ -90,7 +91,6 @@ import java.time.ZonedDateTime
 
 fun scheduleNotification(context: Context, title: String, message: String, notificationTime: LocalDateTime, notificationId: Int) {
     // Логирование времени установки уведомления
-    Log.d("Notification_scheduleNotification_1", "Setting up notification for time: $notificationTime, id = $notificationId")
     val intent = Intent(context, AlarmReceiver::class.java).apply {
         putExtra("notification_title", title)
         putExtra("notification_message", message)
@@ -101,16 +101,14 @@ fun scheduleNotification(context: Context, title: String, message: String, notif
     )
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    val moscowZoneId = ZoneId.of("Europe/Moscow")
-    val moscowZonedDateTime = notificationTime.atZone(moscowZoneId)
-    val triggerAtMillis = moscowZonedDateTime.toInstant().toEpochMilli()
+    val systemZoneId = ZoneId.systemDefault()
+    val systemZonedDateTime = notificationTime.atZone(systemZoneId)
+    val triggerAtMillis = systemZonedDateTime.toInstant().toEpochMilli()
 
     alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
-    Log.d("Notification_scheduleNotification_2", "Alarm set for time: $triggerAtMillis")
 
     // Преобразование обратно в читаемое время для проверки
-    val triggerTime = Instant.ofEpochMilli(triggerAtMillis).atZone(moscowZoneId).toLocalDateTime()
-    Log.d("Notification_scheduleNotification_3", "Alarm is set to trigger at (Moscow time): $triggerTime")
+    val triggerTime = Instant.ofEpochMilli(triggerAtMillis).atZone(systemZoneId).toLocalDateTime()
 }
 fun createNotificationChannel(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -123,9 +121,6 @@ fun createNotificationChannel(context: Context) {
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)
-        Log.d("Notification_createNotificationChannel", "Notification channel created with ID: $channelId, Name: $channelName, Importance: $importance")
-    } else {
-        Log.d("Notification_createNotificationChannel", "Notification channels are not supported on this version of Android.")
     }
 }
 class AlarmReceiver : BroadcastReceiver() {
@@ -134,20 +129,17 @@ class AlarmReceiver : BroadcastReceiver() {
         val message = intent.getStringExtra("notification_message") ?: "Время выполнить процедуру"
         val notificationId = intent.getIntExtra("notification_id", 0) // Получим notificationId из intent
 
-        Log.d("Notification_onRecieve_1", "Received broadcast with title: $title and message: $message")
         // Создаем намерение для запуска MainActivity с необходимым маршрутом
         val resultIntent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("destination_route", "${Routes.Procedure.route}/$notificationId")
         }
-        Log.d("Notification_onRecieve_2", "We made resultIntent with destination_route = ${Routes.Procedure.route}/$notificationId")
         val pendingIntent = PendingIntent.getActivity(
             context,
             notificationId,
             resultIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        Log.d("Notification_onRecieve_3", "We made pendingIntent")
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val notification = NotificationCompat.Builder(context, "notification_channel1")
@@ -194,7 +186,6 @@ fun SuccessCUProcedureScreen(
     LaunchedEffect(procedureDB) {
         procedure = procedureDB
     }
-
     Scaffold(
         topBar = {
             MyPetTopBar(
@@ -674,7 +665,6 @@ fun SuccessCUProcedureScreen(
                     LocalTime.parse(reminderTime, PetDateTimeFormatter.time)  // Преобразуем время из строки в LocalTime
                 )
                 // Логирование времени перед передачей в scheduleNotification
-                Log.d("NotificationMY", "Reminder DateTime: $reminderDateTime")
                 scheduleNotification(context, title_notification, message, reminderDateTime, procedureId)
                 createDelayedNotification.value = false
             }
