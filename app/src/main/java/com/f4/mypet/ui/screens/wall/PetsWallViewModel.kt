@@ -3,6 +3,7 @@ package com.f4.mypet.ui.screens.wall
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.f4.mypet.VKPETS_ID
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.VKApiConfig
 import com.vk.api.sdk.VKApiManager
@@ -26,6 +27,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.LinkedBlockingDeque
 import javax.inject.Inject
 
+@SuppressWarnings("TooGenericExceptionCaught")
 @HiltViewModel
 class PetsWallViewModel @Inject constructor(
     @ApplicationContext private val context: Context
@@ -33,7 +35,10 @@ class PetsWallViewModel @Inject constructor(
 
     var token: AccessToken? =
         AccessToken(
-            token = "vk1.a.WMwyI6S-BkkNFwJ5bRc_ymj6NKKI-D-ffnWJY8YAUudzSJkyUA1PR8FlVpjUe_SVLgFPD1WBWr04Mu2r5IeCv6A8QU52gouvQVzniiaMh4HSV0GtlfVPK-MRxbPlwwET_B0tUdtl6uU6FE-ZHNAOAli_krS1HQecV44RluqNo9gI60C_NJxKyJv9tD1vzTAHbAcceHDpB7w_HIVjlCtx1w",
+            token = "vk1.a.WMwyI6S-BkkNFwJ5bRc_ymj6NKKI" +
+                    "-D-ffnWJY8YAUudzSJkyUA1PR8FlVpjUe_SVLgFPD1WBWr04Mu2r5IeCv6A8QU52gou" +
+                    "vQVzniiaMh4HSV0GtlfVPK-MRxbPlwwET_B0tUdtl6uU6FE-ZHNAOAli_krS1HQecV44Rluq" +
+                    "No9gI60C_NJxKyJv9tD1vzTAHbAcceHDpB7w_HIVjlCtx1w",
             userID = 179272816,
             expireTime = System.currentTimeMillis(),
             userData = VKIDUser(
@@ -68,7 +73,7 @@ class PetsWallViewModel @Inject constructor(
                     _vkpetsUIState.value =
                         VK.executeSync(
                             GroupsService()
-                                .groupsGetById(groupIds = listOf(UserId(160065516)))
+                                .groupsGetById(groupIds = listOf(UserId(VKPETS_ID)))
                                 .withVKIDToken(token!!)
                         ).first()
                 }
@@ -86,7 +91,7 @@ class PetsWallViewModel @Inject constructor(
                     _responseUiState.value =
                         VK.executeSync(
                             WallService()
-                                .wallGet(ownerId = UserId(-160065516), count = 20)
+                                .wallGet(ownerId = UserId(-VKPETS_ID), count = 20)
                                 .withVKIDToken(token!!)
 
                         )
@@ -99,7 +104,7 @@ class PetsWallViewModel @Inject constructor(
     }
 }
 
-
+@SuppressWarnings("TooGenericExceptionCaught")
 fun <T> ApiCommand<T>.withVKIDToken(
     accessToken: AccessToken
 

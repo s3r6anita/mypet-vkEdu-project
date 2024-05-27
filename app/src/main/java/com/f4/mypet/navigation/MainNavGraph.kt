@@ -22,6 +22,7 @@ import com.f4.mypet.ui.screens.profile.show.ProfileScreen
 import com.f4.mypet.ui.screens.wall.PetsWallScreen
 import kotlinx.coroutines.CoroutineScope
 
+@SuppressWarnings("CyclomaticComplexMethod")
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,

@@ -2,7 +2,6 @@ package com.f4.mypet.ui.screens.profile.show
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,6 +17,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
+@SuppressWarnings("TooGenericExceptionCaught")
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val repository: Repository,
@@ -70,7 +70,6 @@ class ProfileViewModel @Inject constructor(
                 )
             )
         } catch (e: Exception) {
-            Log.d("err", e.toString())
             Toast.makeText(appContext, "Произошла ошибка", Toast.LENGTH_LONG).show()
         }
     }

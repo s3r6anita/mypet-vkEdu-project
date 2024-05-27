@@ -35,6 +35,7 @@ import javax.inject.Singleton
 private const val UNAUTHENTICATED_TIMEOUT = 3L
 private const val TIMEOUT = 10L
 private const val AUTH_PREFERENCES = "my_preferences"
+const val VKPETS_ID = 160065516L
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = AUTH_PREFERENCES)
 
