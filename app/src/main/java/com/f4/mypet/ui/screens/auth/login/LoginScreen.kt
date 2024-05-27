@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -43,6 +44,7 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
+import com.f4.mypet.ui.screens.wall.PetsWallViewModel
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.util.UIState
@@ -50,15 +52,17 @@ import com.vk.id.AccessToken
 import com.vk.id.OAuth
 import com.vk.id.VKID
 import com.vk.id.onetap.common.OneTapOAuth
-import com.vk.sdk.api.wall.dto.WallGetResponseDto
+import com.vk.id.onetap.compose.onetap.OneTap
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     navController: NavHostController,
     context: Context,
-    viewModel: LoginViewModel = hiltViewModel()
-) {
+    viewModel: LoginViewModel = hiltViewModel(),
+    viewModelPets: PetsWallViewModel = hiltViewModel(),
+
+    ) {
     val scope = rememberCoroutineScope()
     val msg by viewModel.msg.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
@@ -76,9 +80,6 @@ fun LoginScreen(
 
     val vkid = VKID(LocalContext.current)
 
-    var wallResponse by remember {
-        mutableStateOf<WallGetResponseDto?>(null)
-    }
 
     LaunchedEffect(uiState) {
         if (uiState == UIState.Success) {
@@ -211,16 +212,20 @@ fun LoginScreen(
                 )
             }
 
-//            // кнопка VK ID
-//            OneTap(
-//                modifier = Modifier.width(355.dp),
-//                onAuth = getOneTapSuccessCallback(LocalContext.current) {
-//                    token = it
-//                    Log.d("tag", "${it.token}")
-//                },
-//                signInAnotherAccountButtonEnabled = true,
-//                vkid = vkid,
-//            )
+            // кнопка VK ID
+            OneTap(
+                modifier = Modifier.width(355.dp),
+                onAuth = getOneTapSuccessCallback(LocalContext.current) { token ->
+                    viewModelPets.token = token
+                    navController.navigate(Routes.ListProfile.route) {
+                        popUpTo(START)
+                        restoreState = true
+                        launchSingleTop = true
+                    }
+                },
+                signInAnotherAccountButtonEnabled = true,
+                vkid = vkid,
+            )
 
         }
     }
@@ -244,19 +249,3 @@ private fun onVKIDAuthSuccess(
 }
 
 
-//private fun onVKIDAuthFail(
-//    context: Context,
-//    oAuth: OAuth?,
-//    fail: VKIDAuthFail,
-//) {
-//    val oAuthLabel = oAuth?.name ?: "VK ID"
-//    when (fail) {
-//        is VKIDAuthFail.Canceled -> {
-//            showToast(context, "Auth with $oAuthLabel was canceled")
-//        }
-//
-//        else -> {
-//            showToast(context, "Auth with $oAuthLabel failed with: ${fail.description}")
-//        }
-//    }
-//}
