@@ -69,7 +69,9 @@ class ListProcedureViewModel @Inject constructor(
                 is NetworkResult.Success -> {
                     _proceduresUiState.value = response.data as List<Procedure>
 
-                    // TODO: update local DB
+                    repository.removeProceduresForPet(petId)
+                    repository.insertListOfProcedures(_proceduresUiState.value)
+
                     _uiState.update { UIState.Success }
                 }
                 is NetworkResult.Error -> {
