@@ -56,4 +56,8 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetMsg() {
+        _msg.value = ""
+    }
 }

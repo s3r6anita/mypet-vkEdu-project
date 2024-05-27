@@ -28,7 +28,7 @@ class ProcedureViewModel @Inject constructor(
             0, 0, "", 0,
             LocalDateTime.now().withMinute(0),
             "", LocalDateTime.now().withMinute(0),
-            0, 0, 0
+            0, 0, -1
         )
     )
     val procedureUiState = _procedureUiState.asStateFlow()
@@ -77,6 +77,10 @@ class ProcedureViewModel @Inject constructor(
                 is NetworkResult.Error -> { _msg.value = response.msg }
             }
         }
+    }
+
+    fun resetMsg() {
+        _msg.value = ""
     }
 }
 

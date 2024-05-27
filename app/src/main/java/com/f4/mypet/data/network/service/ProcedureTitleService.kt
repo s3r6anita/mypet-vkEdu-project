@@ -15,6 +15,6 @@ interface ProcedureTitleService {
     @POST("title")
     suspend fun createTitle(@Body title: CreateProcedureTitleRequest): Response<Int>
 
-    @GET("title/update")
+    @POST("title/update")
     suspend fun updatePet(@Body title: ProcedureTitle): Response<String?>
 }

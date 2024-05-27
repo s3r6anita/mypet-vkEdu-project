@@ -30,6 +30,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+@Suppress("LongParameterList")
 class NetworkRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val authService: AuthService,

@@ -35,11 +35,10 @@ class ListProcedureViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-
     var pet = Pet(
         "", "", "", "Самец",
         LocalDate.now(),
-        "", "", "", 0
+        "", "", "", -1
     )
 
     fun getPetProcedures(petId: Int) {
@@ -68,11 +67,17 @@ class ListProcedureViewModel @Inject constructor(
             when (response) {
                 is NetworkResult.Success -> {
                     _proceduresUiState.value = response.data as List<Procedure>
-
+                    // обновление локальной БД
                     repository.removeProceduresForPet(petId)
                     repository.insertListOfProcedures(_proceduresUiState.value)
-
-                    _uiState.update { UIState.Success }
+                    when (val titles = networkRepository.getTitles()) {
+                        is NetworkResult.Success -> {
+                            _titlesUiState.value = titles.data as List<ProcedureTitle>
+                            repository.replaceTitles(_titlesUiState.value)
+                            _uiState.update { UIState.Success }
+                        }
+                        is NetworkResult.Error -> _uiState.update { UIState.Error }
+                    }
                 }
                 is NetworkResult.Error -> {
                     _uiState.update { UIState.Error }

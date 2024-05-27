@@ -30,7 +30,6 @@ interface Repository {
         pets: List<Pet>, procedures: List<Procedure>, medRecords: List<MedRecord>,
         titles: List<ProcedureTitle>
     )
-
     suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>>
     suspend fun getProcedureTitles(): Flow<List<ProcedureTitle>>
     suspend fun getProcedureTitlesForCU(): List<ProcedureTitle>
@@ -47,6 +46,7 @@ interface Repository {
     suspend fun getFrequency(frequencyId: Int): Frequency
     suspend fun getMedRecordsForPet(petId: Int): Flow<List<MedRecord>>
     suspend fun getMedRecord(medRecord: Int): Flow<MedRecord>
+    suspend fun replaceTitles(titles: List<ProcedureTitle>)
 }
 
 @SuppressWarnings("TooManyFunctions")
@@ -176,4 +176,11 @@ class DBRepository @Inject constructor(
     override suspend fun getMedRecord(medRecord: Int): Flow<MedRecord> {
         return medRecordDAO.getMedRecord(medRecord)
     }
+
+    override suspend fun replaceTitles(titles: List<ProcedureTitle>) {
+        prTitleDAO.deleteAll()
+        prTitleDAO.insertAll(titles)
+    }
+
+
 }

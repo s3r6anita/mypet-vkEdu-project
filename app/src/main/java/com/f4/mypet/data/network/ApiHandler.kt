@@ -32,8 +32,6 @@ interface ApiHandler {
             }
         } catch (e: IOException) {
             NetworkResult.Error("Превышено время ожидания. Сервер недоступен")
-        } catch (e: Throwable) {
-            NetworkResult.Error("${e.message}")
         }
     }
 

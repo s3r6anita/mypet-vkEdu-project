@@ -31,11 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
+import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.PetCardHeader
+import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.procedure.list.ListProcedureViewModel
 import com.f4.mypet.ui.screens.procedure.list.ProcedureItem
 import com.f4.mypet.ui.theme.GreenButton
@@ -61,81 +63,86 @@ fun SuccessListProcedureScreen(
     val pet = viewModel.pet
     val titles by viewModel.titlesUiState.collectAsState()
 
-    Scaffold(
-        topBar = {
-            MyPetTopBar(
-                text = stringResource(id = R.string.list_procedure_screen_title),
-                canNavigateBack = canNavigateBack,
-                navigateUp = { navController.navigateUp() }
-            )
-        },
-        bottomBar = {
-            MyPetBottomBar(
-                profileId = profileId,
-                canNavigateBack = canNavigateBack,
-                items = BottomBarData.items,
-                getNavController = { navController }
-            )
-        },
-    ) { innerPadding ->
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top,
-                modifier = Modifier
-                    .pullRefresh(pullRefreshState)
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(horizontal = 20.dp),
-            ) {
-                PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
+    if (titles == emptyList<ProcedureTitle>()) {
+        LoadingScreen()
+    } else {
+        Scaffold(
+            topBar = {
+                MyPetTopBar(
+                    text = stringResource(id = R.string.list_procedure_screen_title),
+                    canNavigateBack = canNavigateBack,
+                    navigateUp = { navController.navigateUp() }
+                )
+            },
+            bottomBar = {
+                MyPetBottomBar(
+                    profileId = profileId,
+                    canNavigateBack = canNavigateBack,
+                    items = BottomBarData.items,
+                    getNavController = { navController }
+                )
+            },
+        ) { innerPadding ->
 
-                // список процедур
+            Box(modifier = Modifier.fillMaxSize()) {
                 Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 60.dp)
-                        .verticalScroll(rememberScrollState())
+                        .pullRefresh(pullRefreshState)
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(horizontal = 20.dp),
                 ) {
-                    procedures.forEach { procedure ->
-                        ProcedureItem(
-                            procedure = procedure,
-                            navController = navController,
-                            title = titles.find { title -> title.id == procedure.title }?.name
-                                ?: stringResource(id = R.string.unknown)
+                    PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
+
+                    // список процедур
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 60.dp)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        procedures.forEach { procedure ->
+                            ProcedureItem(
+                                procedure = procedure,
+                                navController = navController,
+                                title = titles.find { title -> title.id == procedure.title }?.name
+                                    ?: stringResource(id = R.string.unknown)
+                            )
+                        }
+                    }
+
+                    // кнопка ADD
+                    Button(
+                        onClick = {
+                            navController.navigate("${Routes.CreateProcedure.route}/$profileId") {
+                                launchSingleTop = true
+                            }
+                        },
+                        border = BorderStroke(1.dp, GreenButton),
+                        colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(id = R.string.add_button_icon_description)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.add_button_description),
+                            Modifier.padding(start = 10.dp),
+                            style = MaterialTheme.typography.titleMedium
                         )
                     }
                 }
 
-                // кнопка ADD
-                Button(
-                    onClick = {
-                        navController.navigate("${Routes.CreateProcedure.route}/$profileId") {
-                            launchSingleTop = true
-                        }
-                    },
-                    border = BorderStroke(1.dp, GreenButton),
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(id = R.string.add_button_icon_description)
-                    )
-                    Text(
-                        text = stringResource(id = R.string.add_button_description),
-                        Modifier.padding(start = 10.dp),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                PullRefreshIndicator(
+                    isRefreshing,
+                    pullRefreshState,
+                    Modifier
+                        .align(Alignment.TopCenter)
+                )
             }
-
-            PullRefreshIndicator(
-                isRefreshing,
-                pullRefreshState,
-                Modifier
-                    .align(Alignment.TopCenter)
-            )
         }
     }
 }

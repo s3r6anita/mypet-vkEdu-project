@@ -25,8 +25,8 @@ fun ListProcedureScreen(
 
     LaunchedEffect(Unit) {
         scope.launch {
-            viewModel.getPetProcedures(profileId)
             viewModel.getTitles()
+            viewModel.getPetProcedures(profileId)
         }
     }
 

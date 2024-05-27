@@ -27,8 +27,8 @@ android {
         versionName = "1.0"
 
         addManifestPlaceholders(mapOf(
-            "VKIDRedirectHost" to "vk.com", // обычно vk.com
-            "VKIDRedirectScheme" to "vk51926140", // обычно vk{ID приложения}
+            "VKIDRedirectHost" to localParams.getProperty("VKIDRedirectHost"),
+            "VKIDRedirectScheme" to localParams.getProperty("VKIDRedirectScheme"),
             "VKIDClientID" to localParams.getProperty("VKIDClientID"),
             "VKIDClientSecret" to localParams.getProperty("VKIDClientSecret")
         ))

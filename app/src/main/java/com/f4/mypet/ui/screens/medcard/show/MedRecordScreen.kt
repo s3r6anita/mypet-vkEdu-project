@@ -42,6 +42,7 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.medcard.show.screenComponents.RemoveMedRecordAlert
 import com.f4.mypet.ui.screens.medcard.show.screenComponents.ShowMedRecordData
 import com.f4.mypet.ui.theme.GreenButton
@@ -72,86 +73,90 @@ fun MedRecordScreen(
         )
     }
 
-    Scaffold(
-        topBar = {
-            MyPetTopBar(
-                text = stringResource(R.string.medrecord_show_title),
-                canNavigateBack = true,
-                navigateUp = { navController.navigateUp() }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Box(
+    if (medRecord.id == -1) {
+        LoadingScreen()
+    } else {
+        Scaffold(
+            topBar = {
+                MyPetTopBar(
+                    text = stringResource(R.string.medrecord_show_title),
+                    canNavigateBack = true,
+                    navigateUp = { navController.navigateUp() }
+                )
+            }
+        ) { innerPadding ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .padding(vertical = 50.dp)
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(horizontal = 20.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
-                ShowMedRecordData(medRecord)
+                Box(
+                    modifier = Modifier
+                        .padding(vertical = 50.dp)
+                ) {
+                    ShowMedRecordData(medRecord)
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.pet_icon),
+                            contentDescription = null,
+                            contentScale = ContentScale.Inside,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape)
+                                .background(LightBlueBackground)
+                        )
+                    }
+
+                }
                 Row(
                     horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier
+                        .padding(bottom = 40.dp)
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.pet_icon),
-                        contentDescription = null,
-                        contentScale = ContentScale.Inside,
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape)
-                            .background(LightBlueBackground)
-                    )
-                }
+                    // Кнопка редактирования
+                    Button(
+                        contentPadding = PaddingValues(start = 1.dp, end = 1.dp),
+                        border = BorderStroke(1.dp, GreenButton),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
+                        onClick = {
+                            navController.navigate("${Routes.UpdateMedRecord.route}/$medRecordId") {
+                                launchSingleTop = true
+                            }
+                        },
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.edit_button_description),
+                            modifier = Modifier.padding(start = 5.dp),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
 
-            }
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.Bottom,
-                modifier = Modifier
-                    .padding(bottom = 40.dp)
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                // Кнопка редактирования
-                Button(
-                    contentPadding = PaddingValues(start = 1.dp, end = 1.dp),
-                    border = BorderStroke(1.dp, GreenButton),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
-                    onClick = {
-                        navController.navigate("${Routes.UpdateMedRecord.route}/$medRecordId") {
-                            launchSingleTop = true
-                        }
-                    },
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.edit_button_description),
-                        modifier = Modifier.padding(start = 5.dp),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                    Spacer(modifier = Modifier.width(24.dp))
 
-                Spacer(modifier = Modifier.width(24.dp))
-
-                // кнопка удаления
-                Button(
-                    border = BorderStroke(1.dp, RedButton),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = RedButton),
-                    onClick = {
-                        openAlertDialog = true
-                    },
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.therapy_delete_button),
-                        modifier = Modifier.padding(start = 10.dp),
-                        style = MaterialTheme.typography.titleMedium
-                    )
+                    // кнопка удаления
+                    Button(
+                        border = BorderStroke(1.dp, RedButton),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = RedButton),
+                        onClick = {
+                            openAlertDialog = true
+                        },
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.therapy_delete_button),
+                            modifier = Modifier.padding(start = 10.dp),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
                 }
             }
         }

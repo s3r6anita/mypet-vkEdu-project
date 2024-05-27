@@ -37,6 +37,7 @@ fun ErrorScreen(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun ThemedIconButton(
     imageVector: ImageVector,

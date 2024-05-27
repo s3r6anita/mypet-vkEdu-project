@@ -55,15 +55,12 @@ fun SuccessCUProcedureScreen(
     profileId: Int,
     viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 ) {
-    //TODO: сделать update когда меняем тип, то есть insert в таблицу title
-    val titles = viewModel.titles
     val types = viewModel.types
 
     val procedureDB by viewModel.procedureUiState.collectAsState()
 
     val type by remember { mutableStateOf(viewModel.type) }
     var title by remember { mutableStateOf(viewModel.title) }
-    var frequency by remember { mutableStateOf(viewModel.frequency) }
     var procedure by remember { mutableStateOf(procedureDB) }
 
     LaunchedEffect(procedureDB) {
@@ -184,8 +181,6 @@ fun SuccessCUProcedureScreen(
             Button(
                 modifier = Modifier.padding(20.dp),
                 onClick = {
-                    //TODO Проверка на формат даты и на "дату из будущего"
-
                     if (isCreateScreen) {
                         procedure = procedure.copy(pet = profileId)
                         title = title.copy(type = selectedType.id)
@@ -193,9 +188,8 @@ fun SuccessCUProcedureScreen(
 
                     } else {
                         title = title.copy(type = selectedType.id)
-                        viewModel.updateProcedure(procedure, title, frequency)
+                        viewModel.updateProcedure(procedure, title)
                     }
-                    navController.navigateUp()
                 },
                 border = BorderStroke(1.dp, GreenButton),
                 colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
