@@ -43,7 +43,7 @@ import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.screens.profile.show.screencomponents.ProfileItem
-import com.f4.mypet.ui.screens.profile.show.screencomponents.RemoveProfileALert
+import com.f4.mypet.ui.screens.profile.show.screencomponents.RemoveProfileAlert
 import com.f4.mypet.ui.theme.GreenButton
 import kotlinx.coroutines.launch
 
@@ -75,14 +75,14 @@ fun ProfileScreen(
         }
         if (msg == null) {
             navController.navigate(Routes.ListProfile.route) {
-                popUpTo(Routes.ListProfile.route)
+                popUpTo(START)
                 launchSingleTop = true
             }
         }
     }
 
     if (openAlertDialog) {
-        RemoveProfileALert(
+        RemoveProfileAlert(
             pet = pet,
             closeAlertDialog = {
                 openAlertDialog = !openAlertDialog

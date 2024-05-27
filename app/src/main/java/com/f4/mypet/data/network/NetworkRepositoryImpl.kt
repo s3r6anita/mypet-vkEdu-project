@@ -183,21 +183,8 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun removePet(id: Int): String? {
-        return try {
-            val response = petService.removePet(id)
-            response.data ?: response.msg
-        } catch (e: HttpException) {
-            if (e.code() == serverError) {
-                "Сервер недоступен"
-            } else {
-                val errorResponseBody = e.response()?.errorBody()?.string()
-                val errorResponse = Gson().fromJson(errorResponseBody, Response::class.java)
-                errorResponse.msg ?: "Ошибка сериализации ответа сервера"
-            }
-        } catch (e: IOException) {
-            "Превышено время ожидания. Сервер недоступен"
-        }
+    override suspend fun removePet(id: Int): NetworkResult<Any?> {
+        return handleApi { petService.removePet(id) }
     }
 
     override suspend fun insertProcedure(procedure: Procedure): String? {
@@ -238,8 +225,16 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPetProcedures(id: Int): NetworkResult<Any> {
+    override suspend fun getPetProcedures(id: Int): NetworkResult<Any?> {
         return handleApi { procedureService.getPetProcedures(id) }
+    }
+
+    override suspend fun updateProcedure(procedure: Procedure): NetworkResult<Any?> {
+        return handleApi { procedureService.updateProcedure(procedure) }
+    }
+
+    override suspend fun removeProcedure(id: Int): NetworkResult<Any?> {
+        return handleApi { procedureService.removeProcedure(id) }
     }
 
 

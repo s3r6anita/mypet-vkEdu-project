@@ -20,13 +20,13 @@ interface NetworkRepository {
     suspend fun getPets(): List<Pet>
     suspend fun getPet(id: Int): Pet?
     suspend fun updatePet(pet: Pet): String?
-    suspend fun removePet(id: Int): String?
+    suspend fun removePet(id: Int): NetworkResult<Any?>
 
     suspend fun insertProcedure(procedure: Procedure): String?
     suspend fun getProcedures(): List<Procedure>
-    suspend fun getPetProcedures(id: Int): NetworkResult<Any>
-//    suspend fun updateProcedure(procedure: Procedure): String?
-//    suspend fun removeProcedure(id: Int): String?
+    suspend fun getPetProcedures(id: Int): NetworkResult<Any?>
+    suspend fun updateProcedure(procedure: Procedure): NetworkResult<Any?>
+    suspend fun removeProcedure(id: Int): NetworkResult<Any?>
 
 //    suspend fun insertProcedure(procedure: Procedure): String?
     suspend fun getMedRecords(): List<MedRecord>

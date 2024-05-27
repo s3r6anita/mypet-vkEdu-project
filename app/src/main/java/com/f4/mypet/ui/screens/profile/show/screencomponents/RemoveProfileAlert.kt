@@ -13,7 +13,7 @@ import com.f4.mypet.ui.screens.profile.show.ProfileViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun RemoveProfileALert(
+fun RemoveProfileAlert(
     pet: Pet,
     closeAlertDialog: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()

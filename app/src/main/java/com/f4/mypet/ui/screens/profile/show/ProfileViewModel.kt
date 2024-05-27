@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.f4.mypet.data.db.Repository
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.network.NetworkRepository
+import com.f4.mypet.data.network.model.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,10 +45,15 @@ class ProfileViewModel @Inject constructor(
 
     fun removePet(pet: Pet) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.removePet(pet)
-            repository.removeProceduresForPet(pet.id)
-            repository.removeMedRecordsForPet(pet.id)
-            _msg.value = networkRepository.removePet(pet.id)
+            when (val response = networkRepository.removePet(pet.id)) {
+                is NetworkResult.Success -> {
+                    _msg.value = null
+                    repository.removePet(pet)
+                    repository.removeProceduresForPet(pet.id)
+                    repository.removeMedRecordsForPet(pet.id)
+                }
+                is NetworkResult.Error -> { _msg.value = response.msg }
+            }
         }
     }
 }

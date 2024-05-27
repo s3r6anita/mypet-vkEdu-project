@@ -40,8 +40,10 @@ class ListProfileViewModel @Inject constructor(
                 _medRecordsUiState.value = networkRepository.getMedRecords()
                 repository.replaceAllData(_petsUiState.value, _proceduresUiState.value, _medRecordsUiState.value)
             } catch (e: HttpException) {
+                _petsUiState.value = repository.getPets()
                 _uiState.update { UIState.Error }
             } catch (e: IOException) {
+                _petsUiState.value = repository.getPets()
                 _uiState.update { UIState.Error }
             } finally {
                 _uiState.update { UIState.Success }

@@ -48,6 +48,7 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.components.TextComponent
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
@@ -63,27 +64,39 @@ fun ProcedureScreen(
     viewModel: ProcedureViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
-
+    // для отображения
+    val procedure by viewModel.procedureUiState.collectAsState()
+    val title = viewModel.title
+    val type = viewModel.type
+    val frequency = viewModel.frequency
     LaunchedEffect(Unit) {
         scope.launch {
             viewModel.getProcedure(procedureId)
         }
     }
-    val procedure by viewModel.procedureUiState.collectAsState()
-    val title = viewModel.title
-    val type = viewModel.type
-    val frequency = viewModel.frequency
 
+    // для удаления
+    val msg by viewModel.msg.collectAsState()
+    var showStatusDialog by remember { mutableStateOf(false) }
     var openAlertDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(msg) {
+        if (msg != null && msg != "") {
+            showStatusDialog = true
+        }
+        if (msg == null) {
+            navController.navigateUp()
+        }
+    }
 
     if (openAlertDialog) {
         RemoveProcedureAlert(
             procedure = procedure,
-            navigateUp = { navController.navigateUp() },
-            closeAlertDialog = {
-                openAlertDialog = !openAlertDialog
-            }
+            closeAlertDialog = { openAlertDialog = !openAlertDialog }
         )
+    }
+    if (showStatusDialog) {
+        StatusDialog(msg) { showStatusDialog = !showStatusDialog }
     }
 
     Scaffold(
