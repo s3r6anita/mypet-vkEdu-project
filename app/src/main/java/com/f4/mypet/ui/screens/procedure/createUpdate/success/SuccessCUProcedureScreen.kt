@@ -90,7 +90,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 fun scheduleNotification(context: Context, title: String, message: String, notificationTime: LocalDateTime, notificationId: Int) {
-    // Логирование времени установки уведомления
     val intent = Intent(context, AlarmReceiver::class.java).apply {
         putExtra("notification_title", title)
         putExtra("notification_message", message)
@@ -106,9 +105,6 @@ fun scheduleNotification(context: Context, title: String, message: String, notif
     val triggerAtMillis = systemZonedDateTime.toInstant().toEpochMilli()
 
     alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
-
-    // Преобразование обратно в читаемое время для проверки
-    val triggerTime = Instant.ofEpochMilli(triggerAtMillis).atZone(systemZoneId).toLocalDateTime()
 }
 fun createNotificationChannel(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -652,8 +648,10 @@ fun SuccessCUProcedureScreen(
             )
             val createDelayedNotification = remember { mutableStateOf(false) }
             if (createDelayedNotification.value) {
-                val title_notification = if (title.name.isBlank()) "Процедура" else title.name
-                val message = "Напоминание: дата выполнения процедуры - ${procedure.dateDone.format(PetDateTimeFormatter.date)}. Время - ${procedure.dateDone.format(PetDateTimeFormatter.time)}"
+                val titleNotification = if (title.name.isBlank()) "Процедура" else title.name
+                val timeMessage = procedure.dateDone.format(PetDateTimeFormatter.date)
+                val dateMessage = procedure.dateDone.format(PetDateTimeFormatter.time)
+                val message = "Напоминание: дата выполнения процедуры - $timeMessage. Время - $dateMessage"
                 val procedureId = procedure.id
                 // Получаем дату и время из процедуры
                 val reminderDate = procedure.reminder!!.format(PetDateTimeFormatter.date)
@@ -665,7 +663,7 @@ fun SuccessCUProcedureScreen(
                     LocalTime.parse(reminderTime, PetDateTimeFormatter.time)  // Преобразуем время из строки в LocalTime
                 )
                 // Логирование времени перед передачей в scheduleNotification
-                scheduleNotification(context, title_notification, message, reminderDateTime, procedureId)
+                scheduleNotification(context, titleNotification, message, reminderDateTime, procedureId)
                 createDelayedNotification.value = false
             }
             // сохранение
