@@ -2,6 +2,7 @@ package com.f4.mypet.ui.screens.procedure.list.success
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -51,9 +52,10 @@ fun SuccessListProcedureScreen(
     val navController = getNavController()
 
     val isRefreshing by viewModel.isRefreshing.collectAsState()
-    val pullRefreshState =
-        rememberPullRefreshState(isRefreshing, { viewModel.refreshProcedures(profileId) })
-
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.refreshProcedures(profileId) }
+    )
 
     val procedures by viewModel.proceduresUiState.collectAsState()
     val pet = viewModel.pet
@@ -64,8 +66,7 @@ fun SuccessListProcedureScreen(
             MyPetTopBar(
                 text = stringResource(id = R.string.list_procedure_screen_title),
                 canNavigateBack = canNavigateBack,
-                navigateUp = { navController.navigateUp() },
-                actions = { }
+                navigateUp = { navController.navigateUp() }
             )
         },
         bottomBar = {
@@ -78,60 +79,63 @@ fun SuccessListProcedureScreen(
         },
     ) { innerPadding ->
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
-            modifier = Modifier
-                .pullRefresh(pullRefreshState)
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 20.dp),
-        ) {
-            PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
-
-            PullRefreshIndicator(
-                isRefreshing,
-                pullRefreshState,
-                Modifier.align(Alignment.CenterHorizontally)
-            )
-
-            // список процедур
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 60.dp)
-                    .verticalScroll(rememberScrollState())
+                    .pullRefresh(pullRefreshState)
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(horizontal = 20.dp),
             ) {
-                procedures.forEach { procedure ->
-                    ProcedureItem(
-                        procedure = procedure,
-                        navController = navController,
-                        title = titles.find { title -> title.id == procedure.title }?.name
-                            ?: stringResource(id = R.string.unknown)
+                PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
+
+                // список процедур
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 60.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    procedures.forEach { procedure ->
+                        ProcedureItem(
+                            procedure = procedure,
+                            navController = navController,
+                            title = titles.find { title -> title.id == procedure.title }?.name
+                                ?: stringResource(id = R.string.unknown)
+                        )
+                    }
+                }
+
+                // кнопка ADD
+                Button(
+                    onClick = {
+                        navController.navigate("${Routes.CreateProcedure.route}/$profileId") {
+                            launchSingleTop = true
+                        }
+                    },
+                    border = BorderStroke(1.dp, GreenButton),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(id = R.string.add_button_icon_description)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.add_button_description),
+                        Modifier.padding(start = 10.dp),
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
             }
 
-            // кнопка ADD
-            Button(
-                onClick = {
-                    navController.navigate("${Routes.CreateProcedure.route}/$profileId") {
-                        launchSingleTop = true
-                    }
-                },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.add_button_icon_description)
-                )
-                Text(
-                    text = stringResource(id = R.string.add_button_description),
-                    Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
+            PullRefreshIndicator(
+                isRefreshing,
+                pullRefreshState,
+                Modifier
+                    .align(Alignment.TopCenter)
+            )
         }
     }
 }

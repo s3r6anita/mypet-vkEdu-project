@@ -123,8 +123,8 @@ fun ProfileScreen(
 
                     // кнопка выхода
                     IconButton(onClick = {
-                        navController.navigate(START) {
-                            popUpTo(START)
+                        navController.navigate(Routes.ListProfile.route) {
+                            popUpTo(Routes.ListProfile.route)
                             launchSingleTop = true
                         }
                     }

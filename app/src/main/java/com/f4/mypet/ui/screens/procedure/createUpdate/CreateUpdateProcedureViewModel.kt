@@ -1,5 +1,6 @@
 package com.f4.mypet.ui.screens.procedure.createUpdate
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.f4.mypet.data.db.Repository
@@ -8,6 +9,7 @@ import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
 import com.f4.mypet.data.network.NetworkRepository
+import com.f4.mypet.data.network.model.NetworkResult
 import com.f4.mypet.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,14 +23,14 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateUpdateProcedureViewModel @Inject constructor(
     private val repository: Repository,
-    private val networkRepository: NetworkRepository,
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UIState>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private val _procedureUiState = MutableStateFlow(
         Procedure(
-            0, 0, "",0,
+            0, 0, "", 0,
             LocalDateTime.now().withMinute(0),
             "", null,
             0, 0
@@ -39,6 +41,7 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     var titles = emptyList<ProcedureTitle>() // список всех заголовков
     var types = emptyList<ProcedureType>() // список всех типов
     var frequencyOptions = emptyList<Frequency>() // список вариантов частоты
+
     var frequencyOptionsTitles = mutableListOf<String>() // список вариантов частоты
 
     var title = ProcedureTitle(
@@ -62,10 +65,11 @@ class CreateUpdateProcedureViewModel @Inject constructor(
             titles = repository.getProcedureTitlesForCU()
             types = repository.getProcedureTypes()
             frequencyOptions = repository.getFrequencyOptions()
-            frequencyOptions.forEach() {
+            frequencyOptions.forEach {
                 frequencyOptionsTitles.add(it.id, it.option)
             }
             _uiState.update { UIState.Success }
+            Log.d("tag", "${_uiState.value}")
         }
     }
 
@@ -82,8 +86,6 @@ class CreateUpdateProcedureViewModel @Inject constructor(
 
                 _uiState.update { UIState.Success }
             }
-        } else {
-            _uiState.update { UIState.Success }
         }
     }
 
@@ -97,10 +99,26 @@ class CreateUpdateProcedureViewModel @Inject constructor(
 
     fun createProcedure(procedure: Procedure, title: ProcedureTitle) {
         viewModelScope.launch(Dispatchers.IO) {
-            val titleId = repository.insertTitle(title) // start error there
-            val procedureWithTitleFreq = procedure.copy(title = titleId)
-            repository.insertProcedure(procedureWithTitleFreq)
-//            networkRepository.insertProcedure(procedureWithTitleFreq) TODO: починить
+            when (val titleId = networkRepository.insertTitle(title)) {
+                is NetworkResult.Success -> {
+                    repository.insertTitle(title)
+                    val procedureWithTitleFreq = procedure.copy(title = titleId.data as Int)
+
+                    when (networkRepository.insertProcedure(procedureWithTitleFreq)) {
+                        is NetworkResult.Success -> {
+                            repository.insertProcedure(procedureWithTitleFreq)
+                        }
+
+                        is NetworkResult.Error -> {
+                            _uiState.update { UIState.Error }
+                        }
+                    }
+                }
+
+                is NetworkResult.Error -> {
+                    _uiState.update { UIState.Error }
+                }
+            }
         }
     }
 }

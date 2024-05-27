@@ -24,6 +24,7 @@ class ListProfileViewModel @Inject constructor(
     private val networkRepository: NetworkRepository
 ) : ViewModel() {
     private val _proceduresUiState = MutableStateFlow(emptyList<Procedure>())
+    private val _procedureTitlesUiState = MutableStateFlow(emptyList<Procedure>())
     private val _medRecordsUiState = MutableStateFlow(emptyList<MedRecord>())
     private val _petsUiState = MutableStateFlow(emptyList<Pet>())
     val petsUiState = _petsUiState.asStateFlow()
@@ -38,6 +39,8 @@ class ListProfileViewModel @Inject constructor(
                 _petsUiState.value = networkRepository.getPets()
                 _proceduresUiState.value = networkRepository.getProcedures()
                 _medRecordsUiState.value = networkRepository.getMedRecords()
+                _procedureTitlesUiState.value = networkRepository.getTitles()
+
                 repository.replaceAllData(_petsUiState.value, _proceduresUiState.value, _medRecordsUiState.value)
             } catch (e: HttpException) {
                 _petsUiState.value = repository.getPets()

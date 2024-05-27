@@ -25,6 +25,7 @@ class ListProcedureViewModel @Inject constructor(
 ) : ViewModel() {
     private val _proceduresUiState = MutableStateFlow(emptyList<Procedure>())
     val proceduresUiState = _proceduresUiState.asStateFlow()
+
     private val _titlesUiState = MutableStateFlow(emptyList<ProcedureTitle>())
     val titlesUiState = _titlesUiState.asStateFlow()
 

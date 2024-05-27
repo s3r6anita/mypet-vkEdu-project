@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -79,12 +78,10 @@ fun MedRecordItem(
                 ) {
                     Text(
                         text = medRecord.title,
-                        color = Color.Black,
                         style = MaterialTheme.typography.titleLarge
                     )
                     Text(
                         text = medRecord.date.format(PetDateTimeFormatter.dateTime),
-                        color = Color.Black,
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }

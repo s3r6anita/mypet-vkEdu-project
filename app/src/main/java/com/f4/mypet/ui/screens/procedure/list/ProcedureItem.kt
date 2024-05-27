@@ -32,6 +32,7 @@ import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.theme.LightBlueBackground
+import com.f4.mypet.ui.theme.LightGreenBackground
 import com.f4.mypet.util.PetDateTimeFormatter
 
 
@@ -73,7 +74,7 @@ fun ProcedureItem(
                     contentScale = ContentScale.Inside,
                     modifier = Modifier
                         .clip(CircleShape)
-                        .background(LightBlueBackground)
+                        .background(LightGreenBackground)
                         .size(50.dp),
                 )
                 Column(
