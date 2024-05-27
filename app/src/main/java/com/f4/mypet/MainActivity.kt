@@ -12,6 +12,5 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyPetApp(this)
         }
-        //   val vkid = VKID(this)
     }
 }

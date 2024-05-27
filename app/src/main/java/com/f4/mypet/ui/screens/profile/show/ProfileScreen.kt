@@ -1,5 +1,6 @@
 package com.f4.mypet.ui.screens.profile.show
 
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,6 +46,7 @@ import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.profile.show.screencomponents.ProfileItem
 import com.f4.mypet.ui.screens.profile.show.screencomponents.RemoveProfileALert
+import com.f4.mypet.ui.screens.profile.show.screencomponents.formatPet
 import com.f4.mypet.ui.theme.GreenButton
 import kotlinx.coroutines.launch
 
@@ -53,6 +55,7 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
+    context: Context,
     profileId: Int,
     canNavigateBack: Boolean,
     viewModel: ProfileViewModel = hiltViewModel()
@@ -116,9 +119,11 @@ fun ProfileScreen(
                     }
 
                     // кнопка поделиться
-                    IconButton(onClick = {
-                        // TODO: реализовать кнопку поделиться
-                    }) {
+                    IconButton(
+                        onClick = {
+                            val message = formatPet(pet)
+                            viewModel.sharePetInfo(message, context)
+                        }) {
                         Icon(
                             imageVector = Icons.Default.Share,
                             contentDescription = stringResource(id = R.string.share_button_description)

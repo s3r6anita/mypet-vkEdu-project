@@ -72,6 +72,7 @@ fun NavGraphBuilder.mainNavGraph(
             ProfileScreen(
                 navController = navController,
                 snackbarHostState = snackbarHostState,
+                context = context,
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
                 canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
