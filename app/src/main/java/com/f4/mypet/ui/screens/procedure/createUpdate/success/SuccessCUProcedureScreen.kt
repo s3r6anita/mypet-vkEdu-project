@@ -67,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.f4.mypet.MainActivity
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
@@ -133,8 +134,20 @@ class AlarmReceiver : BroadcastReceiver() {
         val message = intent.getStringExtra("notification_message") ?: "Время выполнить процедуру"
         val notificationId = intent.getIntExtra("notification_id", 0) // Получим notificationId из intent
 
-        Log.d("Notification_onRecieve", "Received broadcast with title: $title and message: $message")
-
+        Log.d("Notification_onRecieve_1", "Received broadcast with title: $title and message: $message")
+        // Создаем намерение для запуска MainActivity с необходимым маршрутом
+        val resultIntent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("destination_route", "${Routes.Procedure.route}/$notificationId")
+        }
+        Log.d("Notification_onRecieve_2", "We made resultIntent with destination_route = ${Routes.Procedure.route}/$notificationId")
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            notificationId,
+            resultIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        Log.d("Notification_onRecieve_3", "We made pendingIntent")
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val notification = NotificationCompat.Builder(context, "notification_channel1")
@@ -142,6 +155,8 @@ class AlarmReceiver : BroadcastReceiver() {
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent) // Устанавливаем PendingIntent для уведомления
+            //.setAutoCancel(true) // Автоматическое закрытие уведомления после нажатия
             .build()
 
         notificationManager.notify(notificationId, notification) // Используем notificationId для уведомления
@@ -154,7 +169,7 @@ fun SuccessCUProcedureScreen(
     navController: NavHostController,
     isCreateScreen: Boolean,
     profileId: Int,
-    viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
+    viewModel: CreateUpdateProcedureViewModel = hiltViewModel(),
 ) {
     //TODO сделать update когда меняем тип, то есть с insert в таблицу title
     val context = LocalContext.current
@@ -646,8 +661,8 @@ fun SuccessCUProcedureScreen(
             )
             val createDelayedNotification = remember { mutableStateOf(false) }
             if (createDelayedNotification.value) {
-                val title_notification = title.name // Получаем заголовок процедуры
-                val message = "Напоминание: дата выполнения процедуры - ${procedure.dateDone.format(PetDateTimeFormatter.date)} Время - ${procedure.dateDone.format(PetDateTimeFormatter.time)}"
+                val title_notification = if (title.name.isBlank()) "Процедура" else title.name
+                val message = "Напоминание: дата выполнения процедуры - ${procedure.dateDone.format(PetDateTimeFormatter.date)}. Время - ${procedure.dateDone.format(PetDateTimeFormatter.time)}"
                 val procedureId = procedure.id
                 // Получаем дату и время из процедуры
                 val reminderDate = procedure.reminder!!.format(PetDateTimeFormatter.date)

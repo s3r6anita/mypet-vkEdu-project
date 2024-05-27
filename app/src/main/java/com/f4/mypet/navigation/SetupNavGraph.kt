@@ -10,14 +10,15 @@ import androidx.navigation.compose.NavHost
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    startDestination: String = START // Добавлен параметр startDestination с значением по умолчанию
 ) {
     val scope = rememberCoroutineScope()
     val getGlobalScope = { scope }
 
     NavHost(
         navController = navController,
-        startDestination = START,
+        startDestination = startDestination,
         enterTransition = { EnterTransition.None },
 /**
 *    Отключение анимаций перехода между экранами
