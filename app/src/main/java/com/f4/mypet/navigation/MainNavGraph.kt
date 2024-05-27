@@ -1,6 +1,5 @@
 package com.f4.mypet.navigation
 
-import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -26,8 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    globalScope: () -> CoroutineScope,
-    context: Context
+    globalScope: () -> CoroutineScope
 ) {
     navigation(
         route = START,
@@ -38,8 +36,7 @@ fun NavGraphBuilder.mainNavGraph(
         /** вход в аккаунт */
         composable(route = Routes.Login.route) {
             LoginScreen(
-                navController = navController,
-                context = context
+                navController = navController
             )
         }
 
@@ -73,7 +70,6 @@ fun NavGraphBuilder.mainNavGraph(
             ProfileScreen(
                 navController = navController,
                 snackbarHostState = snackbarHostState,
-                context = context,
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
                 canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )

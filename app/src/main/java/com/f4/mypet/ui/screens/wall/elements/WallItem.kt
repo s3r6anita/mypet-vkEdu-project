@@ -8,6 +8,7 @@ import com.vk.sdk.api.wall.dto.WallGetResponseDto
 import com.vk.sdk.api.wall.dto.WallWallItemDto
 import com.vk.sdk.api.wall.dto.WallWallpostAttachmentDto
 import com.vk.sdk.api.wall.dto.WallWallpostAttachmentTypeDto
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun Wall(
@@ -35,7 +36,7 @@ fun Wall(
                     }
                     if (photos.isNotEmpty()) {
                         item {
-                            PhotoCarousel(photos, openPhoto)
+                            PhotoCarousel(photos.toImmutableList(), openPhoto)
                         }
                     }
                 }

@@ -1,6 +1,5 @@
 package com.f4.mypet
 
-import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -10,12 +9,11 @@ import com.f4.mypet.ui.theme.MyPetTheme
 
 
 @Composable
-fun MyPetApp(context: Context) {
+fun MyPetApp() {
     MyPetTheme {
         SetupNavGraph(
             navController = rememberNavController(),
-            snackbarHostState = remember { SnackbarHostState() },
-            context = context
+            snackbarHostState = remember { SnackbarHostState() }
         )
     }
 }

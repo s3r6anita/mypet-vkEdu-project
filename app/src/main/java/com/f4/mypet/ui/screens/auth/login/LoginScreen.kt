@@ -58,7 +58,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    context: Context,
     viewModel: LoginViewModel = hiltViewModel(),
     viewModelPets: PetsWallViewModel = hiltViewModel(),
 
@@ -232,7 +231,7 @@ fun LoginScreen(
 
 }
 
-public fun getOneTapSuccessCallback(
+fun getOneTapSuccessCallback(
     context: Context,
     onToken: (AccessToken) -> Unit
 ): (OneTapOAuth?, AccessToken) -> Unit = { oAuth, token ->

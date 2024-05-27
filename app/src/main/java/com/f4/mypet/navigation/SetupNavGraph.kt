@@ -1,6 +1,5 @@
 package com.f4.mypet.navigation
 
-import android.content.Context
 import androidx.compose.animation.EnterTransition
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -11,8 +10,7 @@ import androidx.navigation.compose.NavHost
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    snackbarHostState: SnackbarHostState,
-    context: Context
+    snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
     val getGlobalScope = { scope }
@@ -28,6 +26,6 @@ fun SetupNavGraph(
 *       popExitTransition = { ExitTransition.None },
 */
     ) {
-        mainNavGraph(navController, snackbarHostState, getGlobalScope, context)
+        mainNavGraph(navController, snackbarHostState, getGlobalScope)
     }
 }

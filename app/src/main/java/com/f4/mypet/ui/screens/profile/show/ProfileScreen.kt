@@ -1,6 +1,5 @@
 package com.f4.mypet.ui.screens.profile.show
 
-import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,11 +55,11 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    context: Context,
     profileId: Int,
     canNavigateBack: Boolean,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val localContext = LocalContext.current
     val scope = rememberCoroutineScope()
     val msg by viewModel.msg.collectAsState()
     val pet by viewModel.petUiState.collectAsState()
@@ -122,7 +122,7 @@ fun ProfileScreen(
                     IconButton(
                         onClick = {
                             val message = formatPet(pet)
-                            viewModel.sharePetInfo(message, context)
+                            viewModel.sharePetInfo(message, localContext)
                         }) {
                         Icon(
                             imageVector = Icons.Default.Share,

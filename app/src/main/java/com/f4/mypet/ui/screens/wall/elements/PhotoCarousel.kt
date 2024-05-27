@@ -13,10 +13,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.vk.sdk.api.photos.dto.PhotosPhotoSizesTypeDto
 import com.vk.sdk.api.wall.dto.WallWallpostAttachmentDto
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PhotoCarousel(
-    photos: List<WallWallpostAttachmentDto>,
+    photos: ImmutableList<WallWallpostAttachmentDto>,
     openPhoto: (attachment: WallWallpostAttachmentDto) -> Unit
 ) {
     LazyRow(

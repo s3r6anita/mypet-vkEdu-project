@@ -9,7 +9,6 @@ import com.f4.mypet.data.db.Repository
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.network.NetworkRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val repository: Repository,
-    private val networkRepository: NetworkRepository,
-    @ApplicationContext private val appContext: Context
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
     // если null, то ошибок не было
     private val _msg = MutableStateFlow<String?>("")
@@ -57,20 +55,20 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun sharePetInfo(message: String, activityContext: Context) {
+    fun sharePetInfo(message: String, context: Context) {
         val intent = Intent(Intent.ACTION_SEND).apply {
             putExtra(Intent.EXTRA_TEXT, message)
             type = "text/plain"
         }
         try {
-            activityContext.startActivity(
+            context.startActivity(
                 Intent.createChooser(
                     intent,
                     "Отправить сведения о питомце"
                 )
             )
         } catch (e: Exception) {
-            Toast.makeText(appContext, "Произошла ошибка", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show()
         }
     }
 }
