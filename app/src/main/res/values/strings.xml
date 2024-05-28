@@ -151,6 +151,6 @@
     <string name="bug_report_toast_error">Произошла ошибка</string>
     <string name="bug_report_dialog_title">Переход в почтовое приложение</string>
     <string name="bug_report_dialog_text">Для отправки сообщения об ошибке будет использован Ваш почтовый аккаунт. Желаете продолжить?</string>
-
-    <string name="bugreport_screen_title">Обратная связь</string>
+    <string name="feedback_screen">Обратная связь</string>
+    <string name="feedback_button">Отзыв</string>
 </resources>
