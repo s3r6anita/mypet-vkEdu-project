@@ -1,9 +1,11 @@
 package com.f4.mypet.ui.screens.wall
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.f4.mypet.VKPETS_ID
+import com.f4.mypet.data.network.NetworkRepository
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.VKApiConfig
 import com.vk.api.sdk.VKApiManager
@@ -13,7 +15,6 @@ import com.vk.api.sdk.utils.log.DefaultApiLogger
 import com.vk.api.sdk.utils.log.Logger
 import com.vk.dto.common.id.UserId
 import com.vk.id.AccessToken
-import com.vk.id.VKIDUser
 import com.vk.sdk.api.groups.GroupsService
 import com.vk.sdk.api.groups.dto.GroupsGroupFullDto
 import com.vk.sdk.api.wall.WallService
@@ -30,22 +31,10 @@ import javax.inject.Inject
 @SuppressWarnings("TooGenericExceptionCaught")
 @HiltViewModel
 class PetsWallViewModel @Inject constructor(
+    private val networkRepository: NetworkRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
-
-    var token: AccessToken? =
-        AccessToken(
-            token = "vk1.a.WMwyI6S-BkkNFwJ5bRc_ymj6NKKI" +
-                    "-D-ffnWJY8YAUudzSJkyUA1PR8FlVpjUe_SVLgFPD1WBWr04Mu2r5IeCv6A8QU52gou" +
-                    "vQVzniiaMh4HSV0GtlfVPK-MRxbPlwwET_B0tUdtl6uU6FE-ZHNAOAli_krS1HQecV44Rluq" +
-                    "No9gI60C_NJxKyJv9tD1vzTAHbAcceHDpB7w_HIVjlCtx1w",
-            userID = 179272816,
-            expireTime = System.currentTimeMillis(),
-            userData = VKIDUser(
-                firstName = "Софья",
-                lastName = "Пономарева"
-            )
-        )
+    var token: AccessToken? = null
 
     private val _vkpetsUIState = MutableStateFlow<GroupsGroupFullDto?>(null)
     val vkpetsUIState = _vkpetsUIState.asStateFlow()
@@ -54,16 +43,19 @@ class PetsWallViewModel @Inject constructor(
     val responseUiState = _responseUiState.asStateFlow()
 
     init {
-        VK.setConfig(
-            VKApiConfig(
-                context = context,
-                appId = 0,
-                validationHandler = VKDefaultValidationHandler(context),
-                apiHostProvider = { "api.vk.com" },
-                logger = DefaultApiLogger(lazy { Logger.LogLevel.VERBOSE }, "API")
+        viewModelScope.launch(Dispatchers.IO){
+            token = networkRepository.getVKtoken()
+            VK.setConfig(
+                VKApiConfig(
+                    context = context,
+                    appId = 0,
+                    validationHandler = VKDefaultValidationHandler(context),
+                    apiHostProvider = { "api.vk.com" },
+                    logger = DefaultApiLogger(lazy { Logger.LogLevel.VERBOSE }, "API")
+                )
             )
-        )
-        getGroup()
+            getGroup()
+        }
     }
 
     private fun getGroup() {
@@ -76,10 +68,9 @@ class PetsWallViewModel @Inject constructor(
                                 .groupsGetById(groupIds = listOf(UserId(VKPETS_ID)))
                                 .withVKIDToken(token!!)
                         ).first()
+                    Log.d("token", token.toString())
                 }
-            } catch (ex: Exception) {
-                null
-            }
+            } catch (ex: Exception) { }
 
         }
     }
@@ -96,9 +87,7 @@ class PetsWallViewModel @Inject constructor(
 
                         )
                 }
-            } catch (ex: Exception) {
-                null
-            }
+            } catch (ex: Exception) { }
 
         }
     }
@@ -122,12 +111,12 @@ fun <T> ApiCommand<T>.withVKIDToken(
         }
 
         override fun onExecute(manager: VKApiManager): T {
-            try {
+            return try {
                 saveToken(accessToken)
-                return this@withVKIDToken.execute(manager)
+                this@withVKIDToken.execute(manager)
             } catch (e: Exception) {
                 val res = LinkedBlockingDeque<Result<T>>(1)
-                return res.take().getOrThrow()
+                res.take().getOrThrow()
             }
         }
     }

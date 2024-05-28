@@ -5,6 +5,10 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")// version "1.9.21-1.0.15"
     id("dagger.hilt.android.plugin")
+
+//    id("vkid.android.application.compose")
+//    id("vkid.placeholders")
+    //   alias(libs.plugins.baselineprofile)
 }
 
 android {
@@ -66,7 +70,7 @@ android {
 }
 
 val sdkVersion = "1.3.1"
-val desugarVersion = "2.0.4"
+val version = "2.0.4"
 
 dependencies {
     // vk id
@@ -115,9 +119,9 @@ dependencies {
 
     // Dagger
     implementation("com.google.dagger:hilt-android:2.49")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     ksp("com.google.dagger:dagger-compiler:2.49") // Dagger compiler
     ksp("com.google.dagger:hilt-compiler:2.49")   // Hilt compiler
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // collections
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
