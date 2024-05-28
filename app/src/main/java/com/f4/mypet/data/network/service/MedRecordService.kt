@@ -16,6 +16,9 @@ interface MedRecordService {
     @GET("med")
     suspend fun getMedRecords(): Response<List<MedRecord>>
 
+    @GET("med/pet/{id}")
+    suspend fun getPetMedRecords(@Path("id") id: Int): Response<List<MedRecord>>
+
     @POST("med/update")
     suspend fun updateMedRecord(@Body procedure: MedRecord): Response<String?>
 

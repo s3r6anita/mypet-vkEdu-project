@@ -1,11 +1,9 @@
-package com.f4.mypet.ui.screens.procedure.list.success
+package com.f4.mypet.ui.screens.medcard.list.success
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -36,36 +34,36 @@ import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.PetCardHeader
-import com.f4.mypet.ui.screens.procedure.list.ListProcedureViewModel
+import com.f4.mypet.ui.screens.medcard.list.ListMedRecordsViewModel
 import com.f4.mypet.ui.theme.GreenButton
-import com.f4.mypet.ui.theme.LightGreenBackground
+import com.f4.mypet.ui.theme.LightBlueBackground
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SuccessListProcedureScreen(
+fun SuccessListMedRecords(
     canNavigateBack: Boolean,
     profileId: Int,
     getNavController: () -> NavHostController,
-    viewModel: ListProcedureViewModel = hiltViewModel()
+    viewModel: ListMedRecordsViewModel = hiltViewModel()
 ) {
     val navController = getNavController()
 
-    val procedures by viewModel.proceduresUiState.collectAsState()
+    val medRecords by viewModel.medRecordsUiState.collectAsState()
     val pet = viewModel.pet
-    val titles by viewModel.titlesUiState.collectAsState()
 
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = { viewModel.refreshProcedures(profileId) }
+        onRefresh = { viewModel.refreshMedRecords(profileId) }
     )
 
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(id = R.string.list_procedure_screen_title),
+                text = stringResource(id = R.string.medcard_screen_title),
                 canNavigateBack = canNavigateBack,
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
+                actions = { }
             )
         },
         bottomBar = {
@@ -75,46 +73,42 @@ fun SuccessListProcedureScreen(
                 items = BottomBarData.items,
                 getNavController = { navController }
             )
-        },
+        }
     ) { innerPadding ->
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top,
+                verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .pullRefresh(pullRefreshState)
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(horizontal = 20.dp),
             ) {
-                PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
+                PetCardHeader(petName = pet.name, backgroundColor = LightBlueBackground)
 
-                // список процедур
+                // список медзаписей
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .padding(bottom = 60.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    procedures.forEach { procedure ->
-                        ProcedureItem(
-                            procedure = procedure,
-                            navController = navController,
-                            title = titles.find { title -> title.id == procedure.title }?.name
-                                ?: stringResource(id = R.string.unknown)
+                    medRecords.forEach { medRecord ->
+                        MedRecordItem(
+                            medRecord = medRecord,
+                            navController = navController
                         )
                     }
                 }
 
-                // кнопка ADD
+                // кнопка добавления
                 Button(
                     onClick = {
-                        navController.navigate("${Routes.CreateProcedure.route}/$profileId") {
+                        navController.navigate(Routes.CreateMedRecord.route) {
                             launchSingleTop = true
                         }
                     },
-                    border = BorderStroke(1.dp, GreenButton),
                     colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
                 ) {
                     Icon(
@@ -123,7 +117,7 @@ fun SuccessListProcedureScreen(
                     )
                     Text(
                         text = stringResource(id = R.string.add_button_description),
-                        Modifier.padding(start = 10.dp),
+                        modifier = Modifier.padding(start = 10.dp),
                         style = MaterialTheme.typography.titleMedium
                     )
                 }

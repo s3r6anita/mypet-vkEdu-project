@@ -244,6 +244,10 @@ class NetworkRepositoryImpl @Inject constructor(
         return handleApi { medRecordService.removeMedRecord(id) }
     }
 
+    override suspend fun getPetMedRecords(id: Int): NetworkResult<Any?> {
+        return handleApi { medRecordService.getPetMedRecords(id) }
+    }
+
     override suspend fun insertTitle(title: ProcedureTitle): NetworkResult<Any?> {
         val request = CreateProcedureTitleRequest(
             name = title.name,

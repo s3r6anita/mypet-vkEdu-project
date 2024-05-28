@@ -45,13 +45,13 @@ fun ListProcedureScreen(
         }
     }
 
-    if (pet.id != -1) {
+    if (pet.id == -1) {
+        LoadingScreen()
+    } else {
         SuccessListProcedureScreen(
             canNavigateBack,
             profileId,
             { navController }
         )
-    } else {
-        LoadingScreen()
     }
 }
