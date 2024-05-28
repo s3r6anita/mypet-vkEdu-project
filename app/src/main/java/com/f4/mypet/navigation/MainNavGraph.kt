@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.f4.mypet.ui.screens.auth.login.LoginScreen
 import com.f4.mypet.ui.screens.auth.registration.RegistrationScreen
+import com.f4.mypet.ui.screens.bugReport.BugReportScreen
 import com.f4.mypet.ui.screens.medcard.createUpdate.CreateUpdateMedRecordScreen
 import com.f4.mypet.ui.screens.medcard.list.ListMedRecords
 import com.f4.mypet.ui.screens.medcard.show.MedRecordScreen
@@ -223,6 +224,16 @@ fun NavGraphBuilder.mainNavGraph(
                 navController = navController,
                 isCreateScreen = false,
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+            )
+        }
+
+
+        /** обратная связь **/
+        composable(
+            route = Routes.BugReport.route
+        ) { backStackEntry ->
+            BugReportScreen(
+                navController = navController
             )
         }
     }
