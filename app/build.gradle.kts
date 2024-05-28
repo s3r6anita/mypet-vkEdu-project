@@ -1,13 +1,23 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")// version "1.9.21-1.0.15"
     id("dagger.hilt.android.plugin")
+
+//    id("vkid.android.application.compose")
+//    id("vkid.placeholders")
+//    alias(libs.plugins.baselineprofile)
 }
 
 android {
     namespace = "com.f4.mypet"
     compileSdk = 34
+
+    val localParams = Properties().apply {
+        load(project.project.file("secrets.properties").inputStream())
+    }
 
     defaultConfig {
         applicationId = "com.f4.mypet"
@@ -15,6 +25,13 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        addManifestPlaceholders(mapOf(
+            "VKIDRedirectHost" to "vk.com", // обычно vk.com
+            "VKIDRedirectScheme" to "vk51926140", // обычно vk{ID приложения}
+            "VKIDClientID" to localParams.getProperty("VKIDClientID"),
+            "VKIDClientSecret" to localParams.getProperty("VKIDClientSecret")
+        ))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -34,6 +51,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -51,11 +69,19 @@ android {
     }
 }
 
+val sdkVersion = "1.3.1"
+val desugarVersion = "2.0.4"
+
 dependencies {
+    // vk id
+    implementation("com.vk.id:vkid:1.3.1")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:$desugarVersion")
+    implementation("com.vk.id:onetap-compose:${sdkVersion}")
+
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.datastore:datastore:1.1.1")
 
@@ -76,7 +102,7 @@ dependencies {
 
     // Room
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.6")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.7")
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
@@ -86,9 +112,9 @@ dependencies {
 
     // Dagger
     implementation("com.google.dagger:hilt-android:2.49")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     ksp("com.google.dagger:dagger-compiler:2.49") // Dagger compiler
     ksp("com.google.dagger:hilt-compiler:2.49")   // Hilt compiler
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // collections
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")

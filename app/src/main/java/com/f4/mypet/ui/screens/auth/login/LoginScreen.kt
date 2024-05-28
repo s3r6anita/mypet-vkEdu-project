@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -44,6 +45,8 @@ import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.util.UIState
+import com.vk.id.VKID
+import com.vk.id.onetap.compose.onetap.OneTap
 import kotlinx.coroutines.launch
 
 @Composable
@@ -51,6 +54,7 @@ fun LoginScreen(
     navController: NavHostController,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val localContext = LocalContext.current
     val scope = rememberCoroutineScope()
     val msg by viewModel.msg.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
@@ -180,9 +184,7 @@ fun LoginScreen(
             TextButton(
                 onClick = {
                     navController.navigate(Routes.Register.route) {
-                        popUpTo(Routes.ListProfile.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Routes.ListProfile.route)
                         launchSingleTop = true
                     }
                 },
@@ -194,6 +196,22 @@ fun LoginScreen(
                     color = LightGrayTint
                 )
             }
+
+            // кнопка VK ID
+            OneTap(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp),
+                vkid = VKID(localContext),
+                signInAnotherAccountButtonEnabled = true,
+                onFail = viewModel.getOneTapFailCallback(localContext),
+                onAuth = viewModel.getOneTapSuccessCallback { token ->
+                    scope.launch {
+                        viewModel.saveToken(token)
+                        viewModel.loginByVK(token)
+                    }
+                }
+            )
         }
     }
 }

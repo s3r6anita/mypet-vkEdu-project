@@ -64,14 +64,16 @@ fun MyPetBottomBar(
                 label = { Text(text = stringResource(item.route.title)) },
                 selected = BottomBarData.selectedItemIndex == index,
                 onClick = {
-                    navController.navigate("${item.route.route}/$profileId/$canNavigateBack") {
-                        popUpTo(if (canNavigateBack) Routes.ListProfile.route else START) {
-                            inclusive = false
+                    if (BottomBarData.selectedItemIndex != index) {
+                        navController.navigate("${item.route.route}/$profileId/$canNavigateBack") {
+                            popUpTo(if (canNavigateBack) Routes.ListProfile.route else START) {
+                                inclusive = false
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
+                        BottomBarData.selectedItemIndex = index
                     }
-                    BottomBarData.selectedItemIndex = index
                 },
                 icon = {
                     BadgedBox(

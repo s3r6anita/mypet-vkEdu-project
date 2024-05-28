@@ -1,7 +1,17 @@
 package com.f4.mypet.ui.screens.procedure.createUpdate.success
 
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,16 +58,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.f4.mypet.MainActivity
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureViewModel
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
@@ -69,9 +83,73 @@ import com.f4.mypet.util.PresentOrFutureSelectableDates
 import com.f4.mypet.util.validate
 import kotlinx.collections.immutable.toImmutableList
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
+fun scheduleNotification(context: Context, title: String, message: String, notificationTime: LocalDateTime, notificationId: Int) {
+    val intent = Intent(context, AlarmReceiver::class.java).apply {
+        putExtra("notification_title", title)
+        putExtra("notification_message", message)
+        putExtra("notification_id", notificationId) // Добавим notificationId в intent
+    }
+    val pendingIntent = PendingIntent.getBroadcast(
+        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+    val systemZoneId = ZoneId.systemDefault()
+    val systemZonedDateTime = notificationTime.atZone(systemZoneId)
+    val triggerAtMillis = systemZonedDateTime.toInstant().toEpochMilli()
+
+    alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
+}
+fun createNotificationChannel(context: Context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channelId = "notification_channel1"
+        val channelName = "My Notification Channel1"
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val notificationChannel = NotificationChannel(channelId, channelName, importance).apply {
+            description = "Channel description"
+        }
+
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(notificationChannel)
+    }
+}
+class AlarmReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val title = intent.getStringExtra("notification_title") ?: "Процедура"
+        val message = intent.getStringExtra("notification_message") ?: "Время выполнить процедуру"
+        val notificationId = intent.getIntExtra("notification_id", 0) // Получим notificationId из intent
+
+        // Создаем намерение для запуска MainActivity с необходимым маршрутом
+        val resultIntent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("destination_route", "${Routes.Procedure.route}/$notificationId")
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            notificationId,
+            resultIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val notification = NotificationCompat.Builder(context, "notification_channel1")
+            .setSmallIcon(R.drawable.pet_icon)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent) // Устанавливаем PendingIntent для уведомления
+            .setAutoCancel(true) // Автоматическое закрытие уведомления после нажатия
+            .build()
+
+        notificationManager.notify(notificationId, notification) // Используем notificationId для уведомления
+    }
+}
 @Suppress("CyclomaticComplexMethod", "LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,12 +157,14 @@ fun SuccessCUProcedureScreen(
     navController: NavHostController,
     isCreateScreen: Boolean,
     profileId: Int,
-    viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
+    viewModel: CreateUpdateProcedureViewModel = hiltViewModel(),
 ) {
     //TODO сделать update когда меняем тип, то есть с insert в таблицу title
+    val context = LocalContext.current
     val titles = viewModel.titles
     val types = viewModel.types
-    val options = viewModel.options
+    val frequencyOptions = viewModel.frequencyOptions
+    val frequencyOptionsTitles = viewModel.frequencyOptionsTitles
     val procedureDB by viewModel.procedureUiState.collectAsState()
 
     val type by remember {
@@ -102,7 +182,6 @@ fun SuccessCUProcedureScreen(
     LaunchedEffect(procedureDB) {
         procedure = procedureDB
     }
-
     Scaffold(
         topBar = {
             MyPetTopBar(
@@ -163,11 +242,11 @@ fun SuccessCUProcedureScreen(
             var frequencyExpanded by remember { mutableStateOf(false) }
             var selectedFrequency by remember {
                 mutableStateOf(
-                    if (isCreateScreen) options[0]
-                    else viewModel.frequency.option
+                    if (isCreateScreen) frequencyOptions[0]
+                    else viewModel.frequency
                 )
             }
-            var frequencyString by remember { mutableStateOf(frequency.frequency) }
+            var frequencyInProcedure by remember { mutableStateOf(procedure.frequency) }
 
 
             ExposedDropdownMenuBox(
@@ -182,7 +261,7 @@ fun SuccessCUProcedureScreen(
                         .menuAnchor()
                         .fillMaxWidth()
                         .padding(bottom = 15.dp),
-                    value = selectedFrequency,
+                    value = selectedFrequency.option,
                     readOnly = true,
                     label = { Text(stringResource(R.string.creation_procedure_screen_frequence)) },
                     onValueChange = { },
@@ -197,24 +276,24 @@ fun SuccessCUProcedureScreen(
                         frequencyExpanded = false
                     }
                 ) {
-                    options.forEach() { selectionOption ->
+                    frequencyOptions.forEach() { selectionOption ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption) },
+                            text = { Text(selectionOption.option) },
                             onClick = {
                                 selectedFrequency = selectionOption
-                                frequency = frequency.copy(option = selectionOption)
+                                procedure = procedure.copy(frequencyOption = selectionOption.id)
                                 frequencyExpanded = false
                             }
                         )
                     }
                 }
             }
-            if (selectedFrequency != options[0]) {
+            if (selectedFrequency != frequencyOptions.first()) {
                 OutlinedTextField(
-                    value = frequencyString,
+                    value = frequencyInProcedure.toString(),
                     onValueChange = {
-                        frequencyString = it
-                        frequency = frequency.copy(frequency = frequencyString)
+                        frequencyInProcedure = it
+                        procedure = procedure.copy(frequency = frequencyInProcedure)
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
@@ -223,7 +302,7 @@ fun SuccessCUProcedureScreen(
                     singleLine = true,
                     trailingIcon = {
                         IconButton(onClick = {
-                            frequencyString = ""
+                            frequencyInProcedure = ""
                         }) {
                             Icon(
                                 Icons.Default.Clear,
@@ -567,30 +646,54 @@ fun SuccessCUProcedureScreen(
                 shape = RoundedCornerShape(12.dp),
                 colors = getOutLinedTextFieldColors()
             )
+            val createDelayedNotification = remember { mutableStateOf(false) }
+            if (createDelayedNotification.value) {
+                val titleNotification = if (title.name.isBlank()) "Процедура" else title.name
+                val timeMessage = procedure.dateDone.format(PetDateTimeFormatter.date)
+                val dateMessage = procedure.dateDone.format(PetDateTimeFormatter.time)
+                val message = "Напоминание: дата выполнения процедуры - $timeMessage. Время - $dateMessage"
+                val procedureId = procedure.id
+                // Получаем дату и время из процедуры
+                val reminderDate = procedure.reminder!!.format(PetDateTimeFormatter.date)
+                val reminderTime = procedure.reminder!!.format(PetDateTimeFormatter.time)
 
+                // Создаем LocalDateTime из даты и времени
+                val reminderDateTime = LocalDateTime.of(
+                    LocalDate.parse(reminderDate, PetDateTimeFormatter.date), // Преобразуем дату из строки в LocalDate
+                    LocalTime.parse(reminderTime, PetDateTimeFormatter.time)  // Преобразуем время из строки в LocalTime
+                )
+                // Логирование времени перед передачей в scheduleNotification
+                scheduleNotification(context, titleNotification, message, reminderDateTime, procedureId)
+                createDelayedNotification.value = false
+            }
             // сохранение
-            Button(
-                modifier = Modifier.padding(20.dp),
-                onClick = {
+            Box(modifier = Modifier
+                .fillMaxSize()) {
+                Button(
+                    modifier = Modifier.padding(20.dp),
+                    onClick = {
                         //TODO Проверка на формат даты и на "дату из будущего"
-
                         if (isCreateScreen) {
                             procedure = procedure.copy(pet = profileId)
-                            viewModel.createProcedure(procedure, title, frequency)
+                            viewModel.createProcedure(procedure, title)
                             navController.navigateUp()
                         } else {
                             viewModel.updateProcedure(procedure, title, frequency)
                             navController.navigateUp()
                         }
-                },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.save_button_description),
-                    Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
+                        if (enableNotifications) {
+                            createDelayedNotification.value = true
+                        }
+                    },
+                    border = BorderStroke(1.dp, GreenButton),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.save_button_description),
+                        Modifier.padding(start = 10.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
         }
     }
