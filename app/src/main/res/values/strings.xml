@@ -46,7 +46,6 @@
     <string name="list_profile_screen_title">Мои питомцы</string>
     <string name="list_profile_screen_add_button_icon_description">Добавить питомца</string>
 
-
     <string name="profile_screen_title">Профиль</string>
     <string name="profile_screen_delete_pet_text">Вы уверены, что хотите удалить профиль?</string>
     <string name="profile_screen_delete_pet_title">Удаление профиля</string>
@@ -153,4 +152,7 @@
     <string name="bug_report_dialog_text">Для отправки сообщения об ошибке будет использован Ваш почтовый аккаунт. Желаете продолжить?</string>
     <string name="feedback_screen">Обратная связь</string>
     <string name="feedback_button">Отзыв</string>
+
+    <string name="wall_screen_title">Лента</string>
+
 </resources>

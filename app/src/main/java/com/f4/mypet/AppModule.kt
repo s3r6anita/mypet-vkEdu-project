@@ -35,9 +35,11 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-private const val UNAUTHENTICATED_TIMEOUT = 3L
+private const val UNAUTHENTICATED_TIMEOUT = 5L
 private const val TIMEOUT = 10L
 private const val AUTH_PREFERENCES = "my_preferences"
+private const val BASE_URL = "https://mypet-backend-s3r6.amvera.io/"
+const val VKPETS_ID = 160065516L
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = AUTH_PREFERENCES)
 
@@ -71,8 +73,8 @@ object AppModule {
         return PetDatabase.getDatabase(app)
     }
 
-
     @[Provides Singleton]
+    @SuppressWarnings("LongParameterList")
     fun getNetworkRepository(
         @ApplicationContext appContext: Context,
         authService: AuthService,
@@ -99,7 +101,6 @@ object AppModule {
     fun provideProcedureService(retrofit: Retrofit): ProcedureService {
         return retrofit.create(ProcedureService::class.java)
     }
-
 
     @[Provides Singleton]
     fun provideJwtTokenManager(@ApplicationContext appContext: Context): JwtTokenManager {
@@ -137,13 +138,12 @@ object AppModule {
     /** For requests requiring the access token  */
     @[Provides Singleton]
     fun provideAuthenticationApi(@AuthenticatedClient okHttpClient: OkHttpClient): Retrofit {
-        val baseUrl = "https://mypet-backend-s3r6.amvera.io/"
         val gsonBuilder = GsonBuilder()
             .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
             .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
             .create()
         return Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
             .client(okHttpClient)
             .build()
@@ -166,9 +166,8 @@ object AppModule {
     /** For API calls without authentication */
     @[Provides Singleton]
     fun provideNoAuthenticationApi(@PublicClient okHttpClient: OkHttpClient): AuthService {
-        val baseUrl = "https://mypet-backend-s3r6.amvera.io/"
         return Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

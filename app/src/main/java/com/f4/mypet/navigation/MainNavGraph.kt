@@ -19,8 +19,10 @@ import com.f4.mypet.ui.screens.procedure.show.ProcedureScreen
 import com.f4.mypet.ui.screens.profile.createUpdate.CreateUpdateProfileScreen
 import com.f4.mypet.ui.screens.profile.list.ListProfileScreen
 import com.f4.mypet.ui.screens.profile.show.ProfileScreen
+import com.f4.mypet.ui.screens.wall.PetsWallScreen
 import kotlinx.coroutines.CoroutineScope
 
+@SuppressWarnings("CyclomaticComplexMethod")
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
@@ -29,6 +31,7 @@ fun NavGraphBuilder.mainNavGraph(
     navigation(
         route = START,
         startDestination = Routes.Login.route
+
     ) {
 
         /** вход в аккаунт */
@@ -96,6 +99,26 @@ fun NavGraphBuilder.mainNavGraph(
                 isCreateScreen = false,
                 globalScope = globalScope,
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1
+            )
+        }
+
+
+        /** стена */
+        composable(
+            route = "${Routes.BottomBarRoutes.PetsWall.route}/{profileId}/{canNavigateBack}",
+            arguments = listOf(
+                navArgument(name = "profileId") {
+                    type = NavType.IntType
+                },
+                navArgument(name = "canNavigateBack") {
+                    type = NavType.BoolType
+                }
+            )
+        ) { backStackEntry ->
+            PetsWallScreen(
+                navController = navController,
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
         }
 

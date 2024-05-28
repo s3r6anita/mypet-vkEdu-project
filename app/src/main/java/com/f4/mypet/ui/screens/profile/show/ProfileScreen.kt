@@ -36,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,6 +50,7 @@ import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.profile.show.screencomponents.ProfileItem
 import com.f4.mypet.ui.screens.profile.show.screencomponents.RemoveProfileALert
+import com.f4.mypet.ui.screens.profile.show.screencomponents.formatPet
 import com.f4.mypet.ui.theme.GreenButton
 import kotlinx.coroutines.launch
 
@@ -61,6 +63,7 @@ fun ProfileScreen(
     canNavigateBack: Boolean,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val localContext = LocalContext.current
     val scope = rememberCoroutineScope()
     val msg by viewModel.msg.collectAsState()
     val pet by viewModel.petUiState.collectAsState()
@@ -122,9 +125,11 @@ fun ProfileScreen(
                     }
 
                     // кнопка поделиться
-                    IconButton(onClick = {
-                        // TODO: реализовать кнопку поделиться
-                    }) {
+                    IconButton(
+                        onClick = {
+                            val message = formatPet(pet)
+                            viewModel.sharePetInfo(message, localContext)
+                        }) {
                         Icon(
                             imageVector = Icons.Default.Share,
                             contentDescription = stringResource(id = R.string.share_button_description)
