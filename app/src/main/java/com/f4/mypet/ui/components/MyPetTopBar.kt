@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.f4.mypet.R
+import com.f4.mypet.navigation.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,7 +23,6 @@ fun MyPetTopBar(
     text: String,
     navigateUp: () -> Unit,
     onFeedbackClick: () -> Unit = {},
-    isProfile: Boolean = false,
     modifier: Modifier = Modifier,
     canNavigateBack: Boolean = false,
     actions: @Composable() RowScope.() -> Unit = { },
@@ -33,7 +33,7 @@ fun MyPetTopBar(
         },
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
         navigationIcon = {
-            if (isProfile) {
+            if (text == stringResource(Routes.BottomBarRoutes.Profile.title)) {
                 Row {
                     IconButton(onClick = onFeedbackClick) {
                         Icon(

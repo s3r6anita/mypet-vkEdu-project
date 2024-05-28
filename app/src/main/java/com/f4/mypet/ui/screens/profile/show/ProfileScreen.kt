@@ -151,7 +151,6 @@ fun ProfileScreen(
                         launchSingleTop = true
                     }
                 },
-                isProfile = true
             )
         },
         bottomBar = {
