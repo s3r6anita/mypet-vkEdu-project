@@ -12,7 +12,8 @@ import javax.annotation.Nullable
 data class Procedure(
     val title: Int, // название
     val isDone: Int, // выполнена ли: 0 - нет, 1 - да
-    val frequency: Int, // ссылка на частоту
+    val frequency: String, // период частоты
+    val frequencyOption: Int, // ссылка на частоту
     val dateDone: LocalDateTime, // когда следует выполнить
     val notes: String, // заметки
     @Nullable

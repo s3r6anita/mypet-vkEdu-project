@@ -8,6 +8,9 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface AuthService {
+    @POST("loginVK")
+    suspend fun loginUserByVK(@Body requestBody: RegisterRequest): Response<LoginRegisterData>
+
     @POST("register")
     suspend fun registerUser(@Body requestBody: RegisterRequest): Response<LoginRegisterData>
 

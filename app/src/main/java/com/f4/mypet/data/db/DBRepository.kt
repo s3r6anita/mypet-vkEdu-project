@@ -24,12 +24,12 @@ interface Repository {
     suspend fun getPets(): List<Pet>
     suspend fun getPet(petId: Int): Pet
     suspend fun getPetForCU(petId: Int): Pet
-    suspend fun replaceAllData(pets: List<Pet>)
+    suspend fun replaceAllData(pets: List<Pet>, procedures: List<Procedure>)
     suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>>
     suspend fun getProcedureTitles(): Flow<List<ProcedureTitle>>
     suspend fun getProcedureTitlesForCU(): List<ProcedureTitle>
     suspend fun getProcedureTypes(): List<ProcedureType>
-    suspend fun getFrequencyOptions(): List<String>
+    suspend fun getFrequencyOptions(): List<Frequency>
     suspend fun getProcedure(procedureId: Int): Procedure
     suspend fun insertProcedure(procedure: Procedure)
     suspend fun updateProcedure(procedure: Procedure)
@@ -83,12 +83,12 @@ class DBRepository @Inject constructor(
         return petDAO.getPetForCU(petId)
     }
 
-    override suspend fun replaceAllData(pets: List<Pet>) {
+    override suspend fun replaceAllData(pets: List<Pet>, procedures: List<Procedure>) {
         petDAO.deleteAll()
         procedureDAO.deleteAll()
         medRecordDAO.deleteAll()
         petDAO.insertAll(pets)
-//        procedureDAO.insertAll(procedures)
+        procedureDAO.insertAll(procedures)
 //        medRecordDAO.insertAll(medRecords)
     }
 
@@ -108,7 +108,7 @@ class DBRepository @Inject constructor(
         return prTitleDAO.getProcedureTypes()
     }
 
-    override suspend fun getFrequencyOptions(): List<String> {
+    override suspend fun getFrequencyOptions(): List<Frequency> {
         return frequencyDAO.getOptions()
     }
 

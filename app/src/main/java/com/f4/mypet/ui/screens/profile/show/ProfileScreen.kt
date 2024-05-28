@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Delete
@@ -109,6 +108,7 @@ fun ProfileScreen(
         topBar = {
             MyPetTopBar(
                 text = stringResource(Routes.BottomBarRoutes.Profile.title),
+                canNavigateBack = canNavigateBack,
                 navigateUp = { navController.navigateUp() },
                 actions = {
                     // кнопка удалить
@@ -120,6 +120,7 @@ fun ProfileScreen(
                             contentDescription = stringResource(id = R.string.delete_button_description)
                         )
                     }
+
                     // кнопка поделиться
                     IconButton(onClick = {
                         // TODO: реализовать кнопку поделиться
@@ -133,9 +134,7 @@ fun ProfileScreen(
                     // кнопка выхода
                     IconButton(onClick = {
                         navController.navigate(START) {
-                            popUpTo(if (canNavigateBack) Routes.ListProfile.route else START) {
-                                inclusive = true
-                            }
+                            popUpTo(START)
                             launchSingleTop = true
                         }
                     }
@@ -184,6 +183,7 @@ fun ProfileScreen(
             ) {
                 ProfileItem(pet)
             }
+
             // кнопка редактирования
             Button(
                 modifier = Modifier.padding(bottom = 40.dp),
