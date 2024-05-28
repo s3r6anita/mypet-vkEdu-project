@@ -23,27 +23,39 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
 import com.f4.mypet.ui.theme.OutlinedTextFieldColor
-import com.f4.mypet.util.PastOrPresentSelectableDates
 import com.f4.mypet.util.PetDateTimeFormatter
+import com.f4.mypet.util.PresentOrFutureSelectableDates
+import com.f4.mypet.util.validateDate
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TherapyDateField(
+fun MedRecordDateField(
     isCreateScreen: Boolean,
     onDateSelected: (LocalDateTime) -> Unit,
+    onDateIncorrect: (e: IllegalArgumentException) -> Unit,
+    dbDate: LocalDateTime,
     modifier: Modifier = Modifier
 ) {
     var openDialog by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState(selectableDates = PastOrPresentSelectableDates)
-    var dateIsCorrect by remember { mutableStateOf(true) }
-    var selectedDate by remember { mutableStateOf(LocalDateTime.now()) }
+    val datePickerState = rememberDatePickerState(selectableDates = PresentOrFutureSelectableDates)
+    var selectedDate by remember { mutableStateOf(dbDate) }
+    var dateIsCorrect by remember {
+        mutableStateOf(
+            validateDate(
+                selectedDate.format(
+                    PetDateTimeFormatter.date
+                )
+            )
+        )
+    }
     var dateIsChosen by remember { mutableStateOf(false) }
+
     OutlinedTextField(
         //TODO: отформатировать дату
-        value = if (dateIsChosen) selectedDate.format(PetDateTimeFormatter.date) else "",
+        value = if (dateIsChosen or !isCreateScreen) selectedDate.format(PetDateTimeFormatter.date) else "",
         onValueChange = {
             selectedDate = LocalDateTime.parse(it, PetDateTimeFormatter.date)
         },
@@ -87,11 +99,11 @@ fun TherapyDateField(
                         )
                         dateIsChosen = true
                         onDateSelected(selectedDate)
-                        //TODO копирование в БД
                         try {
-                            //TODO валидирование
+                            dateIsCorrect =
+                                validateDate(selectedDate.format(PetDateTimeFormatter.date))
                         } catch (e: IllegalArgumentException) {
-                            //TODO введена неккоректная дата
+                            onDateIncorrect(e)
                         }
                     },
                 ) {

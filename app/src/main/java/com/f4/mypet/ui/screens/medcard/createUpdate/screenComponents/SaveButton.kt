@@ -15,7 +15,7 @@ import com.f4.mypet.R
 import com.f4.mypet.ui.theme.GreenButton
 
 @Composable
-fun SaveButton() {
+fun SaveButton(save: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -24,6 +24,7 @@ fun SaveButton() {
                 .padding(bottom = 20.dp)
                 .align(Alignment.BottomCenter),
             onClick = {
+                save()
                 // TODO: переход
             },
             colors = ButtonDefaults.buttonColors(containerColor = GreenButton)

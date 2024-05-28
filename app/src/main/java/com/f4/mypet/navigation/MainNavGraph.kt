@@ -206,8 +206,9 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             CreateUpdateMedRecordScreen(
                 navController = navController,
+                snackbarHostState = snackbarHostState,
                 isCreateScreen = true,
-                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1
             )
         }
         /** изменение медицинской записи */
@@ -221,8 +222,9 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             CreateUpdateMedRecordScreen(
                 navController = navController,
+                snackbarHostState = snackbarHostState,
                 isCreateScreen = false,
-                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                medRecordId = backStackEntry.arguments?.getInt("medRecordId") ?: -1,
             )
         }
     }
