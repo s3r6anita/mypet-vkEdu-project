@@ -37,7 +37,6 @@ fun FrequencySelector(
     onProcedureChange: (Procedure) -> Unit,
     viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
 ) {
-
     val frequencyOptions = viewModel.frequencyOptions
 
     var frequencyExpanded by remember { mutableStateOf(false) }

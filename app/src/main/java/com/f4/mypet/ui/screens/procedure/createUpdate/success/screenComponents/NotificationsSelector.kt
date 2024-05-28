@@ -60,6 +60,7 @@ fun NotificationsSelector(
             procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
         } != "01.01.1001 00:00")))
     }
+
     if (procedure.reminder == null)
         enableNotifications = false
 
@@ -189,8 +190,7 @@ fun NotificationsSelector(
 
         // дата напоминания
         var openDateReminderDialog by remember { mutableStateOf(false) }
-        val dateReminderPickerState =
-            rememberDatePickerState(selectableDates = PresentOrFutureSelectableDates)
+        val dateReminderPickerState = rememberDatePickerState(selectableDates = PresentOrFutureSelectableDates)
         var dateReminderIsCorrect by remember { mutableStateOf(true) }
 
         OutlinedTextField(

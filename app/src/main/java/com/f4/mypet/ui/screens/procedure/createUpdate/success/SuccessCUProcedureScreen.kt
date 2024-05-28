@@ -8,10 +8,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationCompat
@@ -49,7 +46,6 @@ import com.f4.mypet.MainActivity
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
-import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureViewModel
 import com.f4.mypet.ui.screens.procedure.createUpdate.success.screenComponents.DatePickerSelector
 import com.f4.mypet.ui.screens.procedure.createUpdate.success.screenComponents.FrequencySelector
@@ -59,14 +55,13 @@ import com.f4.mypet.ui.screens.procedure.createUpdate.success.screenComponents.T
 import com.f4.mypet.ui.screens.procedure.createUpdate.success.screenComponents.getDropdownMenuColors
 import com.f4.mypet.ui.screens.procedure.createUpdate.success.screenComponents.getOutLinedTextFieldColors
 import com.f4.mypet.ui.theme.GreenButton
+import com.f4.mypet.util.PetDateTimeFormatter
 import com.f4.mypet.util.validate
 import kotlinx.collections.immutable.toImmutableList
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.ZonedDateTime
 
 fun scheduleNotification(context: Context, title: String, message: String, notificationTime: LocalDateTime, notificationId: Int) {
     val intent = Intent(context, AlarmReceiver::class.java).apply {
@@ -137,6 +132,7 @@ fun SuccessCUProcedureScreen(
     profileId: Int,
     viewModel: CreateUpdateProcedureViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val types = viewModel.types
 
     val procedureDB by viewModel.procedureUiState.collectAsState()
@@ -147,6 +143,29 @@ fun SuccessCUProcedureScreen(
 
     LaunchedEffect(procedureDB) {
         procedure = procedureDB
+    }
+
+    // создание уведомлений
+    val createDelayedNotification = remember { mutableStateOf(false) }
+    if (createDelayedNotification.value) {
+        val titleNotification = if (title.name.isBlank()) "Процедура" else title.name
+        val timeMessage = procedure.dateDone.format(PetDateTimeFormatter.date)
+        val dateMessage = procedure.dateDone.format(PetDateTimeFormatter.time)
+        val message = "Напоминание: дата выполнения процедуры - $timeMessage. Время - $dateMessage"
+        val procedureId = procedure.id
+
+        // Получаем дату и время из процедуры
+        val reminderDate = procedure.reminder!!.format(PetDateTimeFormatter.date)
+        val reminderTime = procedure.reminder!!.format(PetDateTimeFormatter.time)
+
+        // Создаем LocalDateTime из даты и времени
+        val reminderDateTime = LocalDateTime.of(
+            LocalDate.parse(reminderDate, PetDateTimeFormatter.date), // Преобразуем дату из строки в LocalDate
+            LocalTime.parse(reminderTime, PetDateTimeFormatter.time)  // Преобразуем время из строки в LocalTime
+        )
+        // Логирование времени перед передачей в scheduleNotification
+        scheduleNotification(context, titleNotification, message, reminderDateTime, procedureId)
+        createDelayedNotification.value = false
     }
 
     Scaffold(
@@ -259,26 +278,7 @@ fun SuccessCUProcedureScreen(
                 shape = RoundedCornerShape(12.dp),
                 colors = getOutLinedTextFieldColors()
             )
-            val createDelayedNotification = remember { mutableStateOf(false) }
-            if (createDelayedNotification.value) {
-                val titleNotification = if (title.name.isBlank()) "Процедура" else title.name
-                val timeMessage = procedure.dateDone.format(PetDateTimeFormatter.date)
-                val dateMessage = procedure.dateDone.format(PetDateTimeFormatter.time)
-                val message = "Напоминание: дата выполнения процедуры - $timeMessage. Время - $dateMessage"
-                val procedureId = procedure.id
-                // Получаем дату и время из процедуры
-                val reminderDate = procedure.reminder!!.format(PetDateTimeFormatter.date)
-                val reminderTime = procedure.reminder!!.format(PetDateTimeFormatter.time)
 
-                // Создаем LocalDateTime из даты и времени
-                val reminderDateTime = LocalDateTime.of(
-                    LocalDate.parse(reminderDate, PetDateTimeFormatter.date), // Преобразуем дату из строки в LocalDate
-                    LocalTime.parse(reminderTime, PetDateTimeFormatter.time)  // Преобразуем время из строки в LocalTime
-                )
-                // Логирование времени перед передачей в scheduleNotification
-                scheduleNotification(context, titleNotification, message, reminderDateTime, procedureId)
-                createDelayedNotification.value = false
-            }
             // сохранение
             Button(
                 modifier = Modifier.padding(20.dp),
@@ -292,7 +292,7 @@ fun SuccessCUProcedureScreen(
                         title = title.copy(type = selectedType.id)
                         viewModel.updateProcedure(procedure, title)
                     }
-                    if (enableNotifications) {
+                    if (procedure.reminder != null) {
                         createDelayedNotification.value = true
                     }
                 },

@@ -19,7 +19,6 @@ import com.f4.mypet.data.network.service.MedRecordService
 import com.f4.mypet.data.network.service.PetService
 import com.f4.mypet.data.network.service.ProcedureService
 import com.f4.mypet.data.network.service.ProcedureTitleService
-import com.f4.mypet.data.network.service.ProcedureService
 import com.f4.mypet.util.LocalDateAdapter
 import com.f4.mypet.util.LocalDateTimeAdapter
 import com.google.gson.GsonBuilder

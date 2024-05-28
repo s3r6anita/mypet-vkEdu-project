@@ -53,7 +53,7 @@ object PresentOrFutureSelectableDates: SelectableDates {
         val moscowCurrentTimeMillis = LocalDateTime.now(moscowTimeZone).toInstant(ZoneOffset.UTC).toEpochMilli()
         return utcTimeMillis <= moscowCurrentTimeMillis
         //TODO Убрать верхние строки и оставить нижнюю
-        //return utcTimeMillis >= System.currentTimeMillis()
+//        return utcTimeMillis >= System.currentTimeMillis()
     }
 
     override fun isSelectableYear(year: Int): Boolean {
