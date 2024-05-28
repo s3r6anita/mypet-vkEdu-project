@@ -10,6 +10,7 @@ import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.network.authentication.JwtTokenManager
 import com.f4.mypet.data.network.model.NetworkResult
+import com.f4.mypet.data.network.model.request.CreateMedRecordRequest
 import com.f4.mypet.data.network.model.request.CreatePetRequest
 import com.f4.mypet.data.network.model.request.CreateProcedureRequest
 import com.f4.mypet.data.network.model.request.CreateProcedureTitleRequest
@@ -30,7 +31,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 class NetworkRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val authService: AuthService,
@@ -240,14 +241,6 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun removeMedRecord(id: Int): NetworkResult<Any?> {
-        return handleApi { medRecordService.removeMedRecord(id) }
-    }
-
-    override suspend fun getPetMedRecords(id: Int): NetworkResult<Any?> {
-        return handleApi { medRecordService.getPetMedRecords(id) }
-    }
-
     override suspend fun insertTitle(title: ProcedureTitle): NetworkResult<Any?> {
         val request = CreateProcedureTitleRequest(
             name = title.name,
@@ -262,6 +255,29 @@ class NetworkRepositoryImpl @Inject constructor(
 
     override suspend fun updateTitle(title: ProcedureTitle): NetworkResult<Any?> {
         return handleApi { procedureTitleService.updatePet(title) }
+    }
+
+
+    override suspend fun removeMedRecord(id: Int): NetworkResult<Any?> {
+        return handleApi { medRecordService.removeMedRecord(id) }
+    }
+
+    override suspend fun getPetMedRecords(id: Int): NetworkResult<Any?> {
+        return handleApi { medRecordService.getPetMedRecords(id) }
+    }
+
+    override suspend fun insertMedRecord(medRecord: MedRecord): NetworkResult<Any?> {
+        val request = CreateMedRecordRequest(
+            title = medRecord.title,
+            date = medRecord.date,
+            notes = medRecord.notes,
+            pet = medRecord.pet
+        )
+        return handleApi { medRecordService.createMedRecord(request) }
+    }
+
+    override suspend fun updateMedRecord(medRecord: MedRecord): NetworkResult<Any?> {
+        return handleApi { medRecordService.updateMedRecord(medRecord) }
     }
 
 

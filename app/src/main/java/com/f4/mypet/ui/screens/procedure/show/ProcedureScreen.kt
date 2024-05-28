@@ -52,7 +52,7 @@ import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.components.TextComponent
 import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.theme.GreenButton
-import com.f4.mypet.ui.theme.LightBlueBackground
+import com.f4.mypet.ui.theme.LightGreenBackground
 import com.f4.mypet.ui.theme.RedButton
 import com.f4.mypet.util.PetDateTimeFormatter
 import kotlinx.coroutines.launch
@@ -215,7 +215,7 @@ fun ProcedureScreen(
                             modifier = Modifier
                                 .size(100.dp)
                                 .clip(CircleShape)
-                                .background(LightBlueBackground)
+                                .background(LightGreenBackground)
                         )
                     }
                 }

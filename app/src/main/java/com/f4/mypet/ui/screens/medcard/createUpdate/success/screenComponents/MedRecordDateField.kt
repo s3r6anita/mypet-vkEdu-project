@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents
+package com.f4.mypet.ui.screens.medcard.createUpdate.success.screenComponents
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,8 +23,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
 import com.f4.mypet.ui.theme.OutlinedTextFieldColor
+import com.f4.mypet.util.PastOrPresentSelectableDates
 import com.f4.mypet.util.PetDateTimeFormatter
-import com.f4.mypet.util.PresentOrFutureSelectableDates
 import com.f4.mypet.util.validateDate
 import java.time.Instant
 import java.time.LocalDateTime
@@ -40,7 +40,7 @@ fun MedRecordDateField(
     modifier: Modifier = Modifier
 ) {
     var openDialog by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState(selectableDates = PresentOrFutureSelectableDates)
+    val datePickerState = rememberDatePickerState(selectableDates = PastOrPresentSelectableDates)
     var selectedDate by remember { mutableStateOf(dbDate) }
     var dateIsCorrect by remember {
         mutableStateOf(
@@ -54,7 +54,6 @@ fun MedRecordDateField(
     var dateIsChosen by remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        //TODO: отформатировать дату
         value = if (dateIsChosen or !isCreateScreen) selectedDate.format(PetDateTimeFormatter.date) else "",
         onValueChange = {
             selectedDate = LocalDateTime.parse(it, PetDateTimeFormatter.date)
@@ -64,7 +63,7 @@ fun MedRecordDateField(
                 stringResource(R.string.cu_therapy_date),
                 style = TextStyle(color = OutlinedTextFieldColor)
             ) else {
-                Text(stringResource(R.string.cu_therapy_date)) //TODO подтягивание данных из БД
+                Text(stringResource(R.string.cu_therapy_date))
             }
         },
         supportingText = { Text(text = stringResource(id = R.string.date_format)) },

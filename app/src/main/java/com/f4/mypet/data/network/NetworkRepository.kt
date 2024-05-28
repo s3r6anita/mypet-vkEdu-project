@@ -9,6 +9,7 @@ import com.f4.mypet.data.network.model.request.LoginRequest
 import com.f4.mypet.data.network.model.request.RegisterRequest
 import com.vk.id.AccessToken
 
+@Suppress("TooManyFunctions")
 interface NetworkRepository {
     suspend fun saveVKtoken(token: AccessToken)
     suspend fun getVKtoken(): AccessToken
@@ -29,10 +30,10 @@ interface NetworkRepository {
     suspend fun updateProcedure(procedure: Procedure): NetworkResult<Any?>
     suspend fun removeProcedure(id: Int): NetworkResult<Any?>
 
-//    suspend fun insertProcedure(procedure: Procedure): String?
+    suspend fun insertMedRecord(medRecord: MedRecord): NetworkResult<Any?>
     suspend fun getMedRecords(): List<MedRecord>
     suspend fun getPetMedRecords(id: Int): NetworkResult<Any?>
-//    suspend fun updateProcedure(procedure: Procedure): String?
+    suspend fun updateMedRecord(medRecord: MedRecord): NetworkResult<Any?>
     suspend fun removeMedRecord(id: Int): NetworkResult<Any?>
 
     suspend fun insertTitle(title: ProcedureTitle): NetworkResult<Any?>

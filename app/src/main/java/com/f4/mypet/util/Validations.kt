@@ -6,10 +6,10 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
 
-val regex = "^[а-яА-ЯёЁ\\s-]+\$".toRegex()
+val regex = "^[а-яА-ЯёЁa-zA-Z\\s-]+\$".toRegex()
 val dateRegex = "^\\d{2}\\.\\d{2}\\.\\d{4}$".toRegex()
 val chipNumberRegex = "^\\d{15}$".toRegex()
-val emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
+val emailRegex = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
 val passwordRegex = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8,}\$".toRegex()
 
 fun validate(name: String): Boolean = name.matches(regex)
@@ -31,13 +31,6 @@ fun validateBirthday(date: LocalDate): Boolean {
         throw IllegalArgumentException("Дата больше текущей")
     }
     return validateDate(date.format(PetDateTimeFormatter.date))
-}
-
-fun validateTime(timeString: String) {
-    val regex = "^([0-1][0-9]|[2][0-3]):([0-5][0-9])$".toRegex()
-    if ( !(timeString.matches(regex)) ) {
-        throw IllegalArgumentException("Неверно указано время")
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

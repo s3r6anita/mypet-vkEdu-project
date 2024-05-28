@@ -105,7 +105,7 @@ fun SuccessListMedRecords(
                 // кнопка добавления
                 Button(
                     onClick = {
-                        navController.navigate(Routes.CreateMedRecord.route) {
+                        navController.navigate("${Routes.CreateMedRecord.route}/$profileId") {
                             launchSingleTop = true
                         }
                     },

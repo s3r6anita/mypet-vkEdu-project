@@ -125,7 +125,7 @@ fun MedRecordScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.pet_icon),
+                            painter = painterResource(id = R.drawable.therapy_icon),
                             contentDescription = null,
                             contentScale = ContentScale.Inside,
                             modifier = Modifier

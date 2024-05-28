@@ -42,8 +42,7 @@ interface Repository {
     suspend fun updateFrequency(frequency: Frequency)
 
     suspend fun getMedRecordsForPet(petId: Int): Flow<List<MedRecord>>
-    suspend fun getMedRecord(medRecord: Int): Flow<MedRecord>
-    suspend fun addMedRecord(medRecord: MedRecord)
+    suspend fun insertMedRecord(medRecord: MedRecord)
     suspend fun removeMedRecord(medRecord: MedRecord)
     suspend fun updateMedRecord(medRecord: MedRecord)
     suspend fun insertListOfMedRecords(medRecords: List<MedRecord>)
@@ -195,7 +194,7 @@ class DBRepository @Inject constructor(
         prTitleDAO.insertAll(titles)
     }
 
-    override suspend fun addMedRecord(medRecord: MedRecord) {
+    override suspend fun insertMedRecord(medRecord: MedRecord) {
         medRecordDAO.insert(medRecord)
     }
 

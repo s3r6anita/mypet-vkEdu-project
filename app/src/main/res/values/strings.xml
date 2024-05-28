@@ -91,7 +91,7 @@
     <string name="therapy_date">Дата</string>
     <string name="therapy_notice">Заметки</string>
 
-    <string name="cu_therapy_title_create">Новая терапия</string>
+    <string name="cu_therapy_title_create">Новая запись</string>
     <string name="cu_therapy_title_update">Редактирование</string>
     <string name="cu_therapy_name">Название</string>
     <string name="cu_therapy_date">Дата</string>

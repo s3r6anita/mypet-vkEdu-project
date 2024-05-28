@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -31,16 +30,14 @@ import com.f4.mypet.R
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.medcard.createUpdate.CreateUpdateMedRecordViewModel
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordDateField
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordNotesField
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordTimeField
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.MedRecordTitleField
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.SaveButton
+import com.f4.mypet.ui.screens.medcard.createUpdate.success.screenComponents.MedRecordDateField
+import com.f4.mypet.ui.screens.medcard.createUpdate.success.screenComponents.MedRecordNotesField
+import com.f4.mypet.ui.screens.medcard.createUpdate.success.screenComponents.MedRecordTimeField
+import com.f4.mypet.ui.screens.medcard.createUpdate.success.screenComponents.MedRecordTitleField
+import com.f4.mypet.ui.screens.medcard.createUpdate.success.screenComponents.SaveButton
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-@Suppress("CyclomaticComplexMethod", "LongMethod")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuccessCUMedCardScreen(
     navController: NavHostController,
@@ -106,7 +103,7 @@ fun SuccessCUMedCardScreen(
             val modifier = Modifier
                 .padding(top = 10.dp)
                 .fillMaxWidth()
-            Box() {
+            Box {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -118,6 +115,7 @@ fun SuccessCUMedCardScreen(
                         isCreateScreen = isCreateScreen,
                         onNameChange = { name ->
                             medRecord = medRecord.copy(title = name)
+
                         },
                         modifier = modifier
                             .padding(bottom = 10.dp),
@@ -153,7 +151,6 @@ fun SuccessCUMedCardScreen(
                     )
                     // заметки
                     MedRecordNotesField(
-                        isCreateScreen = isCreateScreen,
                         onNotesChange = { notes ->
                             medRecord = medRecord.copy(notes = notes)
                         },
@@ -168,15 +165,18 @@ fun SuccessCUMedCardScreen(
                 if (isCreateScreen) {
                     {
                         medRecord = medRecord.copy(pet = profileId)
-                        viewModel.addMedRecord(medRecord)
-                        navController.navigateUp()
+                        scope.launch {
+                            viewModel.createMedRecord(medRecord)
+                        }
                     }
                 } else {
                     {
-                        viewModel.updateMedRecord(medRecord)
-                        navController.navigateUp()
+                        scope.launch {
+                            viewModel.updateMedRecord(medRecord)
+                        }
                     }
-                })
+                }
+            )
         }
     }
 }

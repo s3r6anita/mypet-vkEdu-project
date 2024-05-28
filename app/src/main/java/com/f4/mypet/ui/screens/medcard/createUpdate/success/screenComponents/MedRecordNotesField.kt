@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents
+package com.f4.mypet.ui.screens.medcard.createUpdate.success.screenComponents
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,7 +17,6 @@ import com.f4.mypet.R
 
 @Composable
 fun MedRecordNotesField(
-    isCreateScreen: Boolean,
     onNotesChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     givenNotes: String

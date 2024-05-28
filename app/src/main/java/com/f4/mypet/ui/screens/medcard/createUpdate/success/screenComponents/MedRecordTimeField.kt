@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents
+package com.f4.mypet.ui.screens.medcard.createUpdate.success.screenComponents
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -35,7 +35,7 @@ fun MedRecordTimeField(
 ) {
     var openDialog by remember { mutableStateOf(false) }
     val timePickerState = rememberTimePickerState()
-    var timeIsCorrect by remember { mutableStateOf(true) }
+    val timeIsCorrect by remember { mutableStateOf(true) }
     var selectedTime by remember { mutableStateOf(dbTime) }
     var timeIsChosen by remember { mutableStateOf(false) }
 
@@ -50,7 +50,7 @@ fun MedRecordTimeField(
                 stringResource(R.string.procedure_screen_time_of_event),
                 style = TextStyle(color = OutlinedTextFieldColor)
             ) else {
-                Text(stringResource(R.string.procedure_screen_time_of_event)) //TODO подтягивание данных из БД
+                Text(stringResource(R.string.procedure_screen_time_of_event))
             }
         },
         supportingText = { Text(text = stringResource(id = R.string.creation_procedure_screen_time_format)) },
