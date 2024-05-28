@@ -151,7 +151,7 @@ fun SuccessCUProcedureScreen(
         val titleNotification = if (title.name.isBlank()) "Процедура" else title.name
         val timeMessage = procedure.dateDone.format(PetDateTimeFormatter.date)
         val dateMessage = procedure.dateDone.format(PetDateTimeFormatter.time)
-        val message = "Напоминание: дата выполнения процедуры - $timeMessage. Время - $dateMessage"
+        val message = "$dateMessage — $timeMessage"
         val procedureId = procedure.id
 
         // Получаем дату и время из процедуры
