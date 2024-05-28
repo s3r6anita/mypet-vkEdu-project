@@ -43,7 +43,6 @@ import com.f4.mypet.ui.theme.LightBlueBackground
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.ui.theme.White
 import com.f4.mypet.util.PetDateTimeFormatter
-import com.f4.mypet.util.PresentOrFutureSelectableDates
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -190,11 +189,12 @@ fun NotificationsSelector(
 
         // дата напоминания
         var openDateReminderDialog by remember { mutableStateOf(false) }
-        val dateReminderPickerState = rememberDatePickerState(selectableDates = PresentOrFutureSelectableDates)
-        var dateReminderIsCorrect by remember { mutableStateOf(true) }
+        val dateReminderPickerState = rememberDatePickerState()
+//        val dateReminderPickerState = rememberDatePickerState(selectableDates = PresentOrFutureSelectableDates)
+        val dateReminderIsCorrect by remember { mutableStateOf(true) }
 
         OutlinedTextField(
-            value = procedure.reminder!!.format(PetDateTimeFormatter.date),
+            value = procedure.reminder.format(PetDateTimeFormatter.date),
             onValueChange = { },
             label = { Text(stringResource(id = R.string.creation_procedure_screen_date_of_completion)) },
             supportingText = { Text(text = stringResource(id = R.string.date_format)) },
@@ -231,8 +231,8 @@ fun NotificationsSelector(
                                         ),
                                         ZoneId.of("UTC")
                                     )
-                                        .withHour(procedure.reminder!!.hour)
-                                        .withMinute(procedure.reminder!!.minute)
+                                        .withHour(procedure.reminder.hour)
+                                        .withMinute(procedure.reminder.minute)
                                 )
                             )
                         },

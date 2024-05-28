@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.util.PetDateTimeFormatter
-import com.f4.mypet.util.PresentOrFutureSelectableDates
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -37,8 +36,9 @@ fun DatePickerSelector(
     onProcedureChange: (Procedure) -> Unit
 ) {
     var openDateDialog by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState(selectableDates = PresentOrFutureSelectableDates)
-    var dateIsCorrect by remember { mutableStateOf(true) }
+    val datePickerState = rememberDatePickerState()
+//    val datePickerState = rememberDatePickerState(selectableDates = PresentOrFutureSelectableDates)
+    val dateIsCorrect by remember { mutableStateOf(true) }
 
     OutlinedTextField(
         value = procedure.dateDone.format(PetDateTimeFormatter.date),

@@ -80,21 +80,4 @@ class ProfileViewModel @Inject constructor(
     fun resetMsg() {
         _msg.value = ""
     }
-
-    fun sharePetInfo(message: String, context: Context) {
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            putExtra(Intent.EXTRA_TEXT, message)
-            type = "text/plain"
-        }
-        try {
-            context.startActivity(
-                Intent.createChooser(
-                    intent,
-                    "Отправить сведения о питомце"
-                )
-            )
-        } catch (e: Exception) {
-            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show()
-        }
-    }
 }
