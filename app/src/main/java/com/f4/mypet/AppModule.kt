@@ -19,6 +19,7 @@ import com.f4.mypet.data.network.service.MedRecordService
 import com.f4.mypet.data.network.service.PetService
 import com.f4.mypet.data.network.service.ProcedureService
 import com.f4.mypet.data.network.service.ProcedureTitleService
+import com.f4.mypet.data.network.service.ProcedureService
 import com.f4.mypet.util.LocalDateAdapter
 import com.f4.mypet.util.LocalDateTimeAdapter
 import com.google.gson.GsonBuilder
@@ -41,6 +42,7 @@ private const val UNAUTHENTICATED_TIMEOUT = 5L
 private const val TIMEOUT = 10L
 private const val AUTH_PREFERENCES = "my_preferences"
 private const val BASE_URL = "https://mypet-backend-s3r6.amvera.io/"
+const val VKPETS_ID = 160065516L
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = AUTH_PREFERENCES)
 

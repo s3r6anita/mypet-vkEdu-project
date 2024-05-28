@@ -1,5 +1,6 @@
 package com.f4.mypet.ui.screens.auth.login
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,17 +43,22 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
+import com.f4.mypet.ui.screens.wall.PetsWallViewModel
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.util.UIState
+import com.vk.id.AccessToken
+import com.vk.id.OAuth
 import com.vk.id.VKID
+import com.vk.id.onetap.common.OneTapOAuth
 import com.vk.id.onetap.compose.onetap.OneTap
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
+    viewModelPets: PetsWallViewModel = hiltViewModel(),
 ) {
     val localContext = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -68,6 +74,7 @@ fun LoginScreen(
     var password by remember {
         mutableStateOf("1qazxsw2")
     }
+
 
     LaunchedEffect(uiState) {
         if (uiState == UIState.Success) {

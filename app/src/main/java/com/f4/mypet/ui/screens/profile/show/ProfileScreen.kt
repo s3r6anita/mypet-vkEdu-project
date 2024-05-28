@@ -4,13 +4,18 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -20,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,6 +52,7 @@ import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.profile.show.screencomponents.ProfileItem
 import com.f4.mypet.ui.screens.profile.show.screencomponents.RemoveProfileAlert
+import com.f4.mypet.ui.screens.profile.show.screencomponents.formatPet
 import com.f4.mypet.ui.theme.GreenButton
 import kotlinx.coroutines.launch
 
@@ -57,6 +65,7 @@ fun ProfileScreen(
     canNavigateBack: Boolean,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val localContext = LocalContext.current
     val scope = rememberCoroutineScope()
     val msg by viewModel.msg.collectAsState()
     val pet by viewModel.petUiState.collectAsState()
@@ -119,7 +128,11 @@ fun ProfileScreen(
                         }
 
                         // кнопка поделиться
-                        IconButton(onClick = { }) {
+                        IconButton(
+                            onClick = {
+                                val message = formatPet(pet)
+                                viewModel.sharePetInfo(message, localContext)
+                            }) {
                             Icon(
                                 imageVector = Icons.Default.Share,
                                 contentDescription = stringResource(id = R.string.share_button_description)
@@ -139,7 +152,12 @@ fun ProfileScreen(
                                 contentDescription = stringResource(id = R.string.exit_button_description)
                             )
                         }
-                    }
+                    },
+                    onFeedbackClick = {
+                        navController.navigate(Routes.BugReport.route) {
+                            launchSingleTop = true
+                        }
+                    },
                 )
             },
             bottomBar = {
@@ -156,9 +174,7 @@ fun ProfileScreen(
                 ) {
                     MyPetSnackBar(text = it.visuals.message)
                 }
-            },
-
-            ) { innerPadding ->
+            }) { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()

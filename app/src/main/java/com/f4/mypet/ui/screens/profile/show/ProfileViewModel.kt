@@ -1,5 +1,8 @@
 package com.f4.mypet.ui.screens.profile.show
 
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.f4.mypet.data.db.Repository
@@ -14,6 +17,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
+@SuppressWarnings("TooGenericExceptionCaught")
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val repository: Repository,
@@ -36,8 +40,6 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (petId != -1) {
                 _petUiState.value = repository.getPet(petId)
-                // пока подтягивание с сервера отключено
-//                _petUiState.value = networkRepository.getPet(petId) ?: _petUiState.value
             }
         }
     }
@@ -54,6 +56,23 @@ class ProfileViewModel @Inject constructor(
                 }
                 is NetworkResult.Error -> { _msg.value = response.msg }
             }
+        }
+    }
+
+    fun sharePetInfo(message: String, context: Context) {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+        try {
+            context.startActivity(
+                Intent.createChooser(
+                    intent,
+                    "Отправить сведения о питомце"
+                )
+            )
+        } catch (e: Exception) {
+            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show()
         }
     }
 

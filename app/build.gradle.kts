@@ -5,10 +5,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")// version "1.9.21-1.0.15"
     id("dagger.hilt.android.plugin")
-
-//    id("vkid.android.application.compose")
-//    id("vkid.placeholders")
-//    alias(libs.plugins.baselineprofile)
 }
 
 android {
@@ -70,13 +66,20 @@ android {
 }
 
 val sdkVersion = "1.3.1"
-val desugarVersion = "2.0.4"
+val version = "2.0.4"
 
 dependencies {
     // vk id
-    implementation("com.vk.id:vkid:1.3.1")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:$desugarVersion")
+    implementation("com.vk.id:vkid:1.3.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:$version")
     implementation("com.vk.id:onetap-compose:${sdkVersion}")
+//    vk sdk
+    implementation("com.vk:android-sdk-core:4.1.0")
+    implementation("com.vk:android-sdk-api:4.1.0")
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
 
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

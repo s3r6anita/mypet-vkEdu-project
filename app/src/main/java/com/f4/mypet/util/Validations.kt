@@ -3,7 +3,9 @@ package com.f4.mypet.util
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.Date
 
 val regex = "^[а-яА-ЯёЁa-zA-Z\\s-]+\$".toRegex()
@@ -47,7 +49,11 @@ object PastOrPresentSelectableDates: SelectableDates {
 @OptIn(ExperimentalMaterial3Api::class)
 object PresentOrFutureSelectableDates: SelectableDates {
     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-        return utcTimeMillis >= System.currentTimeMillis()
+        val moscowTimeZone = ZoneId.of("Europe/Moscow")
+        val moscowCurrentTimeMillis = LocalDateTime.now(moscowTimeZone).toInstant(ZoneOffset.UTC).toEpochMilli()
+        return utcTimeMillis <= moscowCurrentTimeMillis
+        //TODO Убрать верхние строки и оставить нижнюю
+        //return utcTimeMillis >= System.currentTimeMillis()
     }
 
     override fun isSelectableYear(year: Int): Boolean {

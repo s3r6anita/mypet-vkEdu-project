@@ -46,7 +46,6 @@
     <string name="list_profile_screen_title">Мои питомцы</string>
     <string name="list_profile_screen_add_button_icon_description">Добавить питомца</string>
 
-
     <string name="profile_screen_title">Профиль</string>
     <string name="profile_screen_delete_pet_text">Вы уверены, что хотите удалить профиль?</string>
     <string name="profile_screen_delete_pet_title">Удаление профиля</string>
@@ -142,5 +141,18 @@
     <string name="error">Ошибка</string>
     <string name="login_retry">Повторить попытку</string>
     <string name="error_password_equality">Введенные пароли не совпадают</string>
+
+    <string name="bug_report_title">Отчет об ошибке</string>
+    <string name="bug_report_error">Ошибка</string>
+    <string name="bug_report_description">Подробное описание ошибки</string>
+    <string name="bug_report_send">Отправить</string>
+    <string name="bug_report_email">supp0rt_app@mail.ru</string>
+    <string name="bug_report_toast_error">Произошла ошибка</string>
+    <string name="bug_report_dialog_title">Переход в почтовое приложение</string>
+    <string name="bug_report_dialog_text">Для отправки сообщения об ошибке будет использован Ваш почтовый аккаунт. Желаете продолжить?</string>
+    <string name="feedback_screen">Обратная связь</string>
+    <string name="feedback_button">Отзыв</string>
+
+    <string name="wall_screen_title">Лента</string>
 
 </resources>
