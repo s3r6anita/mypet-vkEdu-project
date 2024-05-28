@@ -39,6 +39,7 @@ class ProfileViewModel @Inject constructor(
     fun getPetProfile(petId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             if (petId != -1) {
+                // получение локально, т.к. данные обновились при получении списка питомцев
                 _petUiState.value = repository.getPet(petId)
             }
         }
@@ -78,5 +79,22 @@ class ProfileViewModel @Inject constructor(
 
     fun resetMsg() {
         _msg.value = ""
+    }
+
+    fun sharePetInfo(message: String, context: Context) {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+        try {
+            context.startActivity(
+                Intent.createChooser(
+                    intent,
+                    "Отправить сведения о питомце"
+                )
+            )
+        } catch (e: Exception) {
+            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show()
+        }
     }
 }
