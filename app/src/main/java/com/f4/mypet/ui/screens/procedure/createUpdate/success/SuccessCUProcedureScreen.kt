@@ -116,6 +116,7 @@ fun SuccessCUProcedureScreen(
                     titleIsCorrect = validate(it)
                     title = title.copy(name = it)
                 },
+                singleLine = true,
                 label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
                 modifier = Modifier
                     .padding(bottom = 10.dp, start = 30.dp, end = 30.dp)

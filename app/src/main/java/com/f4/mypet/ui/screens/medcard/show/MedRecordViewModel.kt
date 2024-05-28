@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.f4.mypet.data.db.Repository
 import com.f4.mypet.data.db.entities.MedRecord
+import com.f4.mypet.data.network.NetworkRepository
+import com.f4.mypet.data.network.model.NetworkResult
 import com.f4.mypet.util.PetDateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MedRecordViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: Repository,
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
     private val _medRecordUiState = MutableStateFlow(
         MedRecord(
@@ -26,14 +29,31 @@ class MedRecordViewModel @Inject constructor(
             id = -1
         )
     )
-
     val medRecordUiState = _medRecordUiState.asStateFlow()
+
+    // если null, то ошибок при удалении не было
+    private val _msg = MutableStateFlow<String?>("")
+    val msg = _msg.asStateFlow()
 
     fun getMedRecord(medRecordId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getMedRecord(medRecordId).collect { medRecord ->
-                _medRecordUiState.value = medRecord
+            _medRecordUiState.value = repository.getMedRecord(medRecordId)
+        }
+    }
+
+    fun deleteMedRecord(medRecord: MedRecord){
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val response = networkRepository.removeMedRecord(medRecord.id)) {
+                is NetworkResult.Success -> {
+                    _msg.value = null
+                    repository.deleteMedRecord(medRecord)
+                }
+                is NetworkResult.Error -> { _msg.value = response.msg }
             }
         }
+    }
+
+    fun resetMsg() {
+        _msg.value = ""
     }
 }

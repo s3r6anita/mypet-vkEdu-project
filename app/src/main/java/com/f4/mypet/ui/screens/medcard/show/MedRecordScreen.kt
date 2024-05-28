@@ -42,6 +42,7 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.medcard.show.screenComponents.RemoveMedRecordAlert
 import com.f4.mypet.ui.screens.medcard.show.screenComponents.ShowMedRecordData
@@ -58,20 +59,40 @@ fun MedRecordScreen(
 ) {
     val scope = rememberCoroutineScope()
 
+    val medRecord by viewModel.medRecordUiState.collectAsState()
     LaunchedEffect(Unit) {
         scope.launch {
             viewModel.getMedRecord(medRecordId)
         }
     }
-    val medRecord by viewModel.medRecordUiState.collectAsState()
 
+    // для удаления
+    val msg by viewModel.msg.collectAsState()
+    var showStatusDialog by remember { mutableStateOf(false) }
     var openAlertDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(msg) {
+        if (msg != null && msg != "") {
+            showStatusDialog = true
+        }
+        if (msg == null) {
+            navController.navigateUp()
+        }
+    }
+
     if (openAlertDialog) {
         RemoveMedRecordAlert(
-            navigateUp = { navController.navigateUp() },
-            closeAlertDialog = { openAlertDialog = !openAlertDialog }
+            medRecord = medRecord,
+            closeAlertDialog = { openAlertDialog = !openAlertDialog },
         )
     }
+    if (showStatusDialog) {
+        StatusDialog(msg) {
+            showStatusDialog = !showStatusDialog
+            viewModel.resetMsg()
+        }
+    }
+
 
     if (medRecord.id == -1) {
         LoadingScreen()
@@ -162,6 +183,3 @@ fun MedRecordScreen(
         }
     }
 }
-
-//TODO: suspend fun removeTherapy (profileId: String?, therapyId: String?)
-

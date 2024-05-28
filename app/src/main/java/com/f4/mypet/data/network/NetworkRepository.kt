@@ -32,7 +32,7 @@ interface NetworkRepository {
 //    suspend fun insertProcedure(procedure: Procedure): String?
     suspend fun getMedRecords(): List<MedRecord>
 //    suspend fun updateProcedure(procedure: Procedure): String?
-//    suspend fun removeProcedure(id: Int): String?
+    suspend fun removeMedRecord(id: Int): NetworkResult<Any?>
 
     suspend fun insertTitle(title: ProcedureTitle): NetworkResult<Any?>
     suspend fun getTitles(): NetworkResult<Any?>

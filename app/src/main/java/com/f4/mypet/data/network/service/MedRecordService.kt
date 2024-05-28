@@ -20,5 +20,5 @@ interface MedRecordService {
     suspend fun updateMedRecord(@Body procedure: MedRecord): Response<String?>
 
     @DELETE("med/{id}")
-    suspend fun removeMedRecord(@Path("id") id: Int): Response<MedRecord?>
+    suspend fun removeMedRecord(@Path("id") id: Int): Response<String?>
 }

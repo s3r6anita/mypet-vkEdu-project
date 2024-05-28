@@ -39,4 +39,32 @@ class ListMedRecordsViewModel @Inject constructor(
             }
         }
     }
+
+//    fun refreshMedRecords(petId: Int) {
+//        _uiState.update { UIState.Loading }
+//        viewModelScope.launch(Dispatchers.IO) {
+//            _isRefreshing.emit(true)
+//            val response = networkRepository.getPetProcedures(petId)
+//            _isRefreshing.emit(false)
+//            when (response) {
+//                is NetworkResult.Success -> {
+//                    _proceduresUiState.value = response.data as List<Procedure>
+//                    // обновление локальной БД
+//                    repository.removeProceduresForPet(petId)
+//                    repository.insertListOfProcedures(_proceduresUiState.value)
+//                    when (val titles = networkRepository.getTitles()) {
+//                        is NetworkResult.Success -> {
+//                            _titlesUiState.value = titles.data as List<ProcedureTitle>
+//                            repository.replaceTitles(_titlesUiState.value)
+//                            _uiState.update { UIState.Success }
+//                        }
+//                        is NetworkResult.Error -> _uiState.update { UIState.Error }
+//                    }
+//                }
+//                is NetworkResult.Error -> {
+//                    _uiState.update { UIState.Error }
+//                }
+//            }
+//        }
+//    }
 }

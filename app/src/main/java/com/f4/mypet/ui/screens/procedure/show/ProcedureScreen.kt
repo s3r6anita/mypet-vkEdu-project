@@ -65,6 +65,7 @@ fun ProcedureScreen(
     viewModel: ProcedureViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
+
     // для отображения
     val procedure by viewModel.procedureUiState.collectAsState()
     val title = viewModel.title

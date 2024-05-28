@@ -83,8 +83,8 @@
     <string name="medcard_screen_title">Медкарта</string>
 
     <string name="therapy_delete_button">Удалить</string>
-    <string name="therapy_delete">Удаление процедуры</string>
-    <string name="therapy_question_to_delete">Вы уверены, что хотите удалить терапию?</string>
+    <string name="therapy_delete">Удаление записи</string>
+    <string name="therapy_question_to_delete">Вы уверены, что хотите удалить запись?</string>
     <string name="therapy_cancel_button">Отмена</string>
     <string name="medrecord_show_title">Запись</string>
     <string name="therapy_type">Тип</string>
