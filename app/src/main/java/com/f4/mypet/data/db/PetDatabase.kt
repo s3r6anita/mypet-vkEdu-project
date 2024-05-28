@@ -5,10 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.f4.mypet.data.db.daos.FrequencyDAO
 import com.f4.mypet.data.db.daos.MedRecordDAO
 import com.f4.mypet.data.db.daos.PetDAO
 import com.f4.mypet.data.db.daos.PrTitleDAO
 import com.f4.mypet.data.db.daos.ProcedureDAO
+import com.f4.mypet.data.db.entities.Frequency
 import com.f4.mypet.data.db.entities.MedRecord
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.db.entities.Procedure
@@ -22,8 +24,9 @@ import com.f4.mypet.data.db.entities.ProcedureType
         Procedure::class,
         MedRecord::class,
         ProcedureTitle::class,
-        ProcedureType::class],
-    version = 1,
+        ProcedureType::class,
+        Frequency::class],
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -32,6 +35,7 @@ abstract class PetDatabase : RoomDatabase() {
     abstract fun procedureDAO(): ProcedureDAO
     abstract fun prTitleDAO(): PrTitleDAO
     abstract fun medRecordDAO(): MedRecordDAO
+    abstract fun frequencyDAO(): FrequencyDAO
 
     companion object {
         @Volatile
@@ -45,8 +49,7 @@ abstract class PetDatabase : RoomDatabase() {
                     PetDatabase::class.java,
                     "pet_database"
                 )
-//                    .createFromAsset("databases/initial_db.db")
-//                    .fallbackToDestructiveMigration()
+                    .createFromAsset("databases/initial_db.db")
                     .build()
                     .also { Instance = it }
             }

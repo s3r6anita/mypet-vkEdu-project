@@ -1,8 +1,10 @@
 package com.f4.mypet.ui.components
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -13,12 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.f4.mypet.R
+import com.f4.mypet.navigation.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyPetTopBar(
     text: String,
     navigateUp: () -> Unit,
+    onFeedbackClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     canNavigateBack: Boolean = false,
     actions: @Composable() RowScope.() -> Unit = { },
@@ -29,6 +33,16 @@ fun MyPetTopBar(
         },
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
         navigationIcon = {
+            if (text == stringResource(Routes.BottomBarRoutes.Profile.title)) {
+                Row {
+                    IconButton(onClick = onFeedbackClick) {
+                        Icon(
+                            imageVector = Icons.Filled.Email,
+                            contentDescription = stringResource(R.string.feedback_screen)
+                        )
+                    }
+                }
+            }
             if (canNavigateBack) {
                 IconButton(onClick = navigateUp) {
                     Icon(

@@ -23,7 +23,7 @@ class RegistrationViewModel @Inject constructor(
 
     fun register(email: String, password: String, name: String) {
         _uiState.update { UIState.Loading }
-        val registerRequest = RegisterRequest(email, password, name)
+        val registerRequest = RegisterRequest(email, password, name, null)
         viewModelScope.launch {
             _msg.value = networkRepository.register(registerRequest)
             if (_msg.value == null )

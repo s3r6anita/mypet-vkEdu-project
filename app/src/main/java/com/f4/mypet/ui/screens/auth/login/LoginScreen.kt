@@ -60,12 +60,11 @@ fun LoginScreen(
     navController: NavHostController,
     viewModel: LoginViewModel = hiltViewModel(),
     viewModelPets: PetsWallViewModel = hiltViewModel(),
-
-    ) {
+) {
+    val localContext = LocalContext.current
     val scope = rememberCoroutineScope()
     val msg by viewModel.msg.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
-
 
     var openErrorAlert by remember {
         mutableStateOf(false)
@@ -76,8 +75,6 @@ fun LoginScreen(
     var password by remember {
         mutableStateOf("1qazxsw2")
     }
-
-    val vkid = VKID(LocalContext.current)
 
 
     LaunchedEffect(uiState) {
@@ -191,14 +188,11 @@ fun LoginScreen(
                 )
             }
 
-
             // Кнопка "Зарегистрироваться"
             TextButton(
                 onClick = {
                     navController.navigate(Routes.Register.route) {
-                        popUpTo(Routes.ListProfile.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Routes.ListProfile.route)
                         launchSingleTop = true
                     }
                 },
@@ -213,38 +207,19 @@ fun LoginScreen(
 
             // кнопка VK ID
             OneTap(
-                modifier = Modifier.width(355.dp),
-                onAuth = getOneTapSuccessCallback(LocalContext.current) { token ->
-                    viewModelPets.token = token
-                    navController.navigate(Routes.ListProfile.route) {
-                        popUpTo(START)
-                        restoreState = true
-                        launchSingleTop = true
-                    }
-                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp),
+                vkid = VKID(localContext),
                 signInAnotherAccountButtonEnabled = true,
-                vkid = vkid,
+                onFail = viewModel.getOneTapFailCallback(localContext),
+                onAuth = viewModel.getOneTapSuccessCallback { token ->
+                    scope.launch {
+                        viewModel.saveToken(token)
+                        viewModel.loginByVK(token)
+                    }
+                }
             )
-
         }
     }
-
 }
-
-fun getOneTapSuccessCallback(
-    context: Context,
-    onToken: (AccessToken) -> Unit
-): (OneTapOAuth?, AccessToken) -> Unit = { oAuth, token ->
-    onToken(token)
-    onVKIDAuthSuccess(context, oAuth?.toOAuth(), token)
-}
-
-private fun onVKIDAuthSuccess(
-    context: Context,
-    oAuth: OAuth?,
-    accessToken: AccessToken,
-) {
-    val oAuthLabel = oAuth?.name ?: "VK ID"
-}
-
-

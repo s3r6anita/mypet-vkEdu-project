@@ -1,7 +1,17 @@
 package com.f4.mypet.ui.screens.procedure.createUpdate.success
 
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,18 +58,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.f4.mypet.MainActivity
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureViewModel
-import com.f4.mypet.ui.screens.procedure.createUpdate.FrequencyOptions
 import com.f4.mypet.ui.theme.BlueCheckbox
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightBlueBackground
@@ -70,19 +83,88 @@ import com.f4.mypet.util.PresentOrFutureSelectableDates
 import com.f4.mypet.util.validate
 import kotlinx.collections.immutable.toImmutableList
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
+fun scheduleNotification(context: Context, title: String, message: String, notificationTime: LocalDateTime, notificationId: Int) {
+    val intent = Intent(context, AlarmReceiver::class.java).apply {
+        putExtra("notification_title", title)
+        putExtra("notification_message", message)
+        putExtra("notification_id", notificationId) // Добавим notificationId в intent
+    }
+    val pendingIntent = PendingIntent.getBroadcast(
+        context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+    val systemZoneId = ZoneId.systemDefault()
+    val systemZonedDateTime = notificationTime.atZone(systemZoneId)
+    val triggerAtMillis = systemZonedDateTime.toInstant().toEpochMilli()
+
+    alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
+}
+fun createNotificationChannel(context: Context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channelId = "notification_channel1"
+        val channelName = "My Notification Channel1"
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val notificationChannel = NotificationChannel(channelId, channelName, importance).apply {
+            description = "Channel description"
+        }
+
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(notificationChannel)
+    }
+}
+class AlarmReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val title = intent.getStringExtra("notification_title") ?: "Процедура"
+        val message = intent.getStringExtra("notification_message") ?: "Время выполнить процедуру"
+        val notificationId = intent.getIntExtra("notification_id", 0) // Получим notificationId из intent
+
+        // Создаем намерение для запуска MainActivity с необходимым маршрутом
+        val resultIntent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("destination_route", "${Routes.Procedure.route}/$notificationId")
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            notificationId,
+            resultIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val notification = NotificationCompat.Builder(context, "notification_channel1")
+            .setSmallIcon(R.drawable.pet_icon)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent) // Устанавливаем PendingIntent для уведомления
+            .setAutoCancel(true) // Автоматическое закрытие уведомления после нажатия
+            .build()
+
+        notificationManager.notify(notificationId, notification) // Используем notificationId для уведомления
+    }
+}
 @Suppress("CyclomaticComplexMethod", "LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuccessCUProcedureScreen(
     navController: NavHostController,
     isCreateScreen: Boolean,
-    viewModel: CreateUpdateProcedureViewModel = hiltViewModel()
+    profileId: Int,
+    viewModel: CreateUpdateProcedureViewModel = hiltViewModel(),
 ) {
+    //TODO сделать update когда меняем тип, то есть с insert в таблицу title
+    val context = LocalContext.current
     val titles = viewModel.titles
     val types = viewModel.types
+    val frequencyOptions = viewModel.frequencyOptions
+    val frequencyOptionsTitles = viewModel.frequencyOptionsTitles
     val procedureDB by viewModel.procedureUiState.collectAsState()
 
     val type by remember {
@@ -91,17 +173,21 @@ fun SuccessCUProcedureScreen(
     var title by remember {
         mutableStateOf(viewModel.title)
     }
+    var frequency by remember {
+        mutableStateOf(viewModel.frequency)
+    }
     var procedure by remember {
         mutableStateOf(procedureDB)
     }
     LaunchedEffect(procedureDB) {
         procedure = procedureDB
     }
-
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(Routes.CreateProcedure.title),
+                text = if (isCreateScreen) stringResource(Routes.CreateProcedure.title) else stringResource(
+                    Routes.UpdateProcedure.title
+                ),
                 canNavigateBack = true,
                 navigateUp = { navController.navigateUp() },
                 actions = {}
@@ -121,7 +207,7 @@ fun SuccessCUProcedureScreen(
             // выбор типа процедуры в отдельной функции, по аналогии нужно другие выборы вынести
             var selectedType by remember {
                 mutableStateOf(
-                    if (isCreateScreen) types[1] // косметический тип как бы по умолчанию
+                    if (isCreateScreen) types.first()
                     else type
                 )
             }
@@ -131,83 +217,37 @@ fun SuccessCUProcedureScreen(
                 dropdownMenuColors = getDropdownMenuColors(),
                 changeSelectedType = { newType ->
                     selectedType = newType
+                    title = title.copy(type = newType.id)
                 },
             )
 
-
             // Название процедуры
-            val titleOptions = titles.filter {
-                it.type == selectedType.id
-            }
-            var selectedTitle by remember {
-                mutableStateOf(
-                    if (isCreateScreen) titleOptions[0]
-                    else title
-                )
-            }
-            var titleExpanded by remember { mutableStateOf(false) }
             var titleIsCorrect by remember { mutableStateOf(!isCreateScreen) }
+            // TODO: сделать чтобы при вводе тайтла выпадали последние введенные
 
-            // если процедура не "Косметического" типа
-            if (titleOptions != emptyList<String>()) {
-                ExposedDropdownMenuBox(
-                    expanded = titleExpanded,
-                    onExpandedChange = {
-                        titleExpanded = it
-                    },
-                    modifier = Modifier.padding(bottom = 10.dp)
-                ) {
-                    TextField(
-                        modifier = Modifier
-                            .menuAnchor()
-                            .fillMaxWidth()
-                            .padding(bottom = 15.dp),
-                        value = selectedTitle.name,
-                        readOnly = true,
-                        onValueChange = { },
-                        label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(
-                                expanded = titleExpanded
-                            )
-                        },
-                    )
-                    ExposedDropdownMenu(
-                        expanded = titleExpanded,
-                        onDismissRequest = {
-                            titleExpanded = false
-                        }
-                    ) {
-                        titleOptions.forEach { selectionOption ->
-                            DropdownMenuItem(
-                                text = { Text(selectionOption.name) },
-                                onClick = {
-                                    selectedTitle = selectionOption
-                                    titleExpanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-            } else {
-                // если не медицинский тип процедуры
-                OutlinedTextField(
-                    value = title.name,
-                    onValueChange = {
-                        titleIsCorrect = validate(it)
-                        title = title.copy(name = it) // TODO: не уверен, но тут нужно заменить в procedure, а не сам title
-                    },
-                    label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
-                    modifier = Modifier
-                        .padding(bottom = 10.dp, start = 30.dp, end = 30.dp)
-                        .fillMaxWidth()
-                )
-            }
+            OutlinedTextField(
+                value = title.name,
+                onValueChange = {
+                    titleIsCorrect = validate(it)
+                    title = title.copy(name = it)
+                },
+                label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
+                modifier = Modifier
+                    .padding(bottom = 10.dp, start = 30.dp, end = 30.dp)
+                    .fillMaxWidth(),
+                isError = !titleIsCorrect,
+            )
 
             // периодичность - выпадающее меню с выбором
             var frequencyExpanded by remember { mutableStateOf(false) }
-            var selectedFrequency by remember { mutableStateOf(FrequencyOptions.Never) }
-            var frequencyString by remember { mutableStateOf("") }
+            var selectedFrequency by remember {
+                mutableStateOf(
+                    if (isCreateScreen) frequencyOptions[0]
+                    else viewModel.frequency
+                )
+            }
+            var frequencyInProcedure by remember { mutableStateOf(procedure.frequency) }
+
 
             ExposedDropdownMenuBox(
                 expanded = frequencyExpanded,
@@ -221,7 +261,7 @@ fun SuccessCUProcedureScreen(
                         .menuAnchor()
                         .fillMaxWidth()
                         .padding(bottom = 15.dp),
-                    value = selectedFrequency.period,
+                    value = selectedFrequency.option,
                     readOnly = true,
                     label = { Text(stringResource(R.string.creation_procedure_screen_frequence)) },
                     onValueChange = { },
@@ -236,34 +276,24 @@ fun SuccessCUProcedureScreen(
                         frequencyExpanded = false
                     }
                 ) {
-                    FrequencyOptions.entries.forEach() { selectionOption ->
+                    frequencyOptions.forEach() { selectionOption ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption.period) },
+                            text = { Text(selectionOption.option) },
                             onClick = {
                                 selectedFrequency = selectionOption
+                                procedure = procedure.copy(frequencyOption = selectionOption.id)
                                 frequencyExpanded = false
                             }
                         )
                     }
                 }
             }
-            if (selectedFrequency != FrequencyOptions.Never) {
+            if (selectedFrequency != frequencyOptions.first()) {
                 OutlinedTextField(
-                    value = frequencyString,
+                    value = frequencyInProcedure.toString(),
                     onValueChange = {
-                        frequencyString = it
-                        procedure = if (it != "") {
-                            procedure.copy(
-                                frequency = when (selectedFrequency) {
-                                    FrequencyOptions.Hours -> frequencyString.toInt()
-                                    FrequencyOptions.Days -> frequencyString.toInt() * 24
-                                    FrequencyOptions.Weeks -> frequencyString.toInt() * 24 * 7
-                                    else -> 0
-                                }
-                            )
-                        } else {
-                            procedure.copy(frequency = 0)
-                        }
+                        frequencyInProcedure = it
+                        procedure = procedure.copy(frequency = frequencyInProcedure)
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
@@ -272,7 +302,7 @@ fun SuccessCUProcedureScreen(
                     singleLine = true,
                     trailingIcon = {
                         IconButton(onClick = {
-                            frequencyString = ""
+                            frequencyInProcedure = ""
                         }) {
                             Icon(
                                 Icons.Default.Clear,
@@ -327,15 +357,11 @@ fun SuccessCUProcedureScreen(
                         TextButton(
                             onClick = {
                                 openTimeDialog = false
-//                                        TODO: find correct format
-//                                        procedure = procedure.copy(
-//                                            dateDone = LocalDateTime.ofInstant(
-//                                                Instant.ofEpochMilli(
-////                                                    timePickerState.hour ?: 0
-////                                                ),
-//                                                ZoneId.of("UTC")
-//                                            )
-//                                        )
+                                procedure = procedure.copy(
+                                    dateDone = procedure.dateDone
+                                        .withHour(timePickerState.hour)
+                                        .withMinute(timePickerState.minute)
+                                )
                                 // TODO: catch Errors
                             }) {
                             Text(stringResource(id = R.string.procedure_screen_ok))
@@ -392,6 +418,8 @@ fun SuccessCUProcedureScreen(
                                         ),
                                         ZoneId.of("UTC")
                                     )
+                                        .withHour(procedure.dateDone.hour)
+                                        .withMinute(procedure.dateDone.minute)
                                 )
                                 // TODO: catch Errors
                             },
@@ -410,8 +438,14 @@ fun SuccessCUProcedureScreen(
             }
 
             // уведомление
-            var enableNotifications by remember { mutableStateOf(procedure.reminder != null) }
-            var timeNotificationString by remember { mutableStateOf(procedure.reminder.toString()) } // временно
+            var enableNotifications by remember {
+                mutableStateOf(((procedure.reminder?.let {
+                    procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
+                } != "01.01.1001 00:00")))
+            }
+            if (procedure.reminder == null)
+                enableNotifications = false
+
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -429,6 +463,20 @@ fun SuccessCUProcedureScreen(
                 Switch(
                     checked = enableNotifications,
                     onCheckedChange = {
+                        if (!it)
+                            procedure = procedure.copy(reminder = null)
+                        else if ((procedure.reminder == null ||
+                                    (procedure.reminder?.let {
+                                        procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
+                                    }
+                                            == "01.01.1001 00:00"))
+                            && it
+                        ) {
+                            procedure = procedure.copy(
+                                reminder = procedure.dateDone
+                                    .minusDays(1).withMinute(0)
+                            )
+                        }
                         enableNotifications = it
                     },
                     thumbContent = if (enableNotifications) {
@@ -459,28 +507,123 @@ fun SuccessCUProcedureScreen(
                 )
             }
             if (enableNotifications) {
+                // Время напоминания - тайм пикер
+                var openTimeReminderDialog by remember { mutableStateOf(false) }
+                val timeReminderPickerState = rememberTimePickerState()
+                var timeReminderIsCorrect by remember { mutableStateOf(true) }
+
                 OutlinedTextField(
-                    value = timeNotificationString,
-                    onValueChange = { timeNotificationString = it },
-                    label = { Text(stringResource(id = R.string.creation_procedure_screen_time_before_notification)) },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
+                    value = procedure.reminder!!.format(PetDateTimeFormatter.time),
+                    onValueChange = { },
+                    readOnly = true,
+                    label = { Text(stringResource(id = R.string.creation_procedure_screen_duration)) },
+                    supportingText = { Text(text = stringResource(id = R.string.creation_procedure_screen_time_format)) },
                     trailingIcon = {
-                        IconButton(onClick = { timeNotificationString = "" }) {
-                            Icon(Icons.Default.Clear, contentDescription = null)
+                        IconButton(
+                            onClick = { openTimeReminderDialog = true }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_access_time),
+                                contentDescription = stringResource(id = R.string.creation_procedure_screen_open_clock)
+                            )
                         }
                     },
+                    isError = !timeReminderIsCorrect,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 15.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = getOutLinedTextFieldColors()
                 )
+                if (openTimeReminderDialog) {
+                    AlertDialog(
+                        title = {
+                            Text(text = stringResource(id = R.string.creation_procedure_screen_pick_time))
+                        },
+                        text = { TimePicker(state = timeReminderPickerState) },
+                        onDismissRequest = { openTimeReminderDialog = false },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    openTimeReminderDialog = false
+                                    procedure = procedure.copy(
+                                        reminder = procedure.reminder!!
+                                            .withHour(timeReminderPickerState.hour)
+                                            .withMinute(timeReminderPickerState.minute)
+                                    )
+                                    // TODO: catch Errors
+                                }) {
+                                Text(stringResource(id = R.string.procedure_screen_ok))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { openTimeDialog = false }) {
+                                Text(stringResource(id = R.string.procedure_screen_cancel))
+                            }
+                        }
+                    )
+                }
 
-                // TODO: добавить DatePicker
-                // TODO: добавить TimePicker
+                // дата напоминания
+                var openDateReminderDialog by remember { mutableStateOf(false) }
+                val dateReminderPickerState =
+                    rememberDatePickerState(selectableDates = PresentOrFutureSelectableDates)
+                var dateReminderIsCorrect by remember { mutableStateOf(true) }
+
+                OutlinedTextField(
+                    value = procedure.reminder!!.format(PetDateTimeFormatter.date),
+                    onValueChange = { },
+                    label = { Text(stringResource(id = R.string.creation_procedure_screen_date_of_completion)) },
+                    supportingText = { Text(text = stringResource(id = R.string.date_format)) },
+                    readOnly = true,
+                    trailingIcon = {
+                        IconButton(onClick = { openDateReminderDialog = true }) {
+                            Icon(
+                                Icons.Default.DateRange,
+                                contentDescription = stringResource(id = R.string.show_calendar)
+                            )
+                        }
+                    },
+                    isError = !dateReminderIsCorrect,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = getOutLinedTextFieldColors()
+                )
+                if (openDateReminderDialog) {
+                    DatePickerDialog(
+                        onDismissRequest = {
+                            openDateReminderDialog = false
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    openDateReminderDialog = false
+                                    procedure = procedure.copy(
+                                        reminder = LocalDateTime.ofInstant(
+                                            Instant.ofEpochMilli(
+                                                dateReminderPickerState.selectedDateMillis ?: 0
+                                            ),
+                                            ZoneId.of("UTC")
+                                        )
+                                            .withHour(procedure.reminder!!.hour)
+                                            .withMinute(procedure.reminder!!.minute)
+                                    )
+                                },
+                            ) {
+                                Text(stringResource(id = R.string.confirm_button_description))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { openDateReminderDialog = false }) {
+                                Text(stringResource(id = R.string.cancel_button_description))
+                            }
+                        }
+                    ) {
+                        DatePicker(state = dateReminderPickerState)
+                    }
+                }
             }
 
             // заметки
@@ -503,42 +646,54 @@ fun SuccessCUProcedureScreen(
                 shape = RoundedCornerShape(12.dp),
                 colors = getOutLinedTextFieldColors()
             )
+            val createDelayedNotification = remember { mutableStateOf(false) }
+            if (createDelayedNotification.value) {
+                val titleNotification = if (title.name.isBlank()) "Процедура" else title.name
+                val timeMessage = procedure.dateDone.format(PetDateTimeFormatter.date)
+                val dateMessage = procedure.dateDone.format(PetDateTimeFormatter.time)
+                val message = "Напоминание: дата выполнения процедуры - $timeMessage. Время - $dateMessage"
+                val procedureId = procedure.id
+                // Получаем дату и время из процедуры
+                val reminderDate = procedure.reminder!!.format(PetDateTimeFormatter.date)
+                val reminderTime = procedure.reminder!!.format(PetDateTimeFormatter.time)
 
+                // Создаем LocalDateTime из даты и времени
+                val reminderDateTime = LocalDateTime.of(
+                    LocalDate.parse(reminderDate, PetDateTimeFormatter.date), // Преобразуем дату из строки в LocalDate
+                    LocalTime.parse(reminderTime, PetDateTimeFormatter.time)  // Преобразуем время из строки в LocalTime
+                )
+                // Логирование времени перед передачей в scheduleNotification
+                scheduleNotification(context, titleNotification, message, reminderDateTime, procedureId)
+                createDelayedNotification.value = false
+            }
             // сохранение
-            Button(
-                modifier = Modifier.padding(20.dp),
-                onClick = {
-                    try {
+            Box(modifier = Modifier
+                .fillMaxSize()) {
+                Button(
+                    modifier = Modifier.padding(20.dp),
+                    onClick = {
                         //TODO Проверка на формат даты и на "дату из будущего"
-
-                        //TODO изменение полей на основе полученных значений
-
-                        //TODO добавление в список процедур
-
                         if (isCreateScreen) {
-//                            viewModel.createProcedure(procedure)
-                            navController.navigate(Routes.BottomBarRoutes.ListProcedures.route) {
-                                popUpTo(Routes.BottomBarRoutes.ListProcedures.route) {
-                                    inclusive = true
-                                }
-                                launchSingleTop = true
-                            }
+                            procedure = procedure.copy(pet = profileId)
+                            viewModel.createProcedure(procedure, title)
+                            navController.navigateUp()
                         } else {
-//                            viewModel.updateProcedure(procedure)
+                            viewModel.updateProcedure(procedure, title, frequency)
                             navController.navigateUp()
                         }
-                    } catch (e: IllegalArgumentException) {
-                        // TODO: вывод сообщения об ошибке
-                    }
-                },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.save_button_description),
-                    Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
+                        if (enableNotifications) {
+                            createDelayedNotification.value = true
+                        }
+                    },
+                    border = BorderStroke(1.dp, GreenButton),
+                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.save_button_description),
+                        Modifier.padding(start = 10.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
         }
     }

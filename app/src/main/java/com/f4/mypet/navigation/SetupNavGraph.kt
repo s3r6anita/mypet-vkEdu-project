@@ -10,7 +10,8 @@ import androidx.navigation.compose.NavHost
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    notificationRoute: String?
 ) {
     val scope = rememberCoroutineScope()
     val getGlobalScope = { scope }
@@ -28,4 +29,19 @@ fun SetupNavGraph(
     ) {
         mainNavGraph(navController, snackbarHostState, getGlobalScope)
     }
+    if (notificationRoute != null) {
+//        val routes = notificationRoute.split("/")
+//        navController.navigate(routes[0])
+//        val index = 1
+//        while (index < routes.size) {
+//            var route = ""
+//            for (i in 0..index) {
+//                route += routes[i] + "/"
+//            }
+//            route = route.substringBeforeLast('/')
+            navController.navigate(notificationRoute)
+
+//        }
+    }
+
 }

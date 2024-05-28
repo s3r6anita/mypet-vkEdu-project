@@ -72,6 +72,7 @@ fun ProcedureScreen(
     val procedure by viewModel.procedureUiState.collectAsState()
     val title = viewModel.title
     val type = viewModel.type
+    val frequency = viewModel.frequency
 
     var openAlertDialog by remember { mutableStateOf(false) }
 
@@ -163,14 +164,18 @@ fun ProcedureScreen(
                         )
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_frequency),
-                            value = procedure.frequency.toString()
+                            value = frequency.frequency
                         )
-                        procedure.reminder?.format(PetDateTimeFormatter.dateTime)?.let {
-                            TextComponent(
-                                header = stringResource(R.string.procedure_screen_reminder),
-                                value = it
-                            )
-                        }
+                        TextComponent(
+                            header = stringResource(R.string.procedure_screen_reminder),
+                            value = if (procedure.reminder?.let {
+                                    procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
+                                } == "01.01.1001 00:00") {
+                                "нет"
+                            } else {
+                                procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
+                            }
+                        )
                         TextComponent(
                             header = stringResource(R.string.procedure_screen_notice),
                             value = procedure.notes
@@ -212,7 +217,6 @@ fun ProcedureScreen(
                     },
                     modifier = Modifier
                         .padding(bottom = 40.dp)
-                        .weight(1f)
                 ) {
                     Text(
                         text = stringResource(id = R.string.edit_button_description),
@@ -225,8 +229,7 @@ fun ProcedureScreen(
                 // кнопка удаления
                 Button(
                     modifier = Modifier
-                        .padding(bottom = 40.dp)
-                        .weight(1f),
+                        .padding(bottom = 40.dp),
                     onClick = {
                         openAlertDialog = true
                     },
