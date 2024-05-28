@@ -70,7 +70,9 @@ class PetsWallViewModel @Inject constructor(
                         ).first()
                     Log.d("token", token.toString())
                 }
-            } catch (ex: Exception) { }
+            } catch (ex: Exception) {
+                null
+            }
 
         }
     }
@@ -87,7 +89,9 @@ class PetsWallViewModel @Inject constructor(
 
                         )
                 }
-            } catch (ex: Exception) { }
+            } catch (ex: Exception) {
+                null
+            }
 
         }
     }
