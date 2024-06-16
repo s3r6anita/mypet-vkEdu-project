@@ -7,19 +7,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.f4.mypet.R
-import com.f4.mypet.ui.theme.BlueCheckbox
+import com.f4.mypet.data.db.entities.MedRecord
+import com.f4.mypet.ui.screens.medcard.show.MedRecordViewModel
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun RemoveMedRecordAlert(
-    navigateUp: () -> Unit,
-    closeAlertDialog: () -> Unit
+    medRecord: MedRecord,
+    closeAlertDialog: () -> Unit,
+    viewModel: MedRecordViewModel = hiltViewModel()
 ){
+    val scope = rememberCoroutineScope()
+
     AlertDialog(
         shape = RoundedCornerShape(12.dp),
         title = {
@@ -28,18 +35,14 @@ fun RemoveMedRecordAlert(
         text = {
             Text(stringResource(R.string.therapy_question_to_delete))
         },
-        onDismissRequest = {
-            closeAlertDialog()
-        },
+        onDismissRequest = { closeAlertDialog() },
         confirmButton = {
             TextButton(
-                colors = ButtonDefaults.textButtonColors(contentColor = BlueCheckbox),
                 onClick = {
                     closeAlertDialog()
-//                    scope.launch {
-//                        //TODO removeMedRecord(medRecordId)
-//                    }
-                    navigateUp()
+                    scope.launch {
+                        viewModel.deleteMedRecord(medRecord)
+                    }
                 }
             ) {
                 Text(stringResource(R.string.therapy_delete_button))
@@ -47,7 +50,6 @@ fun RemoveMedRecordAlert(
         },
         dismissButton = {
             TextButton(
-                colors = ButtonDefaults.textButtonColors(contentColor = BlueCheckbox),
                 onClick = {
                     closeAlertDialog()
                 }

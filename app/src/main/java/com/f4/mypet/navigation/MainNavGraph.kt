@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.f4.mypet.ui.screens.auth.login.LoginScreen
 import com.f4.mypet.ui.screens.auth.registration.RegistrationScreen
+import com.f4.mypet.ui.screens.bugReport.BugReportScreen
 import com.f4.mypet.ui.screens.medcard.createUpdate.CreateUpdateMedRecordScreen
 import com.f4.mypet.ui.screens.medcard.list.ListMedRecords
 import com.f4.mypet.ui.screens.medcard.show.MedRecordScreen
@@ -18,8 +19,10 @@ import com.f4.mypet.ui.screens.procedure.show.ProcedureScreen
 import com.f4.mypet.ui.screens.profile.createUpdate.CreateUpdateProfileScreen
 import com.f4.mypet.ui.screens.profile.list.ListProfileScreen
 import com.f4.mypet.ui.screens.profile.show.ProfileScreen
+import com.f4.mypet.ui.screens.wall.PetsWallScreen
 import kotlinx.coroutines.CoroutineScope
 
+@SuppressWarnings("CyclomaticComplexMethod")
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
@@ -28,6 +31,7 @@ fun NavGraphBuilder.mainNavGraph(
     navigation(
         route = START,
         startDestination = Routes.Login.route
+
     ) {
 
         /** вход в аккаунт */
@@ -95,6 +99,26 @@ fun NavGraphBuilder.mainNavGraph(
                 isCreateScreen = false,
                 globalScope = globalScope,
                 profileId = backStackEntry.arguments?.getInt("profileId") ?: -1
+            )
+        }
+
+
+        /** стена */
+        composable(
+            route = "${Routes.BottomBarRoutes.PetsWall.route}/{profileId}/{canNavigateBack}",
+            arguments = listOf(
+                navArgument(name = "profileId") {
+                    type = NavType.IntType
+                },
+                navArgument(name = "canNavigateBack") {
+                    type = NavType.BoolType
+                }
+            )
+        ) { backStackEntry ->
+            PetsWallScreen(
+                navController = navController,
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                canNavigateBack = backStackEntry.arguments?.getBoolean("canNavigateBack") ?: true
             )
         }
 
@@ -206,8 +230,9 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             CreateUpdateMedRecordScreen(
                 navController = navController,
+                snackbarHostState = snackbarHostState,
                 isCreateScreen = true,
-                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1
             )
         }
         /** изменение медицинской записи */
@@ -221,8 +246,19 @@ fun NavGraphBuilder.mainNavGraph(
         ) { backStackEntry ->
             CreateUpdateMedRecordScreen(
                 navController = navController,
+                snackbarHostState = snackbarHostState,
                 isCreateScreen = false,
-                profileId = backStackEntry.arguments?.getInt("profileId") ?: -1,
+                medRecordId = backStackEntry.arguments?.getInt("medRecordId") ?: -1,
+            )
+        }
+
+
+        /** обратная связь **/
+        composable(
+            route = Routes.BugReport.route
+        ) { backStackEntry ->
+            BugReportScreen(
+                navController = navController
             )
         }
     }

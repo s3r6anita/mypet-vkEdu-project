@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.medcard.list
+package com.f4.mypet.ui.screens.medcard.list.success
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

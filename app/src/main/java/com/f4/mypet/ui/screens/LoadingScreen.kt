@@ -16,8 +16,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

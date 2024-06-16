@@ -18,6 +18,7 @@ import com.f4.mypet.data.network.service.AuthService
 import com.f4.mypet.data.network.service.MedRecordService
 import com.f4.mypet.data.network.service.PetService
 import com.f4.mypet.data.network.service.ProcedureService
+import com.f4.mypet.data.network.service.ProcedureTitleService
 import com.f4.mypet.util.LocalDateAdapter
 import com.f4.mypet.util.LocalDateTimeAdapter
 import com.google.gson.GsonBuilder
@@ -40,7 +41,7 @@ private const val UNAUTHENTICATED_TIMEOUT = 5L
 private const val TIMEOUT = 10L
 private const val AUTH_PREFERENCES = "my_preferences"
 private const val BASE_URL = "https://mypet-backend-s3r6.amvera.io/"
-
+const val VKPETS_ID = 160065516L
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = AUTH_PREFERENCES)
 
@@ -82,6 +83,7 @@ object AppModule {
         petService: PetService,
         procedureService: ProcedureService,
         medRecordService: MedRecordService,
+        procedureTitleService: ProcedureTitleService,
         jwtTokenManager: JwtTokenManager
     ): NetworkRepository {
         return NetworkRepositoryImpl(
@@ -90,6 +92,7 @@ object AppModule {
             petService = petService,
             procedureService = procedureService,
             medRecordService = medRecordService,
+            procedureTitleService = procedureTitleService,
             jwtTokenManager = jwtTokenManager
         )
     }
@@ -104,9 +107,15 @@ object AppModule {
     fun provideProcedureService(retrofit: Retrofit): ProcedureService {
         return retrofit.create(ProcedureService::class.java)
     }
+
     @[Provides Singleton]
     fun provideMedRecordService(retrofit: Retrofit): MedRecordService {
         return retrofit.create(MedRecordService::class.java)
+    }
+
+    @[Provides Singleton]
+    fun provideProcedureTitleService(retrofit: Retrofit): ProcedureTitleService {
+        return retrofit.create(ProcedureTitleService::class.java)
     }
 
 

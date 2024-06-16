@@ -10,4 +10,6 @@
 - [Рахманов Сергей](https://github.com/s3r6anita)
 - [Шумайлова Александра](https://github.com/AlexandraShumailova)
 
+Приложение имеет собственный server-side, написанный на kotlin - https://github.com/s3r6anita/mypet-backend 
 Репозиторий создан на основе шаблона https://github.com/vk-education/common
+

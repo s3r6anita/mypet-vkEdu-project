@@ -16,31 +16,45 @@ import javax.inject.Inject
 
 @SuppressWarnings("TooManyFunctions")
 interface Repository {
-    suspend fun insertPet(pet: Pet)
-    suspend fun updatePet(pet: Pet)
-    suspend fun removePet(pet: Pet)
-    suspend fun removeProceduresForPet(petId: Int)
-    suspend fun removeMedRecordsForPet(petId: Int)
+    suspend fun replaceAllData(
+        pets: List<Pet>, procedures: List<Procedure>, medRecords: List<MedRecord>,
+        titles: List<ProcedureTitle>
+    )
     suspend fun getPets(): List<Pet>
     suspend fun getPet(petId: Int): Pet
     suspend fun getPetForCU(petId: Int): Pet
-    suspend fun replaceAllData(pets: List<Pet>, procedures: List<Procedure>, medRecords: List<MedRecord>)
+    suspend fun insertPet(pet: Pet)
+    suspend fun updatePet(pet: Pet)
+    suspend fun removePet(pet: Pet)
+
     suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>>
-    suspend fun getProcedureTitles(): Flow<List<ProcedureTitle>>
-    suspend fun getProcedureTitlesForCU(): List<ProcedureTitle>
+    suspend fun insertListOfProcedures(procedures: List<Procedure>)
+    suspend fun removeProceduresForPet(petId: Int)
     suspend fun getProcedureTypes(): List<ProcedureType>
     suspend fun getFrequencyOptions(): List<Frequency>
     suspend fun getProcedure(procedureId: Int): Procedure
     suspend fun insertProcedure(procedure: Procedure)
     suspend fun updateProcedure(procedure: Procedure)
-    suspend fun updateTitle(title: ProcedureTitle)
-    suspend fun insertTitle(title: ProcedureTitle): Int
-    suspend fun updateFrequency(frequency: Frequency)
-    suspend fun insertFrequency(frequency: Frequency): Int
     suspend fun deleteProcedure(procedure: Procedure)
+
     suspend fun getFrequency(frequencyId: Int): Frequency
+    suspend fun insertFrequency(frequency: Frequency): Int
+    suspend fun updateFrequency(frequency: Frequency)
+
     suspend fun getMedRecordsForPet(petId: Int): Flow<List<MedRecord>>
-    suspend fun getMedRecord(medRecord: Int): Flow<MedRecord>
+    suspend fun insertMedRecord(medRecord: MedRecord)
+    suspend fun removeMedRecord(medRecord: MedRecord)
+    suspend fun updateMedRecord(medRecord: MedRecord)
+    suspend fun insertListOfMedRecords(medRecords: List<MedRecord>)
+    suspend fun removeMedRecordsForPet(petId: Int)
+    suspend fun getMedRecord(medRecord: Int): MedRecord
+    suspend fun deleteMedRecord(medRecord: MedRecord)
+
+    suspend fun replaceTitles(titles: List<ProcedureTitle>)
+    suspend fun getProcedureTitlesForCU(): List<ProcedureTitle>
+    suspend fun getProcedureTitles(): Flow<List<ProcedureTitle>>
+    suspend fun insertTitle(title: ProcedureTitle): Int
+    suspend fun updateTitle(title: ProcedureTitle)
 }
 
 @SuppressWarnings("TooManyFunctions")
@@ -67,8 +81,16 @@ class DBRepository @Inject constructor(
         procedureDAO.deleteProceduresForPet(petId)
     }
 
+    override suspend fun insertListOfProcedures(procedures: List<Procedure>) {
+        procedureDAO.insertAll(procedures)
+    }
+
     override suspend fun removeMedRecordsForPet(petId: Int) {
         medRecordDAO.deleteMedRecordsForPet(petId)
+    }
+
+    override suspend fun insertListOfMedRecords(medRecords: List<MedRecord>) {
+        medRecordDAO.insertAll(medRecords)
     }
 
     override suspend fun getPets(): List<Pet> {
@@ -83,13 +105,20 @@ class DBRepository @Inject constructor(
         return petDAO.getPetForCU(petId)
     }
 
-    override suspend fun replaceAllData(pets: List<Pet>, procedures: List<Procedure>, medRecords: List<MedRecord>) {
+    override suspend fun replaceAllData(
+        pets: List<Pet>,
+        procedures: List<Procedure>,
+        medRecords: List<MedRecord>,
+        titles: List<ProcedureTitle>
+    ) {
         petDAO.deleteAll()
         procedureDAO.deleteAll()
         medRecordDAO.deleteAll()
+        prTitleDAO.deleteAll()
         petDAO.insertAll(pets)
         procedureDAO.insertAll(procedures)
         medRecordDAO.insertAll(medRecords)
+        prTitleDAO.insertAll(titles)
     }
 
     override suspend fun getProceduresForPet(petId: Int): Flow<List<Procedure>> {
@@ -149,10 +178,31 @@ class DBRepository @Inject constructor(
     }
 
     override suspend fun getMedRecordsForPet(petId: Int): Flow<List<MedRecord>> {
-        return medRecordDAO.getMedRecords(petId)
+        return medRecordDAO.getMedRecordsForPet(petId)
     }
 
-    override suspend fun getMedRecord(medRecord: Int): Flow<MedRecord> {
+    override suspend fun getMedRecord(medRecord: Int): MedRecord {
         return medRecordDAO.getMedRecord(medRecord)
+    }
+
+    override suspend fun deleteMedRecord(medRecord: MedRecord) {
+        medRecordDAO.delete(medRecord)
+    }
+
+    override suspend fun replaceTitles(titles: List<ProcedureTitle>) {
+        prTitleDAO.deleteAll()
+        prTitleDAO.insertAll(titles)
+    }
+
+    override suspend fun insertMedRecord(medRecord: MedRecord) {
+        medRecordDAO.insert(medRecord)
+    }
+
+    override suspend fun removeMedRecord(medRecord: MedRecord) {
+        medRecordDAO.delete(medRecord)
+    }
+
+    override suspend fun updateMedRecord(medRecord: MedRecord) {
+        medRecordDAO.update(medRecord)
     }
 }

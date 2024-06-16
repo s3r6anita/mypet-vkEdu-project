@@ -1,10 +1,14 @@
 package com.f4.mypet.ui.screens.profile.show
 
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.f4.mypet.data.db.Repository
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.network.NetworkRepository
+import com.f4.mypet.data.network.model.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +17,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
+@SuppressWarnings("TooGenericExceptionCaught")
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val repository: Repository,
@@ -34,9 +39,8 @@ class ProfileViewModel @Inject constructor(
     fun getPetProfile(petId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             if (petId != -1) {
+                // получение локально, т.к. данные обновились при получении списка питомцев
                 _petUiState.value = repository.getPet(petId)
-                // пока подтягивание с сервера отключено
-//                _petUiState.value = networkRepository.getPet(petId) ?: _petUiState.value
             }
         }
     }
@@ -44,10 +48,36 @@ class ProfileViewModel @Inject constructor(
 
     fun removePet(pet: Pet) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.removePet(pet)
-            repository.removeProceduresForPet(pet.id)
-            repository.removeMedRecordsForPet(pet.id)
-            _msg.value = networkRepository.removePet(pet.id)
+            when (val response = networkRepository.removePet(pet.id)) {
+                is NetworkResult.Success -> {
+                    _msg.value = null
+                    repository.removePet(pet)
+                    repository.removeProceduresForPet(pet.id)
+                    repository.removeMedRecordsForPet(pet.id)
+                }
+                is NetworkResult.Error -> { _msg.value = response.msg }
+            }
         }
+    }
+
+    fun sharePetInfo(message: String, context: Context) {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+        try {
+            context.startActivity(
+                Intent.createChooser(
+                    intent,
+                    "Отправить сведения о питомце"
+                )
+            )
+        } catch (e: Exception) {
+            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun resetMsg() {
+        _msg.value = ""
     }
 }

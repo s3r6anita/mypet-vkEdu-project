@@ -39,6 +39,8 @@ import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.ButtonComponent
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.components.StatusDialog
+import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.medcard.show.screenComponents.RemoveMedRecordAlert
 import com.f4.mypet.ui.screens.medcard.show.screenComponents.ShowMedRecordData
 import com.f4.mypet.ui.theme.GreenButton
@@ -54,92 +56,112 @@ fun MedRecordScreen(
 ) {
     val scope = rememberCoroutineScope()
 
+    val medRecord by viewModel.medRecordUiState.collectAsState()
     LaunchedEffect(Unit) {
         scope.launch {
             viewModel.getMedRecord(medRecordId)
         }
     }
-    val medRecord by viewModel.medRecordUiState.collectAsState()
 
+    // для удаления
+    val msg by viewModel.msg.collectAsState()
+    var showStatusDialog by remember { mutableStateOf(false) }
     var openAlertDialog by remember { mutableStateOf(false) }
-    if (openAlertDialog) {
-        RemoveMedRecordAlert(
-            navigateUp = { navController.navigateUp() },
-            closeAlertDialog = { openAlertDialog = !openAlertDialog }
-        )
+
+    LaunchedEffect(msg) {
+        if (msg != null && msg != "") {
+            showStatusDialog = true
+        }
+        if (msg == null) {
+            navController.navigateUp()
+        }
     }
 
-    Scaffold(
-        topBar = {
-            MyPetTopBar(
-                text = stringResource(R.string.medrecord_show_title),
-                canNavigateBack = true,
-                navigateUp = { navController.navigateUp() }
-            )
+    if (openAlertDialog) {
+        RemoveMedRecordAlert(
+            medRecord = medRecord,
+            closeAlertDialog = { openAlertDialog = !openAlertDialog },
+        )
+    }
+    if (showStatusDialog) {
+        StatusDialog(msg) {
+            showStatusDialog = !showStatusDialog
+            viewModel.resetMsg()
         }
-    ) { innerPadding ->
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(20.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Box() {
-                ShowMedRecordData(medRecord)
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.therapy_icon),
-                        contentDescription = null,
-                        contentScale = ContentScale.Inside,
+    }
+
+
+    if (medRecord.id == -1) {
+        LoadingScreen()
+    } else {
+        Scaffold(
+            topBar = {
+                MyPetTopBar(
+                    text = stringResource(R.string.medrecord_show_title),
+                    canNavigateBack = true,
+                    navigateUp = { navController.navigateUp() }
+                )
+            }
+        ) { innerPadding ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(20.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Box {
+                    ShowMedRecordData(medRecord)
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.therapy_icon),
+                            contentDescription = null,
+                            contentScale = ContentScale.Inside,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape)
+                                .background(LightBlueBackground)
+                        )
+                    }
+                }
+                Column {
+                    // кнопка редактирования
+                    ButtonComponent(
+                        onClick = {
+                            navController.navigate("${Routes.UpdateMedRecord.route}/$medRecordId") {
+                                launchSingleTop = true
+                            }
+                        },
+                        text = stringResource(id = R.string.edit_button_description),
+                        color = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
+                        icon = Icons.Default.Edit,
                         modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape)
-                            .background(LightBlueBackground)
+                            .fillMaxWidth(),
+                        textColor = GreenButton,
+                        borderColor = GreenButton,
+                        enabled = true
+                    )
+                    // кнопка удаления
+                    ButtonComponent(
+                        onClick = {
+                            openAlertDialog = true
+                        },
+                        text = stringResource(id = R.string.procedure_screen_delete),
+                        color = ButtonDefaults.outlinedButtonColors(contentColor = RedButton),
+                        icon = Icons.Default.Delete,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        textColor = RedButton,
+                        borderColor = RedButton,
+                        enabled = true
                     )
                 }
-
-            }
-
-            Column (){
-                ButtonComponent(
-                    onClick = {
-                        navController.navigate("${Routes.UpdateMedRecord.route}/$medRecordId") {
-                            launchSingleTop = true
-                        }
-                    },
-                    text = stringResource(id = R.string.edit_button_description),
-                    color = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
-                    icon = Icons.Default.Edit,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    textColor = GreenButton,
-                    borderColor = GreenButton,
-                    enabled = true,
-                )
-                // кнопка удаления
-                ButtonComponent(
-                    onClick = {
-                        openAlertDialog = true
-                    },
-                    text = stringResource(id = R.string.procedure_screen_delete),
-                    color = ButtonDefaults.outlinedButtonColors(contentColor = RedButton),
-                    icon = Icons.Default.Delete,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    textColor = RedButton,
-                    borderColor = RedButton,
-                    enabled = true,
-                )
             }
         }
     }
 }
-
-//TODO: suspend fun removeTherapy (profileId: String?, therapyId: String?)
-

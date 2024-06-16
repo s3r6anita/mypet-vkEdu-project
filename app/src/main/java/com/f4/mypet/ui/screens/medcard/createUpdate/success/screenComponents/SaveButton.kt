@@ -10,10 +10,10 @@ import com.f4.mypet.ui.components.ButtonComponent
 import com.f4.mypet.ui.theme.GreenButton
 
 @Composable
-fun SaveButton() {
+fun SaveButton(save: () -> Unit) {
     ButtonComponent(
         onClick = {
-            // TODO: переход
+            save()
         },
         text = stringResource(id = R.string.save_button_description),
         color = ButtonDefaults.buttonColors(containerColor = GreenButton),

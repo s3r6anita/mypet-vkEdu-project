@@ -24,7 +24,7 @@ class CreateUpdateProfileViewModel @Inject constructor(
         Pet(
             "", "", "", "Самец",
             LocalDate.now(),
-            "", "", ""
+            "", "", "", -1
         )
     )
     val petUiState = _petUiState.asStateFlow()
@@ -41,6 +41,7 @@ class CreateUpdateProfileViewModel @Inject constructor(
     fun createPet(pet: Pet) {
         _msg.value = ""
         viewModelScope.launch {
+            _msg.value = networkRepository.insertPet(pet)
             repository.insertPet(pet)
             _msg.value = networkRepository.insertPet(pet)
         }
@@ -49,8 +50,13 @@ class CreateUpdateProfileViewModel @Inject constructor(
     fun updatePet(pet: Pet) {
         _msg.value = ""
         viewModelScope.launch {
+            _msg.value = networkRepository.updatePet(pet)
             repository.updatePet(pet)
             _msg.value = networkRepository.updatePet(pet)
         }
+    }
+
+    fun resetMsg() {
+        _msg.value = ""
     }
 }

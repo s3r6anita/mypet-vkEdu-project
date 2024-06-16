@@ -20,7 +20,7 @@ interface ProcedureService {
     suspend fun updateProcedure(@Body procedure: Procedure): Response<String?>
 
     @DELETE("procedure/{id}")
-    suspend fun removeProcedure(@Path("id") id: Int): Response<Procedure?>
+    suspend fun removeProcedure(@Path("id") id: Int): Response<String?>
 
     @GET("procedure/pet/{id}")
     suspend fun getPetProcedures(@Path("id") id: Int): Response<List<Procedure>>

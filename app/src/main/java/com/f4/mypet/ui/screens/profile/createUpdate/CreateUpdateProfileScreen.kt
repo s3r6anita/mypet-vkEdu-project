@@ -56,6 +56,8 @@ import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.OutlinedTextFieldComponent
 import com.f4.mypet.ui.components.SHOWSNACKDURATION
 import com.f4.mypet.ui.components.StatusDialog
+import com.f4.mypet.ui.screens.LoadingScreen
+import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.Transparent
 import com.f4.mypet.util.PastOrPresentSelectableDates
@@ -99,7 +101,10 @@ fun CreateUpdateProfileScreen(
     }
 
     if (showStatusDialog) {
-        StatusDialog(msg) { showStatusDialog = !showStatusDialog }
+        StatusDialog(msg) {
+            showStatusDialog = !showStatusDialog
+            viewModel.resetMsg()
+        }
     }
 
     LaunchedEffect(msg) {
@@ -120,37 +125,39 @@ fun CreateUpdateProfileScreen(
         }
     }
 
-
-    Scaffold(
-        topBar = {
-            MyPetTopBar(
-                text = stringResource(
-                    if (isCreateScreen)
-                        Routes.CreateProfile.title
-                    else
-                        Routes.UpdateProfile.title
-                ),
-                canNavigateBack = true,
-                navigateUp = { navController.navigateUp() }
-            )
-        },
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState
-            ) {
-                MyPetSnackBar(it.visuals.message)
+    if (pet.id == -1 && !isCreateScreen) {
+        LoadingScreen()
+    } else {
+        Scaffold(
+            topBar = {
+                MyPetTopBar(
+                    text = stringResource(
+                        if (isCreateScreen)
+                            Routes.CreateProfile.title
+                        else
+                            Routes.UpdateProfile.title
+                    ),
+                    canNavigateBack = true,
+                    navigateUp = { navController.navigateUp() }
+                )
+            },
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = snackbarHostState
+                ) {
+                    MyPetSnackBar(it.visuals.message)
+                }
             }
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp)
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
             val modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 2.dp)
@@ -172,6 +179,7 @@ fun CreateUpdateProfileScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(end = 20.dp)
                 )
+
                 radioOptions.forEach { text ->
                     Column(
                     ) {
@@ -313,11 +321,11 @@ fun CreateUpdateProfileScreen(
                 modifier = modifier
             )
 
-            // дата рождения
-            var openDialog by remember { mutableStateOf(false) }
-            val datePickerState =
-                rememberDatePickerState(selectableDates = PastOrPresentSelectableDates)
-            var dateIsCorrect by remember { mutableStateOf(true) }
+                // дата рождения
+                var openDialog by remember { mutableStateOf(false) }
+                val datePickerState =
+                    rememberDatePickerState(selectableDates = PastOrPresentSelectableDates)
+                var dateIsCorrect by remember { mutableStateOf(true) }
 
             OutlinedTextField(
                 //TODO: отформатировать дату
@@ -441,8 +449,7 @@ fun CreateUpdateProfileScreen(
                 textColor = Color.White,
                 borderColor = Transparent,
                 icon = null,
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 enabled = nameIsCorrect && kindIsCorrect && breedIsCorrect &&
                         coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
             )

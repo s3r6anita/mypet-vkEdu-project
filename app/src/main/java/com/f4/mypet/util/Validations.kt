@@ -3,13 +3,15 @@ package com.f4.mypet.util
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.Date
 
-val regex = "^[а-яА-ЯёЁ\\s-]+\$".toRegex()
+val regex = "^[а-яА-ЯёЁa-zA-Z\\s-]+\$".toRegex()
 val dateRegex = "^\\d{2}\\.\\d{2}\\.\\d{4}$".toRegex()
 val chipNumberRegex = "^\\d{15}$".toRegex()
-val emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
+val emailRegex = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
 val passwordRegex = "^(?=.*[0-9])(?=.*[a-zA-Z]).{8,}\$".toRegex()
 
 fun validate(name: String): Boolean = name.matches(regex)
@@ -33,13 +35,6 @@ fun validateBirthday(date: LocalDate): Boolean {
     return validateDate(date.format(PetDateTimeFormatter.date))
 }
 
-fun validateTime(timeString: String) {
-    val regex = "^([0-1][0-9]|[2][0-3]):([0-5][0-9])$".toRegex()
-    if ( !(timeString.matches(regex)) ) {
-        throw IllegalArgumentException("Неверно указано время")
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 object PastOrPresentSelectableDates: SelectableDates {
     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
@@ -54,7 +49,11 @@ object PastOrPresentSelectableDates: SelectableDates {
 @OptIn(ExperimentalMaterial3Api::class)
 object PresentOrFutureSelectableDates: SelectableDates {
     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-        return utcTimeMillis >= System.currentTimeMillis()
+        val moscowTimeZone = ZoneId.of("Europe/Moscow")
+        val moscowCurrentTimeMillis = LocalDateTime.now(moscowTimeZone).toInstant(ZoneOffset.UTC).toEpochMilli()
+        return utcTimeMillis <= moscowCurrentTimeMillis
+        //TODO Убрать верхние строки и оставить нижнюю
+//        return utcTimeMillis >= System.currentTimeMillis()
     }
 
     override fun isSelectableYear(year: Int): Boolean {

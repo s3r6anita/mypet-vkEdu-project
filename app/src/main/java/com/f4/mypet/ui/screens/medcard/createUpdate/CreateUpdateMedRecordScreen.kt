@@ -1,100 +1,75 @@
 package com.f4.mypet.ui.screens.medcard.createUpdate
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.f4.mypet.R
-import com.f4.mypet.ui.components.MyPetTopBar
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.SaveButton
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.TherapyDateField
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.TherapyNameField
-import com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents.TherapyNotesField
 
-@OptIn(ExperimentalMaterial3Api::class)
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.f4.mypet.ui.components.StatusDialog
+import com.f4.mypet.ui.screens.ErrorScreen
+import com.f4.mypet.ui.screens.LoadingScreen
+import com.f4.mypet.ui.screens.medcard.createUpdate.success.SuccessCUMedCardScreen
+import com.f4.mypet.util.UIState
+import kotlinx.coroutines.launch
+
+@Suppress("LongParameterList")
 @Composable
 fun CreateUpdateMedRecordScreen(
     navController: NavHostController,
-    profileId: Int,
-    isCreateScreen: Boolean
+    snackbarHostState: SnackbarHostState,
+    isCreateScreen: Boolean,
+    profileId: Int = -1,
+    medRecordId: Int = -1,
+    viewModel: CreateUpdateMedRecordViewModel = hiltViewModel()
 ) {
-    Scaffold(
-        topBar = {
-            MyPetTopBar(
-                text = stringResource(
-                    if (isCreateScreen)
-                        R.string.cu_therapy_title_create
-                    else
-                        R.string.cu_therapy_title_update
-                ),
-                canNavigateBack = true,
-                navigateUp = { navController.navigateUp() },
-                actions = {}
-            )
-        },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 30.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
+    val scope = rememberCoroutineScope()
+    val uiState by viewModel.uiState.collectAsState()
 
-            val modifier = Modifier
-                .padding(top = 10.dp)
-                .fillMaxWidth()
-            Box() {
-                Column(
-                    modifier = Modifier
-                        //.padding(20.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    // название
-                    TherapyNameField(
-                        isCreateScreen = isCreateScreen,
-                        onNameChange = { name ->
-                            // Обработка изменений в названии терапии
-                        },
-                        modifier = modifier
-                            .padding(bottom = 10.dp),
-                    )
-                    // дата
-                    TherapyDateField(
-                        isCreateScreen = isCreateScreen,
-                        modifier = modifier,
-                        onDateSelected = { selectedDate ->
-                            // Обработка выбранной даты
-                        }
-                    )
-                    // заметки
-                    TherapyNotesField(
-                        isCreateScreen = isCreateScreen,
-                        onNotesChange = { notes ->
-                            // Обработка изменений в заметках
-                        },
-                        modifier = modifier
-                    )
-                }
-            }
-            // сохранение
-            SaveButton()
+    LaunchedEffect(Unit) {
+        scope.launch {
+            viewModel.getPetMedRecord(medRecordId)
         }
     }
+
+    val msg by viewModel.msg.collectAsState()
+    var showStatusDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(msg) {
+        if (msg != null && msg != "") {
+            showStatusDialog = true
+        }
+        if (msg == null) {
+            navController.navigateUp()
+        }
+    }
+    if (showStatusDialog) {
+        StatusDialog(msg) {
+            showStatusDialog = !showStatusDialog
+            viewModel.resetMsg()
+        }
+    }
+
+    when (uiState) {
+        UIState.Loading -> LoadingScreen()
+        UIState.Success -> SuccessCUMedCardScreen(
+            isCreateScreen = isCreateScreen,
+            navController = navController,
+            snackbarHostState = snackbarHostState,
+            profileId = profileId
+        )
+
+        else -> ErrorScreen(retryAction = {
+            scope.launch {
+                viewModel.getPetMedRecord(medRecordId)
+            }
+        })
+    }
+
 }

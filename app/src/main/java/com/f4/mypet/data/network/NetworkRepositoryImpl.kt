@@ -7,10 +7,13 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.f4.mypet.data.db.entities.MedRecord
 import com.f4.mypet.data.db.entities.Pet
 import com.f4.mypet.data.db.entities.Procedure
+import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.network.authentication.JwtTokenManager
 import com.f4.mypet.data.network.model.NetworkResult
+import com.f4.mypet.data.network.model.request.CreateMedRecordRequest
 import com.f4.mypet.data.network.model.request.CreatePetRequest
 import com.f4.mypet.data.network.model.request.CreateProcedureRequest
+import com.f4.mypet.data.network.model.request.CreateProcedureTitleRequest
 import com.f4.mypet.data.network.model.request.LoginRequest
 import com.f4.mypet.data.network.model.request.RegisterRequest
 import com.f4.mypet.data.network.model.response.Response
@@ -18,6 +21,7 @@ import com.f4.mypet.data.network.service.AuthService
 import com.f4.mypet.data.network.service.MedRecordService
 import com.f4.mypet.data.network.service.PetService
 import com.f4.mypet.data.network.service.ProcedureService
+import com.f4.mypet.data.network.service.ProcedureTitleService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.vk.id.AccessToken
@@ -27,13 +31,15 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+@Suppress("LongParameterList", "TooManyFunctions")
 class NetworkRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val authService: AuthService,
     private val petService: PetService,
     private val procedureService: ProcedureService,
     private val medRecordService: MedRecordService,
-    private val jwtTokenManager: JwtTokenManager
+    private val procedureTitleService: ProcedureTitleService,
+    val jwtTokenManager: JwtTokenManager
 ) : NetworkRepository, ApiHandler {
 
     override suspend fun saveVKtoken(token: AccessToken) {
@@ -183,24 +189,11 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun removePet(id: Int): String? {
-        return try {
-            val response = petService.removePet(id)
-            response.data ?: response.msg
-        } catch (e: HttpException) {
-            if (e.code() == serverError) {
-                "Сервер недоступен"
-            } else {
-                val errorResponseBody = e.response()?.errorBody()?.string()
-                val errorResponse = Gson().fromJson(errorResponseBody, Response::class.java)
-                errorResponse.msg ?: "Ошибка сериализации ответа сервера"
-            }
-        } catch (e: IOException) {
-            "Превышено время ожидания. Сервер недоступен"
-        }
+    override suspend fun removePet(id: Int): NetworkResult<Any?> {
+        return handleApi { petService.removePet(id) }
     }
 
-    override suspend fun insertProcedure(procedure: Procedure): String? {
+    override suspend fun insertProcedure(procedure: Procedure): NetworkResult<Any?> {
         val request = CreateProcedureRequest(
             title = procedure.title,
             isDone = procedure.isDone,
@@ -212,20 +205,7 @@ class NetworkRepositoryImpl @Inject constructor(
             pet = procedure.pet,
             inMedCard = procedure.inMedCard
         )
-        return try {
-            val response = procedureService.createProcedure(request)
-            response.data ?: response.msg
-        } catch (e: HttpException) {
-            if (e.code() == serverError) {
-                "Сервер недоступен"
-            } else {
-                val errorResponseBody = e.response()?.errorBody()?.string()
-                val errorResponse = Gson().fromJson(errorResponseBody, Response::class.java)
-                errorResponse.msg ?: "Ошибка сериализации ответа сервера"
-            }
-        } catch (e: IOException) {
-            "Превышено время ожидания. Сервер недоступен"
-        }
+        return handleApi { procedureService.createProcedure(request) }
     }
 
     override suspend fun getProcedures(): List<Procedure> {
@@ -238,8 +218,16 @@ class NetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPetProcedures(id: Int): NetworkResult<Any> {
+    override suspend fun getPetProcedures(id: Int): NetworkResult<Any?> {
         return handleApi { procedureService.getPetProcedures(id) }
+    }
+
+    override suspend fun updateProcedure(procedure: Procedure): NetworkResult<Any?> {
+        return handleApi { procedureService.updateProcedure(procedure) }
+    }
+
+    override suspend fun removeProcedure(id: Int): NetworkResult<Any?> {
+        return handleApi { procedureService.removeProcedure(id) }
     }
 
 
@@ -252,6 +240,46 @@ class NetworkRepositoryImpl @Inject constructor(
             throw e
         }
     }
+
+    override suspend fun insertTitle(title: ProcedureTitle): NetworkResult<Any?> {
+        val request = CreateProcedureTitleRequest(
+            name = title.name,
+            type = title.type
+        )
+        return handleApi { procedureTitleService.createTitle(request) }
+    }
+
+    override suspend fun getTitles(): NetworkResult<Any?> {
+        return handleApi { procedureTitleService.getTitles() }
+    }
+
+    override suspend fun updateTitle(title: ProcedureTitle): NetworkResult<Any?> {
+        return handleApi { procedureTitleService.updatePet(title) }
+    }
+
+
+    override suspend fun removeMedRecord(id: Int): NetworkResult<Any?> {
+        return handleApi { medRecordService.removeMedRecord(id) }
+    }
+
+    override suspend fun getPetMedRecords(id: Int): NetworkResult<Any?> {
+        return handleApi { medRecordService.getPetMedRecords(id) }
+    }
+
+    override suspend fun insertMedRecord(medRecord: MedRecord): NetworkResult<Any?> {
+        val request = CreateMedRecordRequest(
+            title = medRecord.title,
+            date = medRecord.date,
+            notes = medRecord.notes,
+            pet = medRecord.pet
+        )
+        return handleApi { medRecordService.createMedRecord(request) }
+    }
+
+    override suspend fun updateMedRecord(medRecord: MedRecord): NetworkResult<Any?> {
+        return handleApi { medRecordService.updateMedRecord(medRecord) }
+    }
+
 
     companion object {
         const val serverError = 503

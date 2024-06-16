@@ -44,6 +44,7 @@ import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.components.ButtonComponent
+import com.f4.mypet.navigation.START
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.screens.profile.list.ListProfileViewModel
@@ -108,7 +109,7 @@ fun SuccessListProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp, vertical = 20.dp),
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {

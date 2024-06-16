@@ -8,7 +8,6 @@ import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.network.NetworkRepository
 import com.f4.mypet.data.network.model.NetworkResult
-import com.f4.mypet.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,20 +24,20 @@ class ListProcedureViewModel @Inject constructor(
 ) : ViewModel() {
     private val _proceduresUiState = MutableStateFlow(emptyList<Procedure>())
     val proceduresUiState = _proceduresUiState.asStateFlow()
+
     private val _titlesUiState = MutableStateFlow(emptyList<ProcedureTitle>())
     val titlesUiState = _titlesUiState.asStateFlow()
 
-    private val _uiState = MutableStateFlow<UIState>(UIState.Success)
-    val uiState = _uiState.asStateFlow()
+    private val _msg = MutableStateFlow("")
+    val msg = _msg.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-
     var pet = Pet(
         "", "", "", "Самец",
         LocalDate.now(),
-        "", "", "", 0
+        "", "", "", -1
     )
 
     fun getPetProcedures(petId: Int) {
@@ -59,22 +58,29 @@ class ListProcedureViewModel @Inject constructor(
     }
 
     fun refreshProcedures(petId: Int) {
-        _uiState.update { UIState.Loading }
         viewModelScope.launch(Dispatchers.IO) {
             _isRefreshing.emit(true)
-            val response = networkRepository.getPetProcedures(petId)
-            _isRefreshing.emit(false)
-            when (response) {
+            when (val response = networkRepository.getPetProcedures(petId)) {
                 is NetworkResult.Success -> {
                     _proceduresUiState.value = response.data as List<Procedure>
-
-                    // TODO: update local DB
-                    _uiState.update { UIState.Success }
+                    // обновление локальной БД
+                    repository.removeProceduresForPet(petId)
+                    repository.insertListOfProcedures(_proceduresUiState.value)
+                    when (val titles = networkRepository.getTitles()) {
+                        is NetworkResult.Success -> {
+                            _titlesUiState.value = titles.data as List<ProcedureTitle>
+                            repository.replaceTitles(_titlesUiState.value)
+                        }
+                        is NetworkResult.Error -> _msg.update { titles.msg ?: "Error" }
+                    }
                 }
-                is NetworkResult.Error -> {
-                    _uiState.update { UIState.Error }
-                }
+                is NetworkResult.Error -> {_msg.update { response.msg ?: "Error" } }
             }
+            _isRefreshing.emit(false)
         }
+    }
+
+    fun resetMsg() {
+        _msg.value = ""
     }
 }
