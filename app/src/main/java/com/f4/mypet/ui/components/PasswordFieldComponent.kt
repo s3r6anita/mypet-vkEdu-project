@@ -15,7 +15,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
-import com.f4.mypet.ui.screens.procedure.createUpdate.success.getOutLinedTextFieldColors
 
 @Suppress("LongParameterList")
 @Composable
@@ -49,7 +48,6 @@ fun PasswordFieldComponent(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        isError = isError,
-        colors = getOutLinedTextFieldColors()
+        isError = isError
     )
 }

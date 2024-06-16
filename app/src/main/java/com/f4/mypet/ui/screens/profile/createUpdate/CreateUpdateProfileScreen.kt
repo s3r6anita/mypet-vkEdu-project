@@ -53,11 +53,9 @@ import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.ButtonComponent
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
-import com.f4.mypet.ui.components.OutlinedTextFieldComponent
 import com.f4.mypet.ui.components.SHOWSNACKDURATION
 import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.screens.LoadingScreen
-import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.Transparent
 import com.f4.mypet.util.PastOrPresentSelectableDates
@@ -158,168 +156,168 @@ fun CreateUpdateProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-            val modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 2.dp)
+                val modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 2.dp)
 
-            // пол
-            val radioOptions = listOf("Самец", "Самка")
-            val selectedOption by remember {
-                mutableStateOf(radioOptions[0])
-            }
-            Row(
-                modifier
-                    .selectableGroup()
-                    .padding(vertical = 10.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(id = R.string.create_profile_sex),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(end = 20.dp)
-                )
+                // пол
+                val radioOptions = listOf("Самец", "Самка")
+                val selectedOption by remember {
+                    mutableStateOf(radioOptions[0])
+                }
+                Row(
+                    modifier
+                        .selectableGroup()
+                        .padding(vertical = 10.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.create_profile_sex),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(end = 20.dp)
+                    )
 
-                radioOptions.forEach { text ->
-                    Column(
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .selectable(
-                                    selected = (text == selectedOption),
-                                    onClick = { pet = pet.copy(sex = text) },
-                                    role = Role.RadioButton
-                                )
-                                .padding(horizontal = 10.dp),
+                    radioOptions.forEach { text ->
+                        Column(
                         ) {
-                            RadioButton(
-                                selected = (text == pet.sex),
-                                onClick = null
-                            )
-                            Text(
-                                text = text,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(start = 10.dp)
-                            )
+                            Row(
+                                modifier = Modifier
+                                    .selectable(
+                                        selected = (text == selectedOption),
+                                        onClick = { pet = pet.copy(sex = text) },
+                                        role = Role.RadioButton
+                                    )
+                                    .padding(horizontal = 10.dp),
+                            ) {
+                                RadioButton(
+                                    selected = (text == pet.sex),
+                                    onClick = null
+                                )
+                                Text(
+                                    text = text,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(start = 10.dp)
+                                )
+                            }
                         }
                     }
                 }
-            }
-            // кличка
-            var nameIsCorrect by remember { mutableStateOf(!isCreateScreen) }
-            OutlinedTextField(
-                value = pet.name,
-                singleLine = true,
-                shape = RoundedCornerShape(8.dp),
-                onValueChange = {
-                    nameIsCorrect = validate(it)
-                    pet = pet.copy(name = it)
-                },
-                label = { Text(stringResource(id = R.string.pet_name)) },
-                trailingIcon = {
-                    ClearIcon {
-                        nameIsCorrect = false
-                        pet = pet.copy(name = "")
-                    }
-                },
-                supportingText = {
-                    if (!nameIsCorrect && pet.name != "") Text(stringResource(id = R.string.create_profile_supp))
-                },
-                isError = !nameIsCorrect,
-                modifier = modifier
-            )
-            // вид
-            var kindIsCorrect by remember { mutableStateOf(!isCreateScreen) }
-            OutlinedTextField(
-                value = pet.kind,
-                shape = RoundedCornerShape(8.dp),
-                singleLine = true,
-                onValueChange = {
-                    kindIsCorrect = validate(it)
-                    pet = pet.copy(kind = it)
-                },
-                label = { Text(stringResource(id = R.string.pet_view)) },
-                trailingIcon = {
-                    ClearIcon {
-                        kindIsCorrect = false
-                        pet = pet.copy(kind = "")
-                    }
-                },
-                supportingText = {
-                    if (!kindIsCorrect && pet.kind != "") Text(stringResource(id = R.string.create_profile_supp))
-                },
-                isError = !kindIsCorrect,
-                modifier = modifier
-            )
-            // порода
-            var breedIsCorrect by remember { mutableStateOf(!isCreateScreen) }
-            OutlinedTextField(
-                value = pet.breed,
-                singleLine = true,
-                shape = RoundedCornerShape(8.dp),
-                onValueChange = {
-                    breedIsCorrect = validate(it)
-                    pet = pet.copy(breed = it)
-                },
-                label = { Text(stringResource(id = R.string.pet_breed)) },
-                trailingIcon = {
-                    ClearIcon {
-                        breedIsCorrect = false
-                        pet = pet.copy(breed = "")
-                    }
-                },
-                supportingText = {
-                    if (!breedIsCorrect && pet.breed != "") Text(stringResource(id = R.string.create_profile_supp))
-                },
-                isError = !breedIsCorrect,
-                modifier = modifier
-            )
-            // шерсть
-            var coatIsCorrect by remember { mutableStateOf(!isCreateScreen) }
-            OutlinedTextField(
-                value = pet.coat,
-                singleLine = true,
-                shape = RoundedCornerShape(8.dp),
-                onValueChange = {
-                    coatIsCorrect = validate(it)
-                    pet = pet.copy(coat = it)
-                },
-                label = { Text(stringResource(id = R.string.pet_coat)) },
-                trailingIcon = {
-                    ClearIcon {
-                        coatIsCorrect = false
-                        pet = pet.copy(coat = "")
-                    }
-                },
-                supportingText = {
-                    if (!coatIsCorrect && pet.coat != "") Text(stringResource(id = R.string.create_profile_supp))
-                },
-                isError = !coatIsCorrect,
-                modifier = modifier
-            )
-            // окрас
-            var colorIsCorrect by remember { mutableStateOf(!isCreateScreen) }
-            OutlinedTextField(
-                value = pet.color,
-                singleLine = true,
-                shape = RoundedCornerShape(8.dp),
-                onValueChange = {
-                    colorIsCorrect = validate(it)
-                    pet = pet.copy(color = it)
-                },
-                label = { Text(stringResource(id = R.string.pet_color)) },
-                trailingIcon = {
-                    ClearIcon {
-                        colorIsCorrect = false
-                        pet = pet.copy(coat = "")
-                    }
-                },
-                supportingText = {
-                    if (!colorIsCorrect && pet.color != "") Text(stringResource(id = R.string.create_profile_supp))
-                },
-                isError = !colorIsCorrect,
-                modifier = modifier
-            )
+                // кличка
+                var nameIsCorrect by remember { mutableStateOf(!isCreateScreen) }
+                OutlinedTextField(
+                    value = pet.name,
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp),
+                    onValueChange = {
+                        nameIsCorrect = validate(it)
+                        pet = pet.copy(name = it)
+                    },
+                    label = { Text(stringResource(id = R.string.pet_name)) },
+                    trailingIcon = {
+                        ClearIcon {
+                            nameIsCorrect = false
+                            pet = pet.copy(name = "")
+                        }
+                    },
+                    supportingText = {
+                        if (!nameIsCorrect && pet.name != "") Text(stringResource(id = R.string.create_profile_supp))
+                    },
+                    isError = !nameIsCorrect,
+                    modifier = modifier
+                )
+                // вид
+                var kindIsCorrect by remember { mutableStateOf(!isCreateScreen) }
+                OutlinedTextField(
+                    value = pet.kind,
+                    shape = RoundedCornerShape(8.dp),
+                    singleLine = true,
+                    onValueChange = {
+                        kindIsCorrect = validate(it)
+                        pet = pet.copy(kind = it)
+                    },
+                    label = { Text(stringResource(id = R.string.pet_view)) },
+                    trailingIcon = {
+                        ClearIcon {
+                            kindIsCorrect = false
+                            pet = pet.copy(kind = "")
+                        }
+                    },
+                    supportingText = {
+                        if (!kindIsCorrect && pet.kind != "") Text(stringResource(id = R.string.create_profile_supp))
+                    },
+                    isError = !kindIsCorrect,
+                    modifier = modifier
+                )
+                // порода
+                var breedIsCorrect by remember { mutableStateOf(!isCreateScreen) }
+                OutlinedTextField(
+                    value = pet.breed,
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp),
+                    onValueChange = {
+                        breedIsCorrect = validate(it)
+                        pet = pet.copy(breed = it)
+                    },
+                    label = { Text(stringResource(id = R.string.pet_breed)) },
+                    trailingIcon = {
+                        ClearIcon {
+                            breedIsCorrect = false
+                            pet = pet.copy(breed = "")
+                        }
+                    },
+                    supportingText = {
+                        if (!breedIsCorrect && pet.breed != "") Text(stringResource(id = R.string.create_profile_supp))
+                    },
+                    isError = !breedIsCorrect,
+                    modifier = modifier
+                )
+                // шерсть
+                var coatIsCorrect by remember { mutableStateOf(!isCreateScreen) }
+                OutlinedTextField(
+                    value = pet.coat,
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp),
+                    onValueChange = {
+                        coatIsCorrect = validate(it)
+                        pet = pet.copy(coat = it)
+                    },
+                    label = { Text(stringResource(id = R.string.pet_coat)) },
+                    trailingIcon = {
+                        ClearIcon {
+                            coatIsCorrect = false
+                            pet = pet.copy(coat = "")
+                        }
+                    },
+                    supportingText = {
+                        if (!coatIsCorrect && pet.coat != "") Text(stringResource(id = R.string.create_profile_supp))
+                    },
+                    isError = !coatIsCorrect,
+                    modifier = modifier
+                )
+                // окрас
+                var colorIsCorrect by remember { mutableStateOf(!isCreateScreen) }
+                OutlinedTextField(
+                    value = pet.color,
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp),
+                    onValueChange = {
+                        colorIsCorrect = validate(it)
+                        pet = pet.copy(color = it)
+                    },
+                    label = { Text(stringResource(id = R.string.pet_color)) },
+                    trailingIcon = {
+                        ClearIcon {
+                            colorIsCorrect = false
+                            pet = pet.copy(coat = "")
+                        }
+                    },
+                    supportingText = {
+                        if (!colorIsCorrect && pet.color != "") Text(stringResource(id = R.string.create_profile_supp))
+                    },
+                    isError = !colorIsCorrect,
+                    modifier = modifier
+                )
 
                 // дата рождения
                 var openDialog by remember { mutableStateOf(false) }
@@ -327,132 +325,133 @@ fun CreateUpdateProfileScreen(
                     rememberDatePickerState(selectableDates = PastOrPresentSelectableDates)
                 var dateIsCorrect by remember { mutableStateOf(true) }
 
-            OutlinedTextField(
-                //TODO: отформатировать дату
-                value = pet.birthday.format(PetDateTimeFormatter.date),
-                onValueChange = { },
-                shape = RoundedCornerShape(8.dp),
-                label = { Text(stringResource(id = R.string.pet_birthday)) },
-                supportingText = { Text(text = stringResource(id = R.string.date_format)) },
-                readOnly = true,
-                trailingIcon = {
-                    IconButton(onClick = { openDialog = true }) {
-                        Icon(
-                            Icons.Default.DateRange,
-                            contentDescription = stringResource(id = R.string.show_calendar)
-                        )
-                    }
-                },
-                isError = !dateIsCorrect,
-                modifier = modifier
-            )
-            if (openDialog) {
-                DatePickerDialog(
-                    onDismissRequest = {
-                        openDialog = false
+                OutlinedTextField(
+                    //TODO: отформатировать дату
+                    value = pet.birthday.format(PetDateTimeFormatter.date),
+                    onValueChange = { },
+                    shape = RoundedCornerShape(8.dp),
+                    label = { Text(stringResource(id = R.string.pet_birthday)) },
+                    supportingText = { Text(text = stringResource(id = R.string.date_format)) },
+                    readOnly = true,
+                    trailingIcon = {
+                        IconButton(onClick = { openDialog = true }) {
+                            Icon(
+                                Icons.Default.DateRange,
+                                contentDescription = stringResource(id = R.string.show_calendar)
+                            )
+                        }
                     },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                openDialog = false
-                                pet = pet.copy(
-                                    birthday =
-                                    Instant.ofEpochMilli(
-                                        datePickerState.selectedDateMillis ?: 0
-                                    ).atZone(ZoneId.systemDefault()).toLocalDate()
-                                )
-                                try {
-                                    dateIsCorrect =
-                                        validateBirthday(pet.birthday)
-                                } catch (e: IllegalArgumentException) {
-                                    globalScope().launch {
-                                        snackbarHostState.showSnackbar(
-                                            e.message
-                                                ?: context.resources.getString(R.string.incorrect_date)
-                                        )
+                    isError = !dateIsCorrect,
+                    modifier = modifier
+                )
+                if (openDialog) {
+                    DatePickerDialog(
+                        onDismissRequest = {
+                            openDialog = false
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    openDialog = false
+                                    pet = pet.copy(
+                                        birthday =
+                                        Instant.ofEpochMilli(
+                                            datePickerState.selectedDateMillis ?: 0
+                                        ).atZone(ZoneId.systemDefault()).toLocalDate()
+                                    )
+                                    try {
+                                        dateIsCorrect =
+                                            validateBirthday(pet.birthday)
+                                    } catch (e: IllegalArgumentException) {
+                                        globalScope().launch {
+                                            snackbarHostState.showSnackbar(
+                                                e.message
+                                                    ?: context.resources.getString(R.string.incorrect_date)
+                                            )
+                                        }
                                     }
-                                }
-                            },
-                        ) {
-                            Text(stringResource(id = R.string.confirm_button_description))
+                                },
+                            ) {
+                                Text(stringResource(id = R.string.confirm_button_description))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { openDialog = false }) {
+                                Text(stringResource(id = R.string.cancel_button_description))
+                            }
+                        }
+                    ) {
+                        DatePicker(state = datePickerState)
+                    }
+                }
+
+                // номер микрочипа
+                var microchipNumberIsCorrect by remember { mutableStateOf(!isCreateScreen) }
+                OutlinedTextField(
+                    value = pet.microchipNumber,
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp),
+                    onValueChange = {
+                        microchipNumberIsCorrect = validateMicrochipNumber(it)
+                        pet = pet.copy(microchipNumber = it)
+                    },
+                    label = { Text(stringResource(id = R.string.pet_microchip)) },
+                    trailingIcon = {
+                        ClearIcon {
+                            microchipNumberIsCorrect = false
+                            pet = pet.copy(microchipNumber = "")
                         }
                     },
-                    dismissButton = {
-                        TextButton(onClick = { openDialog = false }) {
-                            Text(stringResource(id = R.string.cancel_button_description))
-                        }
-                    }
-                ) {
-                    DatePicker(state = datePickerState)
-                }
-            }
-
-            // номер микрочипа
-            var microchipNumberIsCorrect by remember { mutableStateOf(!isCreateScreen) }
-            OutlinedTextField(
-                value = pet.microchipNumber,
-                singleLine = true,
-                shape = RoundedCornerShape(8.dp),
-                onValueChange = {
-                    microchipNumberIsCorrect = validateMicrochipNumber(it)
-                    pet = pet.copy(microchipNumber = it)
-                },
-                label = { Text(stringResource(id = R.string.pet_microchip)) },
-                trailingIcon = {
-                    ClearIcon {
-                        microchipNumberIsCorrect = false
-                        pet = pet.copy(microchipNumber = "")
-                    }
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-                supportingText = {
-                    if (!microchipNumberIsCorrect && pet.microchipNumber != "") Text(
-                        stringResource(
-                            id = R.string.create_profile_supp_chip
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    supportingText = {
+                        if (!microchipNumberIsCorrect && pet.microchipNumber != "") Text(
+                            stringResource(
+                                id = R.string.create_profile_supp_chip
+                            )
                         )
-                    )
-                },
-                isError = !microchipNumberIsCorrect,
-                modifier = modifier
-            )
+                    },
+                    isError = !microchipNumberIsCorrect,
+                    modifier = modifier
+                )
 
-            // сохранение
-            ButtonComponent(
-                onClick = {
-                    globalScope().launch {
-                        val job = launch {
-                            if (msg == null)
-                                snackbarHostState.showSnackbar(
-                                    if (isCreateScreen)
-                                        context.resources.getString(R.string.create_profile_successful_pet_creation)
-                                    else
-                                        context.resources.getString(R.string.create_profile_successful_pet_update)
-                                )
+                // сохранение
+                ButtonComponent(
+                    onClick = {
+                        globalScope().launch {
+                            val job = launch {
+                                if (msg == null)
+                                    snackbarHostState.showSnackbar(
+                                        if (isCreateScreen)
+                                            context.resources.getString(R.string.create_profile_successful_pet_creation)
+                                        else
+                                            context.resources.getString(R.string.create_profile_successful_pet_update)
+                                    )
+                            }
+                            delay(SHOWSNACKDURATION)
+                            job.cancel()
                         }
-                        delay(SHOWSNACKDURATION)
-                        job.cancel()
-                    }
-                    if (isCreateScreen) {
-                        scope.launch {
-                            viewModel.createPet(pet)
+                        if (isCreateScreen) {
+                            scope.launch {
+                                viewModel.createPet(pet)
+                            }
+                        } else {
+                            scope.launch {
+                                viewModel.updatePet(pet)
+                            }
                         }
-                    } else {
-                        scope.launch {
-                            viewModel.updatePet(pet)
-                        }
-                    }
-                },
-                text = stringResource(id = R.string.save_button_description),
-                color = ButtonDefaults.buttonColors(containerColor = GreenButton),
-                textColor = Color.White,
-                borderColor = Transparent,
-                icon = null,
-                modifier = Modifier.fillMaxWidth(),
-                enabled = nameIsCorrect && kindIsCorrect && breedIsCorrect &&
-                        coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
-            )
+                    },
+                    text = stringResource(id = R.string.save_button_description),
+                    color = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                    textColor = Color.White,
+                    borderColor = Transparent,
+                    icon = null,
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = nameIsCorrect && kindIsCorrect && breedIsCorrect &&
+                            coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
+                )
+            }
         }
     }
 }

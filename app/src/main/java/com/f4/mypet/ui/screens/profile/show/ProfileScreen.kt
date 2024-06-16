@@ -3,8 +3,6 @@ package com.f4.mypet.ui.screens.profile.show
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -179,25 +176,26 @@ fun ProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Box{
+                Box {
                     ProfileItem(pet)
                 }
 
-            // кнопка редактирования
-            ButtonComponent(
-                onClick = {
-                    navController.navigate("${Routes.UpdateProfile.route}/$profileId") {
-                        launchSingleTop = true
-                    }
-                },
-                text = stringResource(id = R.string.edit_button_description),
-                color = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
-                icon = Icons.Default.Edit,
-                modifier = Modifier.fillMaxWidth(),
-                textColor = GreenButton,
-                borderColor = GreenButton,
-                enabled = true,
-            )
+                // кнопка редактирования
+                ButtonComponent(
+                    onClick = {
+                        navController.navigate("${Routes.UpdateProfile.route}/$profileId") {
+                            launchSingleTop = true
+                        }
+                    },
+                    text = stringResource(id = R.string.edit_button_description),
+                    color = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
+                    icon = Icons.Default.Edit,
+                    modifier = Modifier.fillMaxWidth(),
+                    textColor = GreenButton,
+                    borderColor = GreenButton,
+                    enabled = true,
+                )
+            }
         }
     }
 }

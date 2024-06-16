@@ -1,6 +1,5 @@
 package com.f4.mypet.ui.screens.procedure.list.success
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,12 +14,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,10 +34,8 @@ import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.PetCardHeader
 import com.f4.mypet.ui.screens.procedure.list.ListProcedureViewModel
-import com.f4.mypet.ui.screens.procedure.list.ProcedureItem
 import com.f4.mypet.ui.theme.GreenButton
 import com.f4.mypet.ui.theme.LightGreenBackground
-import kotlinx.coroutines.cancelChildren
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

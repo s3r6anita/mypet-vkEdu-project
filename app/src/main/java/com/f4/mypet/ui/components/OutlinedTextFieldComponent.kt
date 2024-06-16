@@ -12,8 +12,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
-import com.f4.mypet.ui.screens.procedure.createUpdate.success.getOutLinedTextFieldColors
-
 @Suppress("LongParameterList")
 @Composable
 fun OutlinedTextFieldComponent(
@@ -46,7 +44,6 @@ fun OutlinedTextFieldComponent(
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         isError = isError,
-        supportingText = supportingText,
-        colors = getOutLinedTextFieldColors()
+        supportingText = supportingText
     )
 }
