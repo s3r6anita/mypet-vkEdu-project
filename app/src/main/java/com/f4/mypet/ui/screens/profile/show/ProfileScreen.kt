@@ -48,8 +48,10 @@ import com.f4.mypet.ui.components.BottomBarData
 import com.f4.mypet.ui.components.MyPetBottomBar
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.components.StatusDialog
+import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.screens.profile.show.screencomponents.ProfileItem
-import com.f4.mypet.ui.screens.profile.show.screencomponents.RemoveProfileALert
+import com.f4.mypet.ui.screens.profile.show.screencomponents.RemoveProfileAlert
 import com.f4.mypet.ui.screens.profile.show.screencomponents.formatPet
 import com.f4.mypet.ui.theme.GreenButton
 import kotlinx.coroutines.launch
@@ -78,15 +80,20 @@ fun ProfileScreen(
     }
 
     LaunchedEffect(msg) {
-        if (msg != "" && msg != null) {
+        if (msg != null && msg != "") {
             showStatusDialog = true
+        }
+        if (msg == null) {
+            navController.navigate(Routes.ListProfile.route) {
+                popUpTo(START)
+                launchSingleTop = true
+            }
         }
     }
 
     if (openAlertDialog) {
-        RemoveProfileALert(
+        RemoveProfileAlert(
             pet = pet,
-            getNavController = { navController },
             closeAlertDialog = {
                 openAlertDialog = !openAlertDialog
             }
@@ -94,121 +101,115 @@ fun ProfileScreen(
     }
 
     if (showStatusDialog) {
-        AlertDialog(
-            text = { Text(text = msg ?: stringResource(R.string.error)) },
-            onDismissRequest = { showStatusDialog = !showStatusDialog },
-            confirmButton = {
-                TextButton(onClick = {
-                    showStatusDialog = !showStatusDialog
-                }) {
-                    Text(text = stringResource(id = R.string.confirm_button_description))
-                }
-            }
-        )
+        StatusDialog(msg) {
+            showStatusDialog = !showStatusDialog
+            viewModel.resetMsg()
+        }
     }
 
-    Scaffold(
-        topBar = {
-            MyPetTopBar(
-                text = stringResource(Routes.BottomBarRoutes.Profile.title),
-                canNavigateBack = canNavigateBack,
-                navigateUp = { navController.navigateUp() },
-                actions = {
-                    // кнопка удалить
-                    IconButton(onClick = {
-                        openAlertDialog = true
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(id = R.string.delete_button_description)
-                        )
-                    }
-
-                    // кнопка поделиться
-                    IconButton(
-                        onClick = {
-                            val message = formatPet(pet)
-                            viewModel.sharePetInfo(message, localContext)
+    if (pet.id == -1) {
+        LoadingScreen()
+    } else {
+        Scaffold(
+            topBar = {
+                MyPetTopBar(
+                    text = stringResource(Routes.BottomBarRoutes.Profile.title),
+                    canNavigateBack = canNavigateBack,
+                    navigateUp = { navController.navigateUp() },
+                    actions = {
+                        // кнопка удалить
+                        IconButton(onClick = {
+                            openAlertDialog = true
                         }) {
-                        Icon(
-                            imageVector = Icons.Default.Share,
-                            contentDescription = stringResource(id = R.string.share_button_description)
-                        )
-                    }
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(id = R.string.delete_button_description)
+                            )
+                        }
 
-                    // кнопка выхода
-                    IconButton(onClick = {
-                        navController.navigate(START) {
-                            popUpTo(START)
+                        // кнопка поделиться
+                        IconButton(
+                            onClick = {
+                                val message = formatPet(pet)
+                                viewModel.sharePetInfo(message, localContext)
+                            }) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = stringResource(id = R.string.share_button_description)
+                            )
+                        }
+
+                        // кнопка выхода
+                        IconButton(onClick = {
+                            navController.navigate(Routes.ListProfile.route) {
+                                popUpTo(Routes.ListProfile.route)
+                                launchSingleTop = true
+                            }
+                        }
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ExitToApp,
+                                contentDescription = stringResource(id = R.string.exit_button_description)
+                            )
+                        }
+                    },
+                    onFeedbackClick = {
+                        navController.navigate(Routes.BugReport.route) {
                             launchSingleTop = true
                         }
-                    }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ExitToApp,
-                            contentDescription = stringResource(id = R.string.exit_button_description)
-                        )
-                    }
-                },
-                onFeedbackClick = {
-                    navController.navigate(Routes.BugReport.route) {
-                        launchSingleTop = true
-                    }
-                },
-            )
-        },
-        bottomBar = {
-            MyPetBottomBar(
-                profileId = profileId,
-                canNavigateBack = canNavigateBack,
-                items = BottomBarData.items,
-                getNavController = { navController }
-            )
-        },
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState
-            ) {
-                MyPetSnackBar(text = it.visuals.message)
-            }
-        },
-
-        ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Box(
+                    },
+                )
+            },
+            bottomBar = {
+                MyPetBottomBar(
+                    profileId = profileId,
+                    canNavigateBack = canNavigateBack,
+                    items = BottomBarData.items,
+                    getNavController = { navController }
+                )
+            },
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = snackbarHostState
+                ) {
+                    MyPetSnackBar(text = it.visuals.message)
+                }
+            }) { innerPadding ->
+            Column(
                 modifier = Modifier
-                    .padding(vertical = 50.dp)
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(horizontal = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                ProfileItem(pet)
-            }
+                Box(
+                    modifier = Modifier
+                        .padding(vertical = 50.dp)
+                ) {
+                    ProfileItem(pet)
+                }
 
-            // кнопка редактирования
-            Button(
-                modifier = Modifier.padding(bottom = 40.dp),
-                onClick = {
-                    navController.navigate("${Routes.UpdateProfile.route}/$profileId") {
-                        launchSingleTop = true
-                    }
-                },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton)
-            ) {
-                Icon(
-                    Icons.Rounded.Edit,
-                    stringResource(id = R.string.update_profile_button_description)
-                )
-                Text(
-                    text = stringResource(id = R.string.edit_button_description),
-                    modifier = Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
+                // кнопка редактирования
+                Button(
+                    onClick = {
+                        navController.navigate("${Routes.UpdateProfile.route}/$profileId") {
+                            launchSingleTop = true
+                        }
+                    },
+                    border = BorderStroke(1.dp, GreenButton),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton)
+                ) {
+                    Icon(
+                        Icons.Rounded.Edit,
+                        stringResource(id = R.string.update_profile_button_description)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.edit_button_description),
+                        modifier = Modifier.padding(start = 10.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
         }
     }

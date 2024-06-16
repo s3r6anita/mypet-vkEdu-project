@@ -22,8 +22,12 @@ class Converters {
     @TypeConverter
     fun stringToDateTime(dateStr: String?): LocalDateTime? {
         return dateStr.let {
+            var date = dateStr
+            if (dateStr == "не установлено") {
+                date = "01.01.1001 00:00"
+            }
             LocalDateTime.parse(
-                dateStr ?: "01.01.1001 00:00",
+                date ?: "01.01.1001 00:00",
                 PetDateTimeFormatter.dateTime
             )
         }

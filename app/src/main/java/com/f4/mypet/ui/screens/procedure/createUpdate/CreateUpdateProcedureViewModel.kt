@@ -7,6 +7,8 @@ import com.f4.mypet.data.db.entities.Frequency
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.data.db.entities.ProcedureTitle
 import com.f4.mypet.data.db.entities.ProcedureType
+import com.f4.mypet.data.network.NetworkRepository
+import com.f4.mypet.data.network.model.NetworkResult
 import com.f4.mypet.util.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,14 +21,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateUpdateProcedureViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: Repository,
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UIState>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
+    private val _msg = MutableStateFlow<String?>("")
+    val msg = _msg.asStateFlow()
 
     private val _procedureUiState = MutableStateFlow(
         Procedure(
-            0, 0, "",0,
+            0, 0, "", 0,
             LocalDateTime.now().withMinute(0),
             "", null,
             0, 0
@@ -34,13 +39,13 @@ class CreateUpdateProcedureViewModel @Inject constructor(
     )
     val procedureUiState = _procedureUiState.asStateFlow()
 
-    var titles = emptyList<ProcedureTitle>() // список всех заголовков
+    private var titles = emptyList<ProcedureTitle>() // список всех заголовков
     var types = emptyList<ProcedureType>() // список всех типов
     var frequencyOptions = emptyList<Frequency>() // список вариантов частоты
+
     var frequencyOptionsTitles = mutableListOf<String>() // список вариантов частоты
 
-    var title = ProcedureTitle(
-        // заголовок создаваемой (изменяемой) процедуры
+    var title = ProcedureTitle( // заголовок создаваемой (изменяемой) процедуры
         name = "",
         type = 0,
     )
@@ -60,7 +65,7 @@ class CreateUpdateProcedureViewModel @Inject constructor(
             titles = repository.getProcedureTitlesForCU()
             types = repository.getProcedureTypes()
             frequencyOptions = repository.getFrequencyOptions()
-            frequencyOptions.forEach() {
+            frequencyOptions.forEach {
                 frequencyOptionsTitles.add(it.id, it.option)
             }
             _uiState.update { UIState.Success }
@@ -80,24 +85,57 @@ class CreateUpdateProcedureViewModel @Inject constructor(
 
                 _uiState.update { UIState.Success }
             }
-        } else {
-            _uiState.update { UIState.Success }
-        }
-    }
-
-    fun updateProcedure(procedure: Procedure, title: ProcedureTitle, frequency: Frequency) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.updateProcedure(procedure)
-            repository.updateTitle(title)
-            repository.updateFrequency(frequency)
         }
     }
 
     fun createProcedure(procedure: Procedure, title: ProcedureTitle) {
         viewModelScope.launch(Dispatchers.IO) {
-            val titleId = repository.insertTitle(title) // start error there
-            val procedureWithTitleFreq = procedure.copy(title = titleId)
-            repository.insertProcedure(procedureWithTitleFreq)
+            when (val responseTitle = networkRepository.insertTitle(title)) {
+                is NetworkResult.Success -> {
+                    repository.insertTitle(title)
+                    val procedureWithTitleFreq = procedure.copy(title = responseTitle.data as Int)
+
+                    when (val responseProcedure = networkRepository.insertProcedure(procedureWithTitleFreq)) {
+                        is NetworkResult.Success -> {
+                            _msg.value = null
+                            repository.insertProcedure(procedureWithTitleFreq)
+                        }
+                        is NetworkResult.Error -> {
+                            _msg.value = responseProcedure.msg
+                        }
+                    }
+                }
+                is NetworkResult.Error -> {
+                    _msg.value = responseTitle.msg
+                }
+            }
         }
+    }
+
+    fun updateProcedure(procedure: Procedure, title: ProcedureTitle) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val responseTitle = networkRepository.updateTitle(title)) {
+                is NetworkResult.Success -> {
+                    repository.updateTitle(title)
+
+                    when (val responseProcedure = networkRepository.updateProcedure(procedure)) {
+                        is NetworkResult.Success -> {
+                            _msg.value = null
+                            repository.updateProcedure(procedure)
+                        }
+                        is NetworkResult.Error -> {
+                            _msg.value = responseProcedure.msg
+                        }
+                    }
+                }
+                is NetworkResult.Error -> {
+                    _msg.value = responseTitle.msg
+                }
+            }
+        }
+    }
+
+    fun resetMsg() {
+        _msg.value = ""
     }
 }

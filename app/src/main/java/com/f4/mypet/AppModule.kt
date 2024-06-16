@@ -15,8 +15,10 @@ import com.f4.mypet.data.network.authentication.AuthAuthenticator
 import com.f4.mypet.data.network.authentication.JwtTokenDataStore
 import com.f4.mypet.data.network.authentication.JwtTokenManager
 import com.f4.mypet.data.network.service.AuthService
+import com.f4.mypet.data.network.service.MedRecordService
 import com.f4.mypet.data.network.service.PetService
 import com.f4.mypet.data.network.service.ProcedureService
+import com.f4.mypet.data.network.service.ProcedureTitleService
 import com.f4.mypet.util.LocalDateAdapter
 import com.f4.mypet.util.LocalDateTimeAdapter
 import com.google.gson.GsonBuilder
@@ -80,6 +82,8 @@ object AppModule {
         authService: AuthService,
         petService: PetService,
         procedureService: ProcedureService,
+        medRecordService: MedRecordService,
+        procedureTitleService: ProcedureTitleService,
         jwtTokenManager: JwtTokenManager
     ): NetworkRepository {
         return NetworkRepositoryImpl(
@@ -87,6 +91,8 @@ object AppModule {
             authService = authService,
             petService = petService,
             procedureService = procedureService,
+            medRecordService = medRecordService,
+            procedureTitleService = procedureTitleService,
             jwtTokenManager = jwtTokenManager
         )
     }
@@ -101,6 +107,17 @@ object AppModule {
     fun provideProcedureService(retrofit: Retrofit): ProcedureService {
         return retrofit.create(ProcedureService::class.java)
     }
+
+    @[Provides Singleton]
+    fun provideMedRecordService(retrofit: Retrofit): MedRecordService {
+        return retrofit.create(MedRecordService::class.java)
+    }
+
+    @[Provides Singleton]
+    fun provideProcedureTitleService(retrofit: Retrofit): ProcedureTitleService {
+        return retrofit.create(ProcedureTitleService::class.java)
+    }
+
 
     @[Provides Singleton]
     fun provideJwtTokenManager(@ApplicationContext appContext: Context): JwtTokenManager {

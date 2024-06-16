@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents
+package com.f4.mypet.ui.screens.medcard.createUpdate.success.screenComponents
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,26 +15,34 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.f4.mypet.R
 import com.f4.mypet.ui.theme.OutlinedTextFieldColor
+import com.f4.mypet.util.validate
 
 @Composable
-fun TherapyNameField(
+fun MedRecordTitleField(
     isCreateScreen: Boolean,
     onNameChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    givenTitle: String
 ) {
-    var selectedName by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf(givenTitle) }
+    title = givenTitle
+
     OutlinedTextField(
         modifier = modifier.padding(bottom = 10.dp),
-        value = selectedName,
-        onValueChange = { selectedName = it; onNameChange(it) },
+        value = title,
+        onValueChange = {
+            title = it
+            onNameChange(it)
+        },
         label = {
             if (isCreateScreen) Text(
                 stringResource(R.string.cu_therapy_name),
                 style = TextStyle(color = OutlinedTextFieldColor)
             ) else {
-                Text(stringResource(R.string.cu_therapy_name)) //TODO подтягивание данных из БД
+                Text(stringResource(R.string.cu_therapy_name))
             }
         },
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(12.dp),
+        isError = !validate(title)
     )
 }

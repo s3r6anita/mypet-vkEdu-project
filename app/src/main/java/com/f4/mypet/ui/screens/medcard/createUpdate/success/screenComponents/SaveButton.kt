@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.medcard.createUpdate.screenComponents
+package com.f4.mypet.ui.screens.medcard.createUpdate.success.screenComponents
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,7 +15,7 @@ import com.f4.mypet.R
 import com.f4.mypet.ui.theme.GreenButton
 
 @Composable
-fun SaveButton() {
+fun SaveButton(save: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -24,7 +24,7 @@ fun SaveButton() {
                 .padding(bottom = 20.dp)
                 .align(Alignment.BottomCenter),
             onClick = {
-                // TODO: переход
+                save()
             },
             colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
         ) {

@@ -5,10 +5,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")// version "1.9.21-1.0.15"
     id("dagger.hilt.android.plugin")
-
-//    id("vkid.android.application.compose")
-//    id("vkid.placeholders")
-    //   alias(libs.plugins.baselineprofile)
 }
 
 android {
@@ -100,6 +96,7 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.material:material:1.6.7")
 
     implementation("androidx.compose.ui:ui-tooling-preview")
 

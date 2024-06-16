@@ -36,7 +36,7 @@ fun ListProfileScreen(
         UIState.Success -> SuccessListProfileScreen(
             snackbarHostState = snackbarHostState,
             globalScope = globalScope(),
-            navController = navController
+            getNavController = { navController }
         )
         else -> ErrorScreen(retryAction = {
             localScope.launch {

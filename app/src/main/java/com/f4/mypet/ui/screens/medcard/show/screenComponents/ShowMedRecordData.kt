@@ -41,13 +41,17 @@ fun ShowMedRecordData(medRecord: MedRecord) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = medRecord.title.toString(), // TODO: убрать toString() после того, как изменим Entity
+                text = medRecord.title,
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 20.dp),
             )
             TextComponent(
                 header = stringResource(R.string.therapy_date),
-                value = medRecord.date.format(PetDateTimeFormatter.dateTime)
+                value = medRecord.date.format(PetDateTimeFormatter.date)
+            )
+            TextComponent(
+                header = stringResource(R.string.procedure_screen_time_of_event),
+                value = medRecord.date.format(PetDateTimeFormatter.time)
             )
             Box(modifier = Modifier.fillMaxWidth()) {
                 OutlinedTextField(

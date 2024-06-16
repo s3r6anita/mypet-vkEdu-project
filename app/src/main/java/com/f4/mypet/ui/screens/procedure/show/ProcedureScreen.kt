@@ -48,9 +48,11 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.components.TextComponent
+import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.theme.GreenButton
-import com.f4.mypet.ui.theme.LightBlueBackground
+import com.f4.mypet.ui.theme.LightGreenBackground
 import com.f4.mypet.ui.theme.RedButton
 import com.f4.mypet.util.PetDateTimeFormatter
 import kotlinx.coroutines.launch
@@ -64,186 +66,206 @@ fun ProcedureScreen(
 ) {
     val scope = rememberCoroutineScope()
 
+    // для отображения
+    val procedure by viewModel.procedureUiState.collectAsState()
+    val title = viewModel.title
+    val type = viewModel.type
+    val frequency = viewModel.frequency
     LaunchedEffect(Unit) {
         scope.launch {
             viewModel.getProcedure(procedureId)
         }
     }
-    val procedure by viewModel.procedureUiState.collectAsState()
-    val title = viewModel.title
-    val type = viewModel.type
-    val frequency = viewModel.frequency
 
+    // для удаления
+    val msg by viewModel.msg.collectAsState()
+    var showStatusDialog by remember { mutableStateOf(false) }
     var openAlertDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(msg) {
+        if (msg != null && msg != "") {
+            showStatusDialog = true
+        }
+        if (msg == null) {
+            navController.navigateUp()
+        }
+    }
 
     if (openAlertDialog) {
         RemoveProcedureAlert(
             procedure = procedure,
-            navigateUp = { navController.navigateUp() },
-            closeAlertDialog = {
-                openAlertDialog = !openAlertDialog
-            }
+            closeAlertDialog = { openAlertDialog = !openAlertDialog }
         )
     }
-
-    Scaffold(
-        topBar = {
-            MyPetTopBar(
-                text = stringResource(R.string.procedure_screen_title),
-                canNavigateBack = true,
-                navigateUp = { navController.navigateUp() },
-            )
+    if (showStatusDialog) {
+        StatusDialog(msg) {
+            showStatusDialog = !showStatusDialog
+            viewModel.resetMsg()
         }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Box(
+    }
+
+    if (procedure.id == -1) {
+        LoadingScreen()
+    } else {
+        Scaffold(
+            topBar = {
+                MyPetTopBar(
+                    text = stringResource(R.string.procedure_screen_title),
+                    canNavigateBack = true,
+                    navigateUp = { navController.navigateUp() },
+                )
+            }
+        ) { innerPadding ->
+            Column(
                 modifier = Modifier
-                    .padding(vertical = 50.dp)
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(horizontal = 20.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Card(
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 6.dp
-                    ),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.onSecondary,
-                    ),
+                Box(
                     modifier = Modifier
-                        .padding(top = 50.dp)
+                        .padding(vertical = 50.dp)
                 ) {
-                    Column(
+                    Card(
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 6.dp
+                        ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.onSecondary,
+                        ),
                         modifier = Modifier
-                            .padding(20.dp)
-                            .padding(top = 50.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .padding(top = 50.dp)
                     ) {
-                        Row(
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically,
+                                .padding(20.dp)
+                                .padding(top = 50.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = title.name,
-                                style = MaterialTheme.typography.headlineSmall,
-                                modifier = Modifier.weight(1f),
-                            )
-                            if (procedure.isDone == 1) {
-                                Image(
-                                    imageVector = Icons.Filled.CheckCircle,
-                                    contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_done)
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = title.name,
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    modifier = Modifier.weight(1f),
                                 )
-                            } else {
-                                if (procedure.dateDone < LocalDateTime.now()) {
+                                if (procedure.isDone == 1) {
                                     Image(
-                                        imageVector = Icons.Filled.Clear,
-                                        contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_not_done)
+                                        imageVector = Icons.Filled.CheckCircle,
+                                        contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_done)
                                     )
+                                } else {
+                                    if (procedure.dateDone < LocalDateTime.now()) {
+                                        Image(
+                                            imageVector = Icons.Filled.Clear,
+                                            contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_not_done)
+                                        )
+                                    }
                                 }
                             }
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        TextComponent(
-                            header = stringResource(R.string.procedure_screen_type),
-                            value = type.name
-                        )
-                        TextComponent(
-                            header = stringResource(R.string.procedure_screen_date_of_event),
-                            value = procedure.dateDone.format(PetDateTimeFormatter.date)
-                        )
-                        TextComponent(
-                            header = stringResource(R.string.procedure_screen_time_of_event),
-                            value = procedure.dateDone.format(PetDateTimeFormatter.time)
-                        )
-                        TextComponent(
-                            header = stringResource(R.string.procedure_screen_frequency),
-                            value = frequency.frequency
-                        )
-                        TextComponent(
-                            header = stringResource(R.string.procedure_screen_reminder),
-                            value = if (procedure.reminder?.let {
+                            Spacer(modifier = Modifier.height(24.dp))
+                            TextComponent(
+                                header = stringResource(R.string.procedure_screen_type),
+                                value = type.name
+                            )
+                            TextComponent(
+                                header = stringResource(R.string.procedure_screen_date_of_event),
+                                value = procedure.dateDone.format(PetDateTimeFormatter.date)
+                            )
+                            TextComponent(
+                                header = stringResource(R.string.procedure_screen_time_of_event),
+                                value = procedure.dateDone.format(PetDateTimeFormatter.time)
+                            )
+                            TextComponent(
+                                header = stringResource(R.string.procedure_screen_frequency),
+                                value = frequency.frequency
+                            )
+                            TextComponent(
+                                header = stringResource(R.string.procedure_screen_reminder),
+                                value = if (procedure.reminder?.let {
+                                        procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
+                                    } == "01.01.1001 00:00") {
+                                    "нет"
+                                } else {
                                     procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
-                                } == "01.01.1001 00:00") {
-                                "нет"
-                            } else {
-                                procedure.reminder!!.format(PetDateTimeFormatter.dateTime)
-                            }
-                        )
-                        TextComponent(
-                            header = stringResource(R.string.procedure_screen_notice),
-                            value = procedure.notes
+                                }
+                            )
+                            TextComponent(
+                                header = stringResource(R.string.procedure_screen_notice),
+                                value = procedure.notes
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            // TODO: менять на иконку, соответствующую названию
+                            painter = painterResource(id = R.drawable.procedures_icon),
+                            contentDescription = stringResource(id = R.string.procedure_screen_icon_procedure_desc),
+                            contentScale = ContentScale.Inside,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape)
+                                .background(LightGreenBackground)
                         )
                     }
                 }
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.Bottom,
                 ) {
-                    Image(
-                        // TODO: менять на иконку, соответствующую названию
-                        painter = painterResource(id = R.drawable.procedures_icon),
-                        contentDescription = stringResource(id = R.string.procedure_screen_icon_procedure_desc),
-                        contentScale = ContentScale.Inside,
+                    // кнопка редактирования
+                    Button(
+                        contentPadding = PaddingValues(start = 1.dp, end = 1.dp),
+                        border = BorderStroke(1.dp, GreenButton),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
+                        onClick = {
+                            navController.navigate("${Routes.UpdateProcedure.route}/$procedureId") {
+                                launchSingleTop = true
+                            }
+                        },
                         modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape)
-                            .background(LightBlueBackground)
-                    )
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                // кнопка редактирования
-                Button(
-                    contentPadding = PaddingValues(start = 1.dp, end = 1.dp),
-                    border = BorderStroke(1.dp, GreenButton),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
-                    onClick = {
-                        navController.navigate("${Routes.UpdateProcedure.route}/$procedureId") {
-                            launchSingleTop = true
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(bottom = 40.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.edit_button_description),
-                        modifier = Modifier.padding(start = 5.dp),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-                Spacer(modifier = Modifier.width(24.dp))
+                            .padding(bottom = 40.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.edit_button_description),
+                            modifier = Modifier.padding(start = 5.dp),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(24.dp))
 
-                // кнопка удаления
-                Button(
-                    modifier = Modifier
-                        .padding(bottom = 40.dp),
-                    onClick = {
-                        openAlertDialog = true
-                    },
-                    border = BorderStroke(1.dp, RedButton),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = RedButton)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.procedure_screen_delete),
-                        modifier = Modifier.padding(start = 10.dp),
-                        style = MaterialTheme.typography.titleMedium
-                    )
+                    // кнопка удаления
+                    Button(
+                        modifier = Modifier
+                            .padding(bottom = 40.dp),
+                        onClick = {
+                            openAlertDialog = true
+                        },
+                        border = BorderStroke(1.dp, RedButton),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = RedButton)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.procedure_screen_delete),
+                            modifier = Modifier.padding(start = 10.dp),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
                 }
-            }
 
+            }
         }
     }
 }

@@ -192,7 +192,6 @@ fun LoginScreen(
             TextButton(
                 onClick = {
                     navController.navigate(Routes.Register.route) {
-                        popUpTo(Routes.ListProfile.route)
                         launchSingleTop = true
                     }
                 },

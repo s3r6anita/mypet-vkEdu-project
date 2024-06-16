@@ -8,7 +8,6 @@ import com.f4.mypet.navigation.START
 import com.f4.mypet.navigation.SetupNavGraph
 import com.f4.mypet.ui.theme.MyPetTheme
 
-
 @Composable
 fun MyPetApp(notificationRoute: String?) {
     MyPetTheme {

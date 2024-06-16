@@ -1,4 +1,4 @@
-package com.f4.mypet.ui.screens.procedure.createUpdate.success
+package com.f4.mypet.ui.screens.procedure.createUpdate.success.screenComponents
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

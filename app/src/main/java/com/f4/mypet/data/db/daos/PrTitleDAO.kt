@@ -11,8 +11,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PrTitleDAO {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(title: ProcedureTitle): Long // error there
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(title: ProcedureTitle): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(titles: List<ProcedureTitle>)
 
     @Update
     suspend fun update(title: ProcedureTitle)
@@ -28,4 +31,7 @@ interface PrTitleDAO {
 
     @Query("SELECT * from procedureTitle where type = :titleType")
     fun getTitlesWithType(titleType: Int): List<ProcedureTitle>
+
+    @Query("DELETE from procedureTitle")
+    fun deleteAll()
 }
