@@ -27,7 +27,8 @@ fun ButtonComponent(
     borderColor: Color,
     icon: ImageVector?,
     modifier: Modifier,
-    enabled: Boolean){
+    enabled: Boolean
+) {
     Button(
         onClick = onClick,
         modifier = modifier
@@ -49,8 +50,7 @@ fun ButtonComponent(
             textAlign = TextAlign.Center,
             color = textColor,
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .padding(vertical = 2.dp, horizontal = 12.dp),
+            modifier = Modifier.padding(vertical = 2.dp, horizontal = 12.dp),
         )
     }
 }

@@ -49,8 +49,8 @@ data object BottomBarData {
     val items = persistentListOf(
         BottomNavigationItems.Procedures,
         BottomNavigationItems.MedCard,
-        BottomNavigationItems.Profile,
-        BottomNavigationItems.Wall
+        BottomNavigationItems.Wall,
+        BottomNavigationItems.Profile
     )
 }
 

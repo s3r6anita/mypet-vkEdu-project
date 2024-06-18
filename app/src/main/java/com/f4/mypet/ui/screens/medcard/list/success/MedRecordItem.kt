@@ -49,7 +49,7 @@ fun MedRecordItem(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 15.dp)
+            .padding(bottom = 10.dp)
             .clickable {
                 navController.navigate("${Routes.MedRecord.route}/${medRecord.id}") {
                     launchSingleTop = true

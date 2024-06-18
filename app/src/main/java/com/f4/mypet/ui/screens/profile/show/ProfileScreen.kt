@@ -106,7 +106,7 @@ fun ProfileScreen(
             topBar = {
                 MyPetTopBar(
                     text = stringResource(Routes.BottomBarRoutes.Profile.title),
-                    canNavigateBack = canNavigateBack,
+                    canNavigateBack = false,
                     navigateUp = { navController.navigateUp() },
                     actions = {
                         // кнопка удалить

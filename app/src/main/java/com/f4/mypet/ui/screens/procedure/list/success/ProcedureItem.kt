@@ -34,7 +34,6 @@ import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Procedure
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.ui.theme.LightBlueBackground
-import com.f4.mypet.ui.theme.RedButton
 import com.f4.mypet.ui.theme.LightGreenBackground
 import com.f4.mypet.util.PetDateTimeFormatter
 
@@ -53,9 +52,9 @@ fun ProcedureItem(
             containerColor = MaterialTheme.colorScheme.onSecondary,
         ),
         modifier = Modifier
-            .padding(bottom = 15.dp)
+            .padding(bottom = 10.dp)
             .clickable {
-                navController.navigate(Routes.Procedure.route + "/" + procedure.id) {
+                navController.navigate("${Routes.Procedure.route}/${procedure.id}") {
                     launchSingleTop = true
                 }
             }

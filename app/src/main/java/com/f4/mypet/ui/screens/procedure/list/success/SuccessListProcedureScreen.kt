@@ -3,8 +3,10 @@ package com.f4.mypet.ui.screens.procedure.list.success
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -91,7 +93,7 @@ fun SuccessListProcedureScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 60.dp)
+                        .padding(top = 20.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
                     procedures.forEach { procedure ->
@@ -102,24 +104,28 @@ fun SuccessListProcedureScreen(
                                 ?: stringResource(id = R.string.unknown)
                         )
                     }
-                }
 
-                // кнопка ADD
-                ButtonComponent(
-                    onClick = {
-                        navController.navigate("${Routes.CreateProcedure.route}/$profileId") {
-                            launchSingleTop = true
-                        }
-                    },
-                    text = stringResource(id = R.string.add_button_description),
-                    color = ButtonDefaults.buttonColors(containerColor = GreenButton),
-                    icon = Icons.Default.Add,
-                    modifier = Modifier,
-                    textColor = Color.White,
-                    borderColor = GreenButton,
-                    enabled = true
-                )
+                    Spacer(modifier = Modifier.height(40.dp))
+                }
             }
+
+            // кнопка ADD
+            ButtonComponent(
+                onClick = {
+                    navController.navigate("${Routes.CreateProcedure.route}/$profileId") {
+                        launchSingleTop = true
+                    }
+                },
+                text = stringResource(id = R.string.add_button_description),
+                color = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                icon = Icons.Default.Add,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(innerPadding.calculateBottomPadding()),
+                textColor = Color.White,
+                borderColor = GreenButton,
+                enabled = true
+            )
 
             PullRefreshIndicator(
                 isRefreshing,
