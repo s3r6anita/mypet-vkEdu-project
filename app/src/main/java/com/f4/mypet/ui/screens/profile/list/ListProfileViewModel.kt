@@ -31,6 +31,9 @@ class ListProfileViewModel @Inject constructor(
     private val _petsUiState = MutableStateFlow(emptyList<Pet>())
     val petsUiState = _petsUiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     private val _uiState = MutableStateFlow<UIState>(UIState.Loading)
     val uiState = _uiState.asStateFlow()
 

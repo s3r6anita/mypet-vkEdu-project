@@ -85,7 +85,7 @@ fun SuccessListProcedureScreen(
                     .pullRefresh(pullRefreshState)
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(20.dp),
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp),
             ) {
                 PetCardHeader(petName = pet.name, backgroundColor = LightGreenBackground)
 
@@ -104,8 +104,7 @@ fun SuccessListProcedureScreen(
                                 ?: stringResource(id = R.string.unknown)
                         )
                     }
-
-                    Spacer(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.height(50.dp)) // для нормального скролла
                 }
             }
 
@@ -128,10 +127,9 @@ fun SuccessListProcedureScreen(
             )
 
             PullRefreshIndicator(
-                isRefreshing,
-                pullRefreshState,
-                Modifier
-                    .align(Alignment.TopCenter)
+                refreshing = isRefreshing,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
             )
         }
     }

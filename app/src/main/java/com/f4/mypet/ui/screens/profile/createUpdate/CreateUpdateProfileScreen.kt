@@ -446,7 +446,6 @@ fun CreateUpdateProfileScreen(
                     color = ButtonDefaults.buttonColors(containerColor = GreenButton),
                     textColor = Color.White,
                     borderColor = Transparent,
-                    icon = null,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = nameIsCorrect && kindIsCorrect && breedIsCorrect &&
                             coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,

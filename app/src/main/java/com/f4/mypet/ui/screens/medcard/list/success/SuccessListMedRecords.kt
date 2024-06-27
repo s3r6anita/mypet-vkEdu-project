@@ -84,7 +84,7 @@ fun SuccessListMedRecords(
                     .pullRefresh(pullRefreshState)
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(20.dp),
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp),
             ) {
                 PetCardHeader(petName = pet.name, backgroundColor = LightBlueBackground)
 
@@ -100,12 +100,15 @@ fun SuccessListMedRecords(
                             navController = navController
                         )
                     }
-                    Spacer(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.height(50.dp)) // для нормального скролла
                 }
             }
 
             // кнопка ADD
             ButtonComponent(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(innerPadding.calculateBottomPadding()),
                 onClick = {
                     navController.navigate("${Routes.CreateMedRecord.route}/$profileId") {
                         launchSingleTop = true
@@ -114,19 +117,14 @@ fun SuccessListMedRecords(
                 text = stringResource(id = R.string.add_button_description),
                 color = ButtonDefaults.buttonColors(containerColor = GreenButton),
                 icon = Icons.Default.Add,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(innerPadding.calculateBottomPadding()),
                 textColor = Color.White,
-                borderColor = GreenButton,
-                enabled = true
+                borderColor = GreenButton
             )
 
             PullRefreshIndicator(
-                isRefreshing,
-                pullRefreshState,
-                Modifier
-                    .align(Alignment.TopCenter)
+                refreshing = isRefreshing,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
             )
         }
     }

@@ -44,6 +44,7 @@ fun PetItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(vertical = 10.dp)
             .clickable {
                 closeSnackbar()
                 navController.navigate(

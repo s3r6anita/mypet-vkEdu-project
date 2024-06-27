@@ -25,9 +25,9 @@ fun ButtonComponent(
     color: ButtonColors,
     textColor: Color,
     borderColor: Color,
-    icon: ImageVector?,
     modifier: Modifier,
-    enabled: Boolean
+    icon: ImageVector? = null,
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,

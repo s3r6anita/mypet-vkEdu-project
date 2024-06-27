@@ -43,7 +43,6 @@ class CreateUpdateProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _msg.value = networkRepository.insertPet(pet)
             repository.insertPet(pet)
-            _msg.value = networkRepository.insertPet(pet)
         }
     }
 
@@ -52,7 +51,6 @@ class CreateUpdateProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _msg.value = networkRepository.updatePet(pet)
             repository.updatePet(pet)
-            _msg.value = networkRepository.updatePet(pet)
         }
     }
 
