@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -24,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
@@ -47,7 +49,7 @@ fun MedRecordItem(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 15.dp)
+            .padding(bottom = 10.dp)
             .clickable {
                 navController.navigate("${Routes.MedRecord.route}/${medRecord.id}") {
                     launchSingleTop = true
@@ -78,7 +80,10 @@ fun MedRecordItem(
                 ) {
                     Text(
                         text = medRecord.title,
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        modifier = Modifier.width(200.dp),
                     )
                     Text(
                         text = medRecord.date.format(PetDateTimeFormatter.dateTime),

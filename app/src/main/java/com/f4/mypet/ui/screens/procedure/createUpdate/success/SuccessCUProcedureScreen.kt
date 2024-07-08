@@ -18,8 +18,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +41,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationCompat
@@ -45,7 +51,9 @@ import androidx.navigation.NavHostController
 import com.f4.mypet.MainActivity
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.ui.components.ButtonComponent
 import com.f4.mypet.ui.components.MyPetTopBar
+import com.f4.mypet.ui.components.OutlinedTextFieldComponent
 import com.f4.mypet.ui.screens.procedure.createUpdate.CreateUpdateProcedureViewModel
 import com.f4.mypet.ui.screens.procedure.createUpdate.success.screenComponents.DatePickerSelector
 import com.f4.mypet.ui.screens.procedure.createUpdate.success.screenComponents.FrequencySelector
@@ -184,10 +192,10 @@ fun SuccessCUProcedureScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp)
+                .padding(20.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
 
             // тип процедуры
@@ -220,9 +228,10 @@ fun SuccessCUProcedureScreen(
                 singleLine = true,
                 label = { Text(stringResource(R.string.creation_procedure_screen_name)) },
                 modifier = Modifier
-                    .padding(bottom = 10.dp, start = 30.dp, end = 30.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
                 isError = !titleIsCorrect,
+                colors = getOutLinedTextFieldColors()
             )
 
             // периодичность - выпадающее меню с выбором
@@ -273,15 +282,14 @@ fun SuccessCUProcedureScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 15.dp),
+                    .padding(vertical = 8.dp),
                 singleLine = false,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(8.dp),
                 colors = getOutLinedTextFieldColors()
             )
 
             // сохранение
-            Button(
-                modifier = Modifier.padding(20.dp),
+            ButtonComponent(
                 onClick = {
                     if (isCreateScreen) {
                         procedure = procedure.copy(pet = profileId)
@@ -296,15 +304,14 @@ fun SuccessCUProcedureScreen(
                         createDelayedNotification.value = true
                     }
                 },
-                border = BorderStroke(1.dp, GreenButton),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.save_button_description),
-                    Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
+                text = stringResource(id = R.string.save_button_description),
+                color = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                icon = null,
+                modifier = Modifier.fillMaxWidth(),
+                textColor = Color.White,
+                borderColor = GreenButton,
+                enabled = true,
+            )
         }
     }
 }

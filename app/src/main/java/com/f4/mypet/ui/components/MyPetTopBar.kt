@@ -22,9 +22,9 @@ import com.f4.mypet.navigation.Routes
 fun MyPetTopBar(
     text: String,
     navigateUp: () -> Unit,
-    onFeedbackClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     canNavigateBack: Boolean = false,
+    onFeedbackClick: () -> Unit = {},
     actions: @Composable() RowScope.() -> Unit = { },
 ) {
     CenterAlignedTopAppBar(

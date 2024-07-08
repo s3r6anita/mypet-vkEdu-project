@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -26,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
@@ -50,9 +52,9 @@ fun ProcedureItem(
             containerColor = MaterialTheme.colorScheme.onSecondary,
         ),
         modifier = Modifier
-            .padding(bottom = 15.dp)
+            .padding(bottom = 10.dp)
             .clickable {
-                navController.navigate(Routes.Procedure.route + "/" + procedure.id) {
+                navController.navigate("${Routes.Procedure.route}/${procedure.id}") {
                     launchSingleTop = true
                 }
             }
@@ -87,7 +89,10 @@ fun ProcedureItem(
                     ) {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.titleLarge
+                            style = MaterialTheme.typography.titleLarge,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                            modifier = Modifier.width(200.dp),
                         )
                         if (procedure.isDone == 1) {
                             Icon(

@@ -19,14 +19,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.data.db.entities.Pet
@@ -47,6 +44,7 @@ fun PetItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(vertical = 10.dp)
             .clickable {
                 closeSnackbar()
                 navController.navigate(
@@ -85,15 +83,14 @@ fun PetItem(
                 )
                 Text(
                     text = pet.name,
-                    color = Color.Black,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 20.dp)
                 )
             }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = stringResource(id = R.string.delete_button_description),
+                contentDescription = stringResource(id = R.string.arrow_right_description),
                 modifier = Modifier.height(80.dp),
                 tint = LightGrayTint
             )

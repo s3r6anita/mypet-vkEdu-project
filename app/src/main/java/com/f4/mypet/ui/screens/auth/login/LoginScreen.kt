@@ -1,27 +1,18 @@
 package com.f4.mypet.ui.screens.auth.login
 
-import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,23 +26,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
+import com.f4.mypet.ui.components.ButtonComponent
+import com.f4.mypet.ui.components.OutlinedTextFieldComponent
+import com.f4.mypet.ui.components.PasswordFieldComponent
+import com.f4.mypet.ui.components.TextButtonComponent
 import com.f4.mypet.ui.screens.wall.PetsWallViewModel
 import com.f4.mypet.ui.theme.GreenButton
-import com.f4.mypet.ui.theme.LightGrayTint
 import com.f4.mypet.util.UIState
-import com.vk.id.AccessToken
-import com.vk.id.OAuth
 import com.vk.id.VKID
-import com.vk.id.onetap.common.OneTapOAuth
 import com.vk.id.onetap.compose.onetap.OneTap
 import kotlinx.coroutines.launch
 
@@ -110,7 +98,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp)
+                .padding(20.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -122,87 +110,62 @@ fun LoginScreen(
             ) {
                 Text(
                     text = stringResource(id = R.string.login_title),
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.displayMedium
                 )
             }
 
             // email
-            OutlinedTextField(
+            OutlinedTextFieldComponent(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text(stringResource(id = R.string.login_enter)) },
                 placeholder = { Text(stringResource(id = R.string.login_placeholder)) },
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                trailingIcon = {
-                    IconButton(onClick = { email = "" }) {
-                        Icon(
-                            Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.clear)
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp),
+                onIconClick = { email = "" },
+                icon = Icons.Default.Clear,
+                modifier = Modifier,
+                isError = false,
+                supportingText = null,
             )
 
             // password
-            OutlinedTextField(
+            PasswordFieldComponent(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text(stringResource(id = R.string.login_password_enter)) },
                 placeholder = { Text(stringResource(id = R.string.login_password_enter)) },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                trailingIcon = {
-                    IconButton(onClick = { password = "" }) {
-                        Icon(
-                            Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.clear)
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp),
+                onIconClick = { password = "" },
+                icon = Icons.Default.Clear,
+                modifier = Modifier,
+                isError = false,
             )
 
             // Кнопка "Войти"
-            Button(
+            ButtonComponent(
                 onClick = {
                     scope.launch {
                         viewModel.login(email, password)
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.login_button),
-                    textAlign = TextAlign.Center,
-                    color = Color.White
-                )
-            }
+                text = stringResource(id = R.string.login_button),
+                color = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                textColor = Color.White,
+                borderColor = GreenButton,
+                icon = null,
+                enabled = true,
+            )
 
             // Кнопка "Зарегистрироваться"
-            TextButton(
+            TextButtonComponent(
                 onClick = {
                     navController.navigate(Routes.Register.route) {
+                        popUpTo(Routes.ListProfile.route)
                         launchSingleTop = true
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = stringResource(id = R.string.login_registration_button),
-                    textAlign = TextAlign.Center,
-                    color = LightGrayTint
-                )
-            }
+                text = stringResource(id = R.string.login_registration_button)
+            )
 
             // кнопка VK ID
             OneTap(

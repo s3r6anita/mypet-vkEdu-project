@@ -1,5 +1,6 @@
 package com.f4.mypet.data.network
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -75,6 +76,7 @@ class NetworkRepositoryImpl @Inject constructor(
                 errorResponse.msg
             }
         } catch (e: IOException) {
+            Log.d("tag","${e}")
             return "Превышено время ожидания. Сервер недоступен"
         }
     }

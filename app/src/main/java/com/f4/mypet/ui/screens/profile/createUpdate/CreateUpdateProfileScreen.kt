@@ -3,12 +3,9 @@ package com.f4.mypet.ui.screens.profile.createUpdate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -18,7 +15,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -44,23 +40,24 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.ui.components.ButtonComponent
 import com.f4.mypet.ui.components.MyPetSnackBar
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.SHOWSNACKDURATION
 import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.screens.LoadingScreen
 import com.f4.mypet.ui.theme.GreenButton
+import com.f4.mypet.ui.theme.Transparent
 import com.f4.mypet.util.PastOrPresentSelectableDates
 import com.f4.mypet.util.PetDateTimeFormatter
 import com.f4.mypet.util.validate
@@ -153,15 +150,15 @@ fun CreateUpdateProfileScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 30.dp)
+                    .padding(20.dp)
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Top
             ) {
                 val modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp)
+                    .padding(vertical = 2.dp)
 
                 // пол
                 val radioOptions = listOf("Самец", "Самка")
@@ -171,18 +168,16 @@ fun CreateUpdateProfileScreen(
                 Row(
                     modifier
                         .selectableGroup()
-                        .padding(top = 15.dp, bottom = 5.dp)
+                        .padding(vertical = 10.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = stringResource(id = R.string.create_profile_sex),
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 10.dp)
+                        modifier = Modifier.padding(end = 20.dp)
                     )
-                    Spacer(
-                        modifier = Modifier
-                            .height(10.dp)
-                            .width(50.dp)
-                    )
+
                     radioOptions.forEach { text ->
                         Column(
                         ) {
@@ -193,7 +188,7 @@ fun CreateUpdateProfileScreen(
                                         onClick = { pet = pet.copy(sex = text) },
                                         role = Role.RadioButton
                                     )
-                                    .padding(horizontal = 16.dp, vertical = 10.dp),
+                                    .padding(horizontal = 10.dp),
                             ) {
                                 RadioButton(
                                     selected = (text == pet.sex),
@@ -213,7 +208,7 @@ fun CreateUpdateProfileScreen(
                 OutlinedTextField(
                     value = pet.name,
                     singleLine = true,
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(8.dp),
                     onValueChange = {
                         nameIsCorrect = validate(it)
                         pet = pet.copy(name = it)
@@ -235,7 +230,7 @@ fun CreateUpdateProfileScreen(
                 var kindIsCorrect by remember { mutableStateOf(!isCreateScreen) }
                 OutlinedTextField(
                     value = pet.kind,
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(8.dp),
                     singleLine = true,
                     onValueChange = {
                         kindIsCorrect = validate(it)
@@ -259,7 +254,7 @@ fun CreateUpdateProfileScreen(
                 OutlinedTextField(
                     value = pet.breed,
                     singleLine = true,
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(8.dp),
                     onValueChange = {
                         breedIsCorrect = validate(it)
                         pet = pet.copy(breed = it)
@@ -282,7 +277,7 @@ fun CreateUpdateProfileScreen(
                 OutlinedTextField(
                     value = pet.coat,
                     singleLine = true,
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(8.dp),
                     onValueChange = {
                         coatIsCorrect = validate(it)
                         pet = pet.copy(coat = it)
@@ -305,7 +300,7 @@ fun CreateUpdateProfileScreen(
                 OutlinedTextField(
                     value = pet.color,
                     singleLine = true,
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(8.dp),
                     onValueChange = {
                         colorIsCorrect = validate(it)
                         pet = pet.copy(color = it)
@@ -331,9 +326,10 @@ fun CreateUpdateProfileScreen(
                 var dateIsCorrect by remember { mutableStateOf(true) }
 
                 OutlinedTextField(
+                    //TODO: отформатировать дату
                     value = pet.birthday.format(PetDateTimeFormatter.date),
                     onValueChange = { },
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(8.dp),
                     label = { Text(stringResource(id = R.string.pet_birthday)) },
                     supportingText = { Text(text = stringResource(id = R.string.date_format)) },
                     readOnly = true,
@@ -394,7 +390,7 @@ fun CreateUpdateProfileScreen(
                 OutlinedTextField(
                     value = pet.microchipNumber,
                     singleLine = true,
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(8.dp),
                     onValueChange = {
                         microchipNumberIsCorrect = validateMicrochipNumber(it)
                         pet = pet.copy(microchipNumber = it)
@@ -421,11 +417,7 @@ fun CreateUpdateProfileScreen(
                 )
 
                 // сохранение
-                Button(
-                    modifier = Modifier.padding(16.dp),
-                    enabled = nameIsCorrect && kindIsCorrect && breedIsCorrect &&
-                            coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
-                    colors = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                ButtonComponent(
                     onClick = {
                         globalScope().launch {
                             val job = launch {
@@ -449,14 +441,15 @@ fun CreateUpdateProfileScreen(
                                 viewModel.updatePet(pet)
                             }
                         }
-                    }
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.save_button_description),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                    },
+                    text = stringResource(id = R.string.save_button_description),
+                    color = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                    textColor = Color.White,
+                    borderColor = Transparent,
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = nameIsCorrect && kindIsCorrect && breedIsCorrect &&
+                            coatIsCorrect && colorIsCorrect && dateIsCorrect && microchipNumberIsCorrect,
+                )
             }
         }
     }

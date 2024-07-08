@@ -1,12 +1,10 @@
 package com.f4.mypet.ui.screens.procedure.show
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,17 +12,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,6 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
+import com.f4.mypet.ui.components.ButtonComponent
 import com.f4.mypet.ui.components.MyPetTopBar
 import com.f4.mypet.ui.components.StatusDialog
 import com.f4.mypet.ui.components.TextComponent
@@ -120,15 +122,12 @@ fun ProcedureScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(horizontal = 20.dp)
+                    .padding(20.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Box(
-                    modifier = Modifier
-                        .padding(vertical = 50.dp)
-                ) {
+                Box {
                     Card(
                         elevation = CardDefaults.cardElevation(
                             defaultElevation = 6.dp
@@ -136,8 +135,7 @@ fun ProcedureScreen(
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.onSecondary,
                         ),
-                        modifier = Modifier
-                            .padding(top = 50.dp)
+                        modifier = Modifier.padding(top = 50.dp)
                     ) {
                         Column(
                             modifier = Modifier
@@ -154,18 +152,20 @@ fun ProcedureScreen(
                                 Text(
                                     text = title.name,
                                     style = MaterialTheme.typography.headlineSmall,
-                                    modifier = Modifier.weight(1f),
+                                    modifier = Modifier.padding(horizontal = 10.dp),
                                 )
                                 if (procedure.isDone == 1) {
-                                    Image(
+                                    Icon(
                                         imageVector = Icons.Filled.CheckCircle,
-                                        contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_done)
+                                        contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_done),
+                                        tint = GreenButton,
                                     )
                                 } else {
                                     if (procedure.dateDone < LocalDateTime.now()) {
-                                        Image(
+                                        Icon(
                                             imageVector = Icons.Filled.Clear,
-                                            contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_not_done)
+                                            contentDescription = stringResource(id = R.string.procedure_screen_procedure_is_not_done),
+                                            tint = RedButton,
                                         )
                                     }
                                 }
@@ -219,52 +219,40 @@ fun ProcedureScreen(
                         )
                     }
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.Bottom,
-                ) {
+
+                Column (){
                     // кнопка редактирования
-                    Button(
-                        contentPadding = PaddingValues(start = 1.dp, end = 1.dp),
-                        border = BorderStroke(1.dp, GreenButton),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
+                    ButtonComponent(
                         onClick = {
                             navController.navigate("${Routes.UpdateProcedure.route}/$procedureId") {
                                 launchSingleTop = true
                             }
                         },
+                        text = stringResource(id = R.string.edit_button_description),
+                        color = ButtonDefaults.outlinedButtonColors(contentColor = GreenButton),
+                        icon = Icons.Default.Edit,
                         modifier = Modifier
-                            .padding(bottom = 40.dp)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.edit_button_description),
-                            modifier = Modifier.padding(start = 5.dp),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(24.dp))
+                            .fillMaxWidth(),
+                        textColor = GreenButton,
+                        borderColor = GreenButton,
+                        enabled = true,
+                    )
 
                     // кнопка удаления
-                    Button(
-                        modifier = Modifier
-                            .padding(bottom = 40.dp),
+                    ButtonComponent(
                         onClick = {
                             openAlertDialog = true
                         },
-                        border = BorderStroke(1.dp, RedButton),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = RedButton)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.procedure_screen_delete),
-                            modifier = Modifier.padding(start = 10.dp),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
+                        text = stringResource(id = R.string.procedure_screen_delete),
+                        color = ButtonDefaults.outlinedButtonColors(contentColor = RedButton),
+                        icon = Icons.Default.Delete,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        textColor = RedButton,
+                        borderColor = RedButton,
+                        enabled = true,
+                    )
                 }
-
             }
         }
     }

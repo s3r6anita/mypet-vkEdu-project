@@ -42,7 +42,7 @@ fun SelectProcedureType(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
-                .padding(bottom = 15.dp),
+                .padding(vertical = 8.dp),
             readOnly = true,
             value = selectedType.name,
             onValueChange = { },

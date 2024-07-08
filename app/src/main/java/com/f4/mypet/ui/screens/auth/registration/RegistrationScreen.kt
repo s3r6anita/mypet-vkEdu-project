@@ -6,17 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,20 +25,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.f4.mypet.R
 import com.f4.mypet.navigation.Routes
 import com.f4.mypet.navigation.START
+import com.f4.mypet.ui.components.ButtonComponent
+import com.f4.mypet.ui.components.OutlinedTextFieldComponent
+import com.f4.mypet.ui.components.PasswordFieldComponent
+import com.f4.mypet.ui.components.TextButtonComponent
 import com.f4.mypet.ui.theme.GreenButton
-import com.f4.mypet.ui.theme.Purple40
+import com.f4.mypet.ui.theme.Transparent
 import com.f4.mypet.util.UIState
 import com.f4.mypet.util.validate
-import com.f4.mypet.util.validateEmail
 import com.f4.mypet.util.validatePassword
 import kotlinx.coroutines.launch
 
@@ -107,7 +101,7 @@ fun RegistrationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp)
+                .padding(20.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -119,7 +113,7 @@ fun RegistrationScreen(
             ) {
                 Text(
                     text = stringResource(id = R.string.login_title),
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.displayMedium
                 )
             }
@@ -127,44 +121,36 @@ fun RegistrationScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 15.dp)
+                    .padding(bottom = 10.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.reg_title),
-                    color = Purple40,
+                    color = GreenButton,
                     style = MaterialTheme.typography.titleLarge
                 )
             }
 
             // name
-            OutlinedTextField(
+            OutlinedTextFieldComponent(
                 value = name,
                 onValueChange = {
                     name = it
                     isCorrectData[0] = validate(name)
                 },
                 label = { Text(stringResource(id = R.string.reg_name_label)) },
-                trailingIcon = {
-                    IconButton(onClick = {
-                        name = ""
-                        isCorrectData[0] = validate(name)
-                    }) {
-                        Icon(
-                            Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.clear)
-                        )
-                    }
+                placeholder = { Text(stringResource(id = R.string.reg_name_label)) },
+                onIconClick = {
+                    name = ""
+                    isCorrectData[0] = validate(name)
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp),
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                isError = !validate(name)
+                icon = Icons.Default.Clear,
+                modifier = Modifier,
+                isError = !validate(name),
+                supportingText = null,
             )
 
             // email
-            OutlinedTextField(
+            OutlinedTextFieldComponent(
                 value = email,
                 onValueChange = {
                     email = it
@@ -172,27 +158,18 @@ fun RegistrationScreen(
                 },
                 label = { Text(stringResource(id = R.string.login_enter)) },
                 placeholder = { Text(stringResource(id = R.string.login_placeholder)) },
-                trailingIcon = {
-                    IconButton(onClick = {
-                        email = ""
-                        isCorrectData[1] = validate(name)
-                    }) {
-                        Icon(
-                            Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.clear)
-                        )
-                    }
+                onIconClick = {
+                    email = ""
+                    isCorrectData[1] = validate(name)
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp),
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                isError = !validateEmail(email),
+                icon = Icons.Default.Clear,
+                modifier = Modifier,
+                isError = !validate(email),
+                supportingText = null,
             )
 
             // password
-            OutlinedTextField(
+            PasswordFieldComponent(
                 value = password1,
                 onValueChange = {
                     password1 = it
@@ -200,30 +177,18 @@ fun RegistrationScreen(
                     isCorrectData[4] = password1 == password2
                 },
                 label = { Text(stringResource(id = R.string.login_password_enter)) },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                trailingIcon = {
-                    IconButton(onClick = {
-                        password1 = ""
-                        isCorrectData[2] = validate(name)
-                        isCorrectData[4] = password1 == password2
-                    }) {
-                        Icon(
-                            Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.clear)
-                        )
-                    }
+                placeholder = { Text(stringResource(id = R.string.login_password_enter)) },
+                onIconClick = {
+                    password1 = ""
+                    isCorrectData[2] = validate(name)
+                    isCorrectData[4] = password1 == password2
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp),
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                isError = !validatePassword(password1)
+                icon = Icons.Default.Clear,
+                modifier = Modifier,
+                isError = !validatePassword(password1),
             )
-
             // password2
-            OutlinedTextField(
+            PasswordFieldComponent(
                 value = password2,
                 onValueChange = {
                     password2 = it
@@ -231,30 +196,19 @@ fun RegistrationScreen(
                     isCorrectData[4] = password1 == password2
                 },
                 label = { Text(stringResource(id = R.string.login_password_confirm)) },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                trailingIcon = {
-                    IconButton(onClick = {
-                        password2 = ""
-                        isCorrectData[3] = validate(name)
-                        isCorrectData[4] = password1 == password2
-                    }) {
-                        Icon(
-                            Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.clear)
-                        )
-                    }
+                placeholder = { Text(stringResource(id = R.string.login_password_confirm)) },
+                onIconClick = {
+                    password2 = ""
+                    isCorrectData[3] = validate(name)
+                    isCorrectData[4] = password1 == password2
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp),
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                isError = password1 != password2
+                icon = Icons.Default.Clear,
+                modifier = Modifier,
+                isError = password1 != password2,
             )
 
             // Кнопка "Зарегистрироваться"
-            Button(
+            ButtonComponent(
                 onClick = {
                     if (password1 == password2) {
                         scope.launch {
@@ -264,16 +218,26 @@ fun RegistrationScreen(
                         openErrorAlert = true
                     }
                 },
+                text = stringResource(id = R.string.login_registration_button),
+                color = ButtonDefaults.buttonColors(containerColor = GreenButton),
+                textColor = Color.White,
+                borderColor = Transparent,
+                icon = null,
+                modifier = Modifier
+                    .fillMaxWidth(),
                 enabled = isCorrectData.all { it },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenButton)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.login_registration_button),
-                    textAlign = TextAlign.Center,
-                    color = Color.White
-                )
-            }
+            )
+
+            // Кнопка Назад
+            TextButtonComponent(
+                onClick = {
+                    navController.navigate(START) {
+                        popUpTo(START)
+                        launchSingleTop = true
+                    }
+                },
+                text = stringResource(id = R.string.back_button)
+            )
         }
     }
 }
